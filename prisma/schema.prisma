@@ -3,7 +3,7 @@
 
 generator client {
   provider      = "prisma-client-js"
-  binaryTargets = ["linux-musl"]
+  binaryTargets = ["linux-musl", "debian-openssl-1.1.x"]
 }
 
 datasource db {
@@ -14,7 +14,7 @@ datasource db {
 model User {
   id       String @id @default(uuid())
   username String
-  email    String
+  email    String @unique
   password String
   tasks    Task[]
 
