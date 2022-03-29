@@ -27,4 +27,3 @@ services:
       - MYSQL_DATABASE=${DB_DATABASE}
       - MYSQL_PORT=${DB_PORT}
       - HOSTNAME=db
-      - DATABASE_URL=mysql://${DB_USER}:${DB_PASSWORD}@db:${DB_PORT}/${DB_DATABASE}
