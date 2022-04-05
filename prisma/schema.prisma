@@ -21,14 +21,21 @@ model User {
   @@map("users")
 }
 
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+  DELETED
+}
+
 model Task {
-  id          String   @id @default(uuid())
+  id          String     @id @default(uuid())
   title       String
-  description String
-  status      String
-  user        User     @relation(fields: [user_id], references: [id])
-  user_id     String
-  updated_at  DateTime @default(now()) @updatedAt
+  description String?
+  status      TaskStatus
+  user        User       @relation(fields: [user_id], references: [id])
+  user_id     String     @map("userId")
+  updated_at  DateTime   @default(now()) @updatedAt @map("updatedAt")
 
   @@map("tasks")
 }
