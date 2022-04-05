@@ -13,4 +13,4 @@ interface IError {
   message: string;
 }
 
-export { IError };
+export { IError, ErrorStatusCode };

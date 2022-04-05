@@ -1,3 +1,3 @@
-import { IError } from './IError';
+import { IError, ErrorStatusCode } from './IError';
 
-export { IError };
+export { IError, ErrorStatusCode };

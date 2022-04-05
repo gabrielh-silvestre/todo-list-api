@@ -30,6 +30,12 @@ const isBetweenMaxAndMinNumber = (
 const haveFormat = (regexFormat: RegExp, ...strings: string[]) =>
   strings.every((s) => regexFormat.test(s));
 
+const haveLetters = (...strings: string[]) =>
+  strings.some((s) => s.split('').some((c) => Number.isNaN(Number(c))));
+
+const haveNumbers = (...strings: string[]) =>
+  strings.some((s) => s.split('').some((c) => !Number.isNaN(Number(c))));
+
 export {
   isNull,
   isDefinied,
@@ -40,4 +46,6 @@ export {
   isLessThenMaxNumber,
   isBetweenMaxAndMinNumber,
   haveFormat,
+  haveLetters,
+  haveNumbers,
 };
