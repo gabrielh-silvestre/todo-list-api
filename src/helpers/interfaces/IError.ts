@@ -1,5 +1,5 @@
-type ErrorStatusCode = 
-  'INTERNAL_SERVER_ERROR'
+type ErrorStatusCode =
+  | 'INTERNAL_SERVER_ERROR'
   | 'BAD_REQUEST'
   | 'UNAUTHORIZED'
   | 'FORBIDDEN'
