@@ -1,7 +1,5 @@
-import { User } from '@prisma/client';
+import { PrismaClient, User } from '@prisma/client';
 import { IUsersRepository, IUsersRepositoryDTO } from './IUsersRepository';
-
-import { PrismaClient } from '@prisma/client';
 
 class UserRepository implements IUsersRepository {
   private prisma: PrismaClient;
