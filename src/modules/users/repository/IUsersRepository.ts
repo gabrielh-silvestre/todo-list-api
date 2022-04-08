@@ -1,4 +1,4 @@
-import { User } from '../model/User';
+import { User } from '@prisma/client';
 
 interface IUsersRepositoryDTO {
   email: string;

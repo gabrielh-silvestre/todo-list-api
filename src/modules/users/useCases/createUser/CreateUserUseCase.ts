@@ -1,7 +1,7 @@
+import { User } from '@prisma/client';
 import bcrypt from 'bcrypt';
-import { IError, ISuccess } from '../../../../helpers/interfaces';
 
-import { User } from '../../model/User';
+import { IError, ISuccess } from '../../../../helpers/interfaces';
 import { UserRepository } from '../../repository/UsersRepository';
 
 interface IRequest {
