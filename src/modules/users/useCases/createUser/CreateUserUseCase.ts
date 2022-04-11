@@ -2,7 +2,7 @@ import { User } from '@prisma/client';
 import bcrypt from 'bcrypt';
 
 import { IError, ISuccess } from '../../../../helpers/interfaces';
-import { UserRepository } from '../../repository/UsersRepository';
+import { IUsersRepository } from '../../repository/IUsersRepository';
 
 interface IRequest {
   email: string;
@@ -13,7 +13,7 @@ interface IRequest {
 type IResponse = IError | ISuccess<User>;
 
 class CreateUserUseCase {
-  constructor(private userRepository: UserRepository) {}
+  constructor(private userRepository: IUsersRepository) {}
 
   async execute({ email, username, password }: IRequest): Promise<IResponse> {
     const userAlreadyExists = await this.userRepository.findByEmail(email);
