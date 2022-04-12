@@ -7,7 +7,7 @@ import { userValidation } from '../midleware/validate/userValidation';
 const userRouter = express.Router();
 
 userRouter.post(
-  '/login',
+  '/create',
   userValidation.createValidation,
   uniqueUserController.handle,
   createUserController.handle
