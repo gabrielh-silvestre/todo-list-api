@@ -6,13 +6,13 @@ import { CreateTaskUseCase } from './CreateTaskUseCase';
 class CreateTaskController {
   constructor(private createTaskUseCase: CreateTaskUseCase) {}
 
-  async handle(
+  handle = async (
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<Response | void> {
-    const { title, description, status, userId } = req.body;
-    const newTask = { title, description, status, userId };
+  ): Promise<Response | void> => {
+    const { title, description, userId } = req.body;
+    const newTask = { title, description, userId };
 
     try {
       const { statusCode, data } = await this.createTaskUseCase.execute(
@@ -28,7 +28,7 @@ class CreateTaskController {
 
       next(error);
     }
-  }
+  };
 }
 
 export { CreateTaskController };

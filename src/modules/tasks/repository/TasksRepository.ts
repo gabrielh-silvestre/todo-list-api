@@ -11,14 +11,12 @@ class TasksRepository implements ITasksRepository {
   async create({
     title,
     description,
-    status,
     userId,
   }: ITasksRepositoryDTO): Promise<Task> {
     const newTask = await this.prisma.task.create({
       data: {
         title,
         description,
-        status,
         user: {
           connect: {
             id: userId,

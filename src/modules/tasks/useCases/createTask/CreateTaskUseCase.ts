@@ -11,13 +11,11 @@ class CreateTaskUseCase {
   async execute({
     title,
     description,
-    status,
     userId,
   }: ITasksRepositoryDTO): Promise<ISuccess<Task>> {
     const newTask = await this.taskRepository.create({
       title,
-      description,
-      status,
+      description: description || null,
       userId,
     });
 

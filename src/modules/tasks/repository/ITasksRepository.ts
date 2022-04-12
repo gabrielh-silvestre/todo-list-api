@@ -11,7 +11,6 @@ interface ITasksRepository {
   create({
     title,
     description,
-    status,
     userId,
   }: ITasksRepositoryDTO): Promise<Task>;
   findById(userId: string, id: string): Promise<Task | null>;

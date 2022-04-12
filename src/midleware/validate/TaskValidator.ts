@@ -1,5 +1,4 @@
 import Joi from 'joi';
-import { TaskStatus } from '@prisma/client';
 import { NextFunction, Request, Response } from 'express';
 
 import { ITaskValidator } from '../../@types/interfaces';
@@ -13,12 +12,6 @@ class TaskValidator implements ITaskValidator {
       title: Joi.string().min(5).max(20).required(),
       description: Joi.string().max(120),
       userId: Joi.string().required(),
-      status: Joi.string().valid(
-        TaskStatus.TODO,
-        TaskStatus.IN_PROGRESS,
-        TaskStatus.DELETED,
-        TaskStatus.DONE
-      ),
     });
   }
 
