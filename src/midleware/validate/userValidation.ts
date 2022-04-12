@@ -14,7 +14,7 @@ class UserValidation implements IUserValidation {
     });
   }
 
-  createValidation(req: Request, res: Response, next: NextFunction) {
+  createValidation = (req: Request, res: Response, next: NextFunction) => {
     const { error } = this.createUserSchema.validate(req.body);
 
     if (error) {
@@ -25,7 +25,7 @@ class UserValidation implements IUserValidation {
     }
 
     next();
-  }
+  };
 }
 
 export const userValidation = new UserValidation();
