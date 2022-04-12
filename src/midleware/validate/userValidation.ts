@@ -7,6 +7,7 @@ import { errorStatusCode } from '../../utils/errorsCode';
 class UserValidation implements IUserValidation {
   private createUserSchema: Joi.ObjectSchema;
   private loginUserSchema: Joi.ObjectSchema;
+  private authorizationSchema: Joi.ObjectSchema;
 
   constructor() {
     this.createUserSchema = Joi.object({
@@ -18,6 +19,10 @@ class UserValidation implements IUserValidation {
     this.loginUserSchema = Joi.object({
       email: Joi.string().email().required(),
       password: Joi.string().required(),
+    });
+
+    this.authorizationSchema = Joi.object({
+      authorization: Joi.string().required(),
     });
   }
 
@@ -35,6 +40,22 @@ class UserValidation implements IUserValidation {
 
   loginValidation = (req: Request, res: Response, next: NextFunction) => {
     const { error } = this.loginUserSchema.validate(req.body);
+
+    if (error) {
+      return res.status(errorStatusCode.BAD_REQUEST).json({
+        message: error.details[0].message,
+      });
+    }
+
+    next();
+  };
+
+  athenticationValidation = (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { error } = this.authorizationSchema.validate(req.headers);
 
     if (error) {
       return res.status(errorStatusCode.BAD_REQUEST).json({
