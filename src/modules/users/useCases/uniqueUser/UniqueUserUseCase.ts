@@ -1,4 +1,4 @@
-import { IError, ISuccess } from '../../../../@types/statusCodes';
+import { IError, ISuccess } from '../../../../@types/interfaces';
 import { IUsersRepository } from '../../repository/IUsersRepository';
 
 class UniqueUserUseCase {

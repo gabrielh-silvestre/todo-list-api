@@ -1,5 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
-import { AuthService, IAuthService, TokenPayload } from '../../services/Auth';
+
+import { IAuthService } from '../../@types/interfaces';
+import { TokenPayload } from '../../@types/types';
+
+import { AuthService } from '../../services/Auth';
 import { errorStatusCode } from '../../utils/errorsCode';
 
 class AuthMiddleware {

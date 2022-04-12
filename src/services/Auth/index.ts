@@ -1,15 +1,9 @@
 import jwt from 'jsonwebtoken';
 
+import { IAuthService } from '../../@types/interfaces';
+import { TokenPayload } from '../../@types/types';
 import { jwtConfig } from '../../config/jwtConfig';
 
-type TokenPayload = {
-  data: string;
-};
-
-interface IAuthService<T> {
-  createToken(id: string): string;
-  verifyToken(token: string): T | null;
-}
 
 class AuthService implements IAuthService<TokenPayload> {
   createToken(userId: string) {
@@ -34,4 +28,4 @@ class AuthService implements IAuthService<TokenPayload> {
   }
 }
 
-export { AuthService, IAuthService, TokenPayload };
+export { AuthService };

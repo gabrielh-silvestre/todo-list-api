@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
 
-import { IUserValidation } from '../../@types/validation/IUser';
+import { IUserValidation } from '../../@types/interfaces';
 import { errorStatusCode } from '../../utils/errorsCode';
 
 class UserValidation implements IUserValidation {

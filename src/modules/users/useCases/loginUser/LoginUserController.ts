@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
+
+import { IError } from '../../../../@types/interfaces';
+
 import { LoginUserUseCase } from './LoginUserUseCase';
-import { IError } from '../../../../@types/statusCodes';
 import { successStatusCode } from '../../../../utils/successCode';
 import { errorStatusCode } from '../../../../utils/errorsCode';
 

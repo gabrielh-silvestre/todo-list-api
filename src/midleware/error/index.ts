@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { IError } from '../../@types/statusCodes';
+import { IError } from '../../@types/interfaces';
 import { errorStatusCode } from '../../utils/errorsCode';
 
 const errorHandler = (

@@ -1,7 +1,8 @@
 import { User } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
-import { IError, ISuccess } from '../../../../@types/statusCodes';
+
+import { IError, ISuccess } from '../../../../@types/interfaces';
 
 import { UserRepository } from '../../../../modules/users/repository/UsersRepository';
 import { UniqueUserUseCase } from '../../../../modules/users/useCases/uniqueUser/UniqueUserUseCase';

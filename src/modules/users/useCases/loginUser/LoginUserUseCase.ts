@@ -1,8 +1,8 @@
 import { IUsersRepository } from '../../repository/IUsersRepository';
 
-import { IAuthService, TokenPayload } from '../../../../services/Auth';
-import { IError, ISuccess } from '../../../../@types/statusCodes';
-import { IEncriptService } from '../../../../services/Encript';
+import { IAuthService, IEncriptService } from '../../../../@types/interfaces';
+import { IError, ISuccess } from '../../../../@types/interfaces';
+import { TokenPayload } from '../../../../@types/types';
 
 interface IRequest {
   email: string;

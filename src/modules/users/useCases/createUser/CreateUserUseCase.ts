@@ -1,7 +1,7 @@
 import { User } from '@prisma/client';
 
-import { ISuccess } from '../../../../@types/statusCodes';
-import { IEncriptService } from '../../../../services/Encript';
+import { ISuccess } from '../../../../@types/interfaces';
+import { IEncriptService } from '../../../../@types/interfaces';
 import { IUsersRepository } from '../../repository/IUsersRepository';
 
 interface IRequest {

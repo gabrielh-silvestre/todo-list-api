@@ -1,7 +1,8 @@
 import { User } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
-import { IError, ISuccess } from '../../../../@types/statusCodes';
+
+import { IError, ISuccess } from '../../../../@types/interfaces';
 
 import { EncriptService } from '../../../../services/Encript';
 import { AuthService } from '../../../../services/Auth';
