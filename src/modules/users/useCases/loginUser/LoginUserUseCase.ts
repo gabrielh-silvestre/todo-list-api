@@ -29,7 +29,10 @@ class LoginUserUseCase {
       };
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await this.authService.verifyPassword(
+      password,
+      user.password
+    );
 
     if (!isPasswordValid) {
       return {

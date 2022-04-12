@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 import { jwtConfig } from '../../config/jwtConfig';
 
@@ -9,6 +10,8 @@ type TokenPayload = {
 interface IAuth<T> {
   createToken(id: string): string;
   verifyToken(token: string): T | null;
+  encriptPassword(password: string): Promise<string>;
+  verifyPassword(password: string, hash: string): Promise<boolean>;
 }
 
 class Auth implements IAuth<TokenPayload> {
@@ -31,6 +34,14 @@ class Auth implements IAuth<TokenPayload> {
     } catch (err) {
       return null;
     }
+  }
+
+  async encriptPassword(password: string) {
+    return await bcrypt.hash(password, 10);
+  }
+
+  async verifyPassword(password: string, hash: string) {
+    return await bcrypt.compare(password, hash);
   }
 }
 
