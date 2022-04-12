@@ -9,7 +9,7 @@ type JwtConfig = {
 
 const jwtConfig: JwtConfig = {
   secret: process.env.JWT_SECRET,
-  expiresIn: '1d',
+  expiresIn: '3d',
   algorithm: 'HS256',
 } as JwtConfig;
 
