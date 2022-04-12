@@ -32,10 +32,11 @@ model Task {
   id          String     @id @default(uuid())
   title       String
   description String?
-  status      TaskStatus
+  status      TaskStatus @default(TODO)
   user        User       @relation(fields: [user_id], references: [id])
   user_id     String     @map("userId")
   updated_at  DateTime   @default(now()) @updatedAt @map("updatedAt")
 
+  @@unique([id, user_id])
   @@map("tasks")
 }
