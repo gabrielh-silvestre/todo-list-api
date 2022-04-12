@@ -1,4 +1,4 @@
-import { ErrorStatusCode } from "../@types/statusCodes";
+import { ErrorStatusCode } from "../@types/types";
 
 type ErrorCodes = {
   [key in ErrorStatusCode]: number;

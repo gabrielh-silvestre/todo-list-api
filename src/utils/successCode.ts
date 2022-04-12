@@ -1,4 +1,4 @@
-import { SuccessStatusCode } from '../@types/statusCodes';
+import { SuccessStatusCode } from '../@types/types';
 
 type SuccessCodes = {
   [key in SuccessStatusCode]: number;
