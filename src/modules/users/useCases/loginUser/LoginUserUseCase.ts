@@ -1,7 +1,8 @@
 import { IUsersRepository } from '../../repository/IUsersRepository';
 
-import { IAuth, TokenPayload } from '../../../../midleware/auth';
+import { IAuth, TokenPayload } from '../../../../services/Auth';
 import { IError, ISuccess } from '../../../../@types/statusCodes';
+import { IEncript } from '../../../../services/Encript';
 
 interface IRequest {
   email: string;
@@ -11,7 +12,8 @@ interface IRequest {
 class LoginUserUseCase {
   constructor(
     private userRepository: IUsersRepository,
-    private authService: IAuth<TokenPayload>
+    private authService: IAuth<TokenPayload>,
+    private encriptService: IEncript
   ) {}
 
   async execute({
@@ -27,7 +29,7 @@ class LoginUserUseCase {
       };
     }
 
-    const isPasswordValid = await this.authService.verifyPassword(
+    const isPasswordValid = await this.encriptService.verify(
       password,
       user.password
     );

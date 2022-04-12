@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import Sinon from 'sinon';
 import { IError, ISuccess } from '../../../../@types/statusCodes';
 
-import { Auth } from '../../../../midleware/auth';
+import { Auth } from '../../../../services/Auth';
 import { UserRepository } from '../../../../modules/users/repository/UsersRepository';
 import { LoginUserUseCase } from '../../../../modules/users/useCases/loginUser/LoginUserUseCase';
 

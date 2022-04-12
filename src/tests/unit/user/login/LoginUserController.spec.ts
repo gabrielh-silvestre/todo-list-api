@@ -3,7 +3,7 @@ import { User } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
-import { Auth } from '../../../../midleware/auth';
+import { Auth } from '../../../../services/Auth';
 import { UserRepository } from '../../../../modules/users/repository/UsersRepository';
 import { LoginUserUseCase } from '../../../../modules/users/useCases/loginUser/LoginUserUseCase';
 import { LoginUserController } from '../../../../modules/users/useCases/loginUser/LoginUserController';

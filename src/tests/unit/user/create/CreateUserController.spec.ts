@@ -5,7 +5,7 @@ import Sinon from 'sinon';
 
 import { ISuccess } from '../../../../@types/statusCodes';
 
-import { Auth } from '../../../../midleware/auth';
+import { Auth } from '../../../../services/Auth';
 import { UserRepository } from '../../../../modules/users/repository/UsersRepository';
 import { CreateUserUseCase } from '../../../../modules/users/useCases/createUser/CreateUserUseCase';
 import { CreateUserController } from '../../../../modules/users/useCases/createUser/CreateUserController';
