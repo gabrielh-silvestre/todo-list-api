@@ -1,5 +1,3 @@
-import bcrypt from 'bcrypt';
-
 import { IUsersRepository } from '../../repository/IUsersRepository';
 
 import { IAuth, TokenPayload } from '../../../../midleware/auth';
