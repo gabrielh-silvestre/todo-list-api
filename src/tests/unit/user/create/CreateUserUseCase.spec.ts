@@ -1,10 +1,12 @@
 import { User } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
-import { ISuccess } from '../../../../@types/statusCodes';
+
+import { ISuccess } from '../../../../@types/interfaces';
 
 import { UserRepository } from '../../../../modules/users/repository/UsersRepository';
 import { CreateUserUseCase } from '../../../../modules/users/useCases/createUser/CreateUserUseCase';
+import { EncriptService } from '../../../../services/Encript';
 
 const NEW_USER: User = {
   id: '5',
@@ -13,8 +15,9 @@ const NEW_USER: User = {
   password: '123456',
 };
 
+const encriptService = new EncriptService();
 const userRepository = new UserRepository();
-const createUserUseCase = new CreateUserUseCase(userRepository);
+const createUserUseCase = new CreateUserUseCase(userRepository, encriptService);
 
 describe('Test CreateUserCase', () => {
   let createStub: Sinon.SinonStub;

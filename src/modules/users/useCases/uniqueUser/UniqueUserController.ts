@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { IError } from '../../../../@types/statusCodes';
-import { errorStatusCode } from '../../../../utils/errorsCode';
+import { IError } from '../../../../@types/interfaces';
 
 import { UniqueUserUseCase } from './UniqueUserUseCase';
+import { errorStatusCode } from '../../../../utils/errorsCode';
 
 class UniqueUserController {
   constructor(private uniqueUserUseCase: UniqueUserUseCase) {}

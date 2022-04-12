@@ -3,8 +3,9 @@ import { User } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
-import { ISuccess } from '../../../../@types/statusCodes';
+import { ISuccess } from '../../../../@types/interfaces';
 
+import { EncriptService } from '../../../../services/Encript';
 import { UserRepository } from '../../../../modules/users/repository/UsersRepository';
 import { CreateUserUseCase } from '../../../../modules/users/useCases/createUser/CreateUserUseCase';
 import { CreateUserController } from '../../../../modules/users/useCases/createUser/CreateUserController';
@@ -16,8 +17,9 @@ const NEW_USER: User = {
   password: '123456',
 };
 
+const encriptService = new EncriptService();
 const userRepository = new UserRepository();
-const createUserUseCase = new CreateUserUseCase(userRepository);
+const createUserUseCase = new CreateUserUseCase(userRepository, encriptService);
 const createUserController = new CreateUserController(createUserUseCase);
 
 describe('Test CreateUserController', () => {

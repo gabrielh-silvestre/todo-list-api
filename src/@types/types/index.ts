@@ -8,9 +8,10 @@ type ErrorStatusCode =
   | 'UNPROCESSABLE_ENTITY'
   | 'INTERNAL_SERVER_ERROR';
 
-interface IError {
-  statusCode: ErrorStatusCode;
-  message: string;
-}
+type SuccessStatusCode = 'OK' | 'CREATED' | 'ACCEPTED' | 'DELETED' | 'UPDATED';
 
-export { IError, ErrorStatusCode };
+type TokenPayload = {
+  data: string;
+};
+
+export { ErrorStatusCode, SuccessStatusCode, TokenPayload };
