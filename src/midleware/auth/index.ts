@@ -20,6 +20,10 @@ class AuthMiddleware {
       });
     }
 
+    req.body = {
+      ...req.body,
+      userId: isValid.data,
+    };
     next();
   }
 }
