@@ -3,6 +3,7 @@ import { User } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
+import { Encript } from '../../../../services/Encript';
 import { Auth } from '../../../../services/Auth';
 import { UserRepository } from '../../../../modules/users/repository/UsersRepository';
 import { LoginUserUseCase } from '../../../../modules/users/useCases/loginUser/LoginUserUseCase';
@@ -17,9 +18,14 @@ const USER: User = {
 
 const FAKE_TOKEN = 'nASOmifoniv-auns09812jsnipoas-wpnioAa09sjvcawh012';
 
-const userRepository = new UserRepository();
+const encriptService = new Encript();
 const authService = new Auth();
-const loginUserUseCase = new LoginUserUseCase(userRepository, authService);
+const userRepository = new UserRepository();
+const loginUserUseCase = new LoginUserUseCase(
+  userRepository,
+  authService,
+  encriptService
+);
 const loginUserController = new LoginUserController(loginUserUseCase);
 
 describe('Test LoginUserController', () => {

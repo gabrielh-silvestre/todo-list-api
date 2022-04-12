@@ -3,9 +3,9 @@ import { expect } from 'chai';
 import Sinon from 'sinon';
 import { ISuccess } from '../../../../@types/statusCodes';
 
-import { Auth } from '../../../../services/Auth';
 import { UserRepository } from '../../../../modules/users/repository/UsersRepository';
 import { CreateUserUseCase } from '../../../../modules/users/useCases/createUser/CreateUserUseCase';
+import { Encript } from '../../../../services/Encript';
 
 const NEW_USER: User = {
   id: '5',
@@ -14,9 +14,9 @@ const NEW_USER: User = {
   password: '123456',
 };
 
-const auth = new Auth();
+const encriptService = new Encript();
 const userRepository = new UserRepository();
-const createUserUseCase = new CreateUserUseCase(userRepository, auth);
+const createUserUseCase = new CreateUserUseCase(userRepository, encriptService);
 
 describe('Test CreateUserCase', () => {
   let createStub: Sinon.SinonStub;
