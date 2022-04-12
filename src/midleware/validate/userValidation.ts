@@ -1,61 +1,31 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
+import Joi from 'joi';
 
-import {
-  haveFormat,
-  haveLetters,
-  haveNumbers,
-  isBetweenMaxAndMinLength,
-  isDefinied,
-} from '../../helpers/genericValidations';
+import { IUserValidation } from '../../@types/validation/IUser';
 
-const EMAIL_REGEX = new RegExp(
-  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-);
+class UserValidation implements IUserValidation {
+  private createUserSchema: Joi.ObjectSchema;
 
-const validEmail = (req: Request, res: Response, next: NextFunction) => {
-  const { email } = req.body;
-
-  if (!isDefinied(email)) {
-    return res.status(400).json({ message: 'Email is required' });
+  constructor() {
+    this.createUserSchema = Joi.object({
+      email: Joi.string().email().required(),
+      username: Joi.string().min(3).max(10).required(),
+      password: Joi.string().min(6).max(16).alphanum().required(),
+    });
   }
 
-  if (!haveFormat(EMAIL_REGEX, email)) {
-    return res.status(400).json({ message: 'Email is invalid' });
+  createValidation(req: Request, res: Response, next: NextFunction) {
+    const { error } = this.createUserSchema.validate(req.body);
+
+    if (error) {
+      return res.status(400).json({
+        statusCode: 'BAD_REQUEST',
+        message: error.details[0].message,
+      });
+    }
+
+    next();
   }
+}
 
-  next();
-};
-
-const validUsername = (req: Request, res: Response, next: NextFunction) => {
-  const { username } = req.body;
-
-  if (!isDefinied(username)) {
-    return res.status(400).json({ message: 'Username is required' });
-  }
-
-  if (!isBetweenMaxAndMinLength(10, 3, username)) {
-    return res.status(400).json({ message: 'Username is invalid' });
-  }
-
-  next();
-};
-
-const validPassword = (req: Request, res: Response, next: NextFunction) => {
-  const { password } = req.body;
-
-  if (!isDefinied(password)) {
-    return res.status(400).json({ message: 'Password is required' });
-  }
-
-  if (!isBetweenMaxAndMinLength(16, 6, password)) {
-    return res.status(400).json({ message: 'Password is invalid' });
-  }
-
-  if (!haveLetters(password) || !haveNumbers(password)) {
-    return res.status(400).json({ message: 'Password is invalid' });
-  }
-
-  next();
-};
-
-export { validEmail, validUsername, validPassword };
+export const userValidation = new UserValidation();
