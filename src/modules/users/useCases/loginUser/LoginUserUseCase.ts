@@ -1,8 +1,8 @@
 import { IUsersRepository } from '../../repository/IUsersRepository';
 
-import { IAuth, TokenPayload } from '../../../../services/Auth';
+import { IAuthService, TokenPayload } from '../../../../services/Auth';
 import { IError, ISuccess } from '../../../../@types/statusCodes';
-import { IEncript } from '../../../../services/Encript';
+import { IEncriptService } from '../../../../services/Encript';
 
 interface IRequest {
   email: string;
@@ -12,8 +12,8 @@ interface IRequest {
 class LoginUserUseCase {
   constructor(
     private userRepository: IUsersRepository,
-    private authService: IAuth<TokenPayload>,
-    private encriptService: IEncript
+    private authService: IAuthService<TokenPayload>,
+    private encriptService: IEncriptService
   ) {}
 
   async execute({

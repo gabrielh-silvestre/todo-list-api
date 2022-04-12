@@ -1,8 +1,7 @@
 import { User } from '@prisma/client';
 
 import { ISuccess } from '../../../../@types/statusCodes';
-import { IAuth, TokenPayload } from '../../../../services/Auth';
-import { IEncript } from '../../../../services/Encript';
+import { IEncriptService } from '../../../../services/Encript';
 import { IUsersRepository } from '../../repository/IUsersRepository';
 
 interface IRequest {
@@ -14,7 +13,7 @@ interface IRequest {
 class CreateUserUseCase {
   constructor(
     private userRepository: IUsersRepository,
-    private encriptService: IEncript
+    private encriptService: IEncriptService
   ) {}
 
   async execute({

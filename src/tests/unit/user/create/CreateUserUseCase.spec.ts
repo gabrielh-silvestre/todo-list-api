@@ -5,7 +5,7 @@ import { ISuccess } from '../../../../@types/statusCodes';
 
 import { UserRepository } from '../../../../modules/users/repository/UsersRepository';
 import { CreateUserUseCase } from '../../../../modules/users/useCases/createUser/CreateUserUseCase';
-import { Encript } from '../../../../services/Encript';
+import { EncriptService } from '../../../../services/Encript';
 
 const NEW_USER: User = {
   id: '5',
@@ -14,7 +14,7 @@ const NEW_USER: User = {
   password: '123456',
 };
 
-const encriptService = new Encript();
+const encriptService = new EncriptService();
 const userRepository = new UserRepository();
 const createUserUseCase = new CreateUserUseCase(userRepository, encriptService);
 

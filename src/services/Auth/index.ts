@@ -6,12 +6,12 @@ type TokenPayload = {
   data: string;
 };
 
-interface IAuth<T> {
+interface IAuthService<T> {
   createToken(id: string): string;
   verifyToken(token: string): T | null;
 }
 
-class Auth implements IAuth<TokenPayload> {
+class AuthService implements IAuthService<TokenPayload> {
   createToken(userId: string) {
     const { secret, expiresIn, algorithm } = jwtConfig;
 
@@ -34,4 +34,4 @@ class Auth implements IAuth<TokenPayload> {
   }
 }
 
-export { Auth, IAuth, TokenPayload };
+export { AuthService, IAuthService, TokenPayload };

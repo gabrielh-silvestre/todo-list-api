@@ -1,11 +1,11 @@
 import bcrypt from 'bcrypt';
 
-interface IEncript {
+interface IEncriptService {
   encript(value: string): Promise<string>;
   verify(value: string, hash: string): Promise<boolean>;
 }
 
-class Encript implements IEncript {
+class EncriptService implements IEncriptService {
   async encript(value: string) {
     return await bcrypt.hash(value, 10);
   }
@@ -15,4 +15,4 @@ class Encript implements IEncript {
   }
 }
 
-export { IEncript, Encript };
+export { IEncriptService, EncriptService };

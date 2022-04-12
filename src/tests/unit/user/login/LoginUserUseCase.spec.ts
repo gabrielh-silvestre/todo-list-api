@@ -3,8 +3,8 @@ import { expect } from 'chai';
 import Sinon from 'sinon';
 import { IError, ISuccess } from '../../../../@types/statusCodes';
 
-import { Encript } from '../../../../services/Encript';
-import { Auth } from '../../../../services/Auth';
+import { EncriptService } from '../../../../services/Encript';
+import { AuthService } from '../../../../services/Auth';
 import { UserRepository } from '../../../../modules/users/repository/UsersRepository';
 import { LoginUserUseCase } from '../../../../modules/users/useCases/loginUser/LoginUserUseCase';
 
@@ -17,8 +17,8 @@ const USER: User = {
 
 const FAKE_TOKEN = 'nASOmifoniv-auns09812jsnipoas-wpnioAa09sjvcawh012';
 
-const encriptService = new Encript();
-const authService = new Auth();
+const encriptService = new EncriptService();
+const authService = new AuthService();
 const userRepository = new UserRepository();
 const loginUserUseCase = new LoginUserUseCase(
   userRepository,
