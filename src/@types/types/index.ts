@@ -1,3 +1,5 @@
+import { Task } from '@prisma/client';
+
 type ErrorStatusCode =
   | 'INTERNAL_SERVER_ERROR'
   | 'BAD_REQUEST'
@@ -14,4 +16,6 @@ type TokenPayload = {
   data: string;
 };
 
-export { ErrorStatusCode, SuccessStatusCode, TokenPayload };
+type TaskReturn = Pick<Task, 'title' | 'description' | 'status' | 'updatedAt'>;
+
+export { ErrorStatusCode, SuccessStatusCode, TokenPayload, TaskReturn };
