@@ -37,17 +37,17 @@ async function main() {
       {
         title: 'First task',
         description: 'First task description',
-        user_id: firstUserId,
+        userId: firstUserId,
       },
       {
         title: 'Second task',
         description: 'Second task description',
-        user_id: firstUserId,
+        userId: firstUserId,
       },
       {
         title: 'Third task',
         description: 'Third task description',
-        user_id: secondUserId,
+        userId: secondUserId,
       },
     ],
   });
