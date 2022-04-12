@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import Sinon from 'sinon';
 import { ISuccess } from '../../../../@types/statusCodes';
 
+import { Auth } from '../../../../midleware/auth';
 import { UserRepository } from '../../../../modules/users/repository/UsersRepository';
 import { CreateUserUseCase } from '../../../../modules/users/useCases/createUser/CreateUserUseCase';
 
@@ -13,8 +14,9 @@ const NEW_USER: User = {
   password: '123456',
 };
 
+const auth = new Auth();
 const userRepository = new UserRepository();
-const createUserUseCase = new CreateUserUseCase(userRepository);
+const createUserUseCase = new CreateUserUseCase(userRepository, auth);
 
 describe('Test CreateUserCase', () => {
   let createStub: Sinon.SinonStub;

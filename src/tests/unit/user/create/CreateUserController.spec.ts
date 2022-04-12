@@ -5,6 +5,7 @@ import Sinon from 'sinon';
 
 import { ISuccess } from '../../../../@types/statusCodes';
 
+import { Auth } from '../../../../midleware/auth';
 import { UserRepository } from '../../../../modules/users/repository/UsersRepository';
 import { CreateUserUseCase } from '../../../../modules/users/useCases/createUser/CreateUserUseCase';
 import { CreateUserController } from '../../../../modules/users/useCases/createUser/CreateUserController';
@@ -16,8 +17,9 @@ const NEW_USER: User = {
   password: '123456',
 };
 
+const auth = new Auth();
 const userRepository = new UserRepository();
-const createUserUseCase = new CreateUserUseCase(userRepository);
+const createUserUseCase = new CreateUserUseCase(userRepository, auth);
 const createUserController = new CreateUserController(createUserUseCase);
 
 describe('Test CreateUserController', () => {
