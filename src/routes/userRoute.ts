@@ -1,5 +1,6 @@
 import express from 'express';
 
+import { uniqueUserController } from '../modules/users/useCases/uniqueUser';
 import { createUserController } from '../modules/users/useCases/createUser';
 import {
   validEmail,
@@ -14,6 +15,7 @@ userRouter.post(
   validEmail,
   validUsername,
   validPassword,
+  uniqueUserController.handle,
   createUserController.handle
 );
 

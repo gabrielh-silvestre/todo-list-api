@@ -1,10 +1,11 @@
+import 'dotenv/config';
 import express from 'express';
 // import { PrismaClient } from '@prisma/client';
 
 import { userRouter } from './routes/userRoute';
 import { errorHandler } from './midleware/error';
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 const app = express();
 // const prisma = new PrismaClient();
 
