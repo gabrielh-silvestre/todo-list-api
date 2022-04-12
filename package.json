@@ -9,7 +9,8 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "nodemon src/server.ts",
-    "test": "mocha -r ts-node/register src/tests/**/*.spec.ts"
+    "test": "mocha -r ts-node/register/transpile-only src/tests/**/*.spec.ts",
+    "test:coverage": "nyc npm test"
   },
   "keywords": [],
   "author": "",
@@ -26,6 +27,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@tsconfig/node16": "^1.0.2",
     "@types/bcrypt": "^5.0.0",
     "@types/chai": "^4.3.0",
@@ -39,6 +41,7 @@
     "chai-http": "^4.3.0",
     "mocha": "^9.2.2",
     "nodemon": "^2.0.15",
+    "nyc": "^15.1.0",
     "sinon": "^13.0.1",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.3"
