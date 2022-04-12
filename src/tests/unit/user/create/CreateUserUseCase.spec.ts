@@ -1,11 +1,10 @@
 import { User } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
-import { IError, ISuccess } from '../../../../helpers/interfaces';
+import { ISuccess } from '../../../../@types/statusCodes';
 
 import { UserRepository } from '../../../../modules/users/repository/UsersRepository';
 import { CreateUserUseCase } from '../../../../modules/users/useCases/createUser/CreateUserUseCase';
-import { users } from '../../../mocks/users';
 
 const NEW_USER: User = {
   id: '5',

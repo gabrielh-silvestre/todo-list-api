@@ -3,7 +3,7 @@ import { User } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
-import { ISuccess } from '../../../../helpers/interfaces';
+import { ISuccess } from '../../../../@types/statusCodes';
 
 import { UserRepository } from '../../../../modules/users/repository/UsersRepository';
 import { CreateUserUseCase } from '../../../../modules/users/useCases/createUser/CreateUserUseCase';

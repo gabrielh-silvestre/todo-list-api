@@ -1,4 +1,4 @@
-import { ErrorStatusCode } from "../helpers/interfaces";
+import { ErrorStatusCode } from "../@types/statusCodes";
 
 type ErrorCodes = {
   [key in ErrorStatusCode]: number;

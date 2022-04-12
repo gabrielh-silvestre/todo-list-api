@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { CreateUserUseCase } from './CreateUserUseCase';
-import { IError } from '../../../../helpers/interfaces';
-import { errorStatusCode } from '../../../../utils/errorsCode';
+import { IError } from '../../../../@types/statusCodes';
 import { successStatusCode } from '../../../../utils/successCode';
 
 class CreateUserController {
