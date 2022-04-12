@@ -2,7 +2,7 @@ import { Handler } from 'express';
 
 import { ErrorStatusCode, SuccessStatusCode } from '../types';
 
-interface IUserValidation {
+interface IUserValidator {
   createValidation: Handler;
   loginValidation: Handler;
   athenticationValidation: Handler;
@@ -33,7 +33,7 @@ interface ISuccess<T> {
 }
 
 export {
-  IUserValidation,
+  IUserValidator,
   ITaskValidator,
   IAuthService,
   IEncriptService,
