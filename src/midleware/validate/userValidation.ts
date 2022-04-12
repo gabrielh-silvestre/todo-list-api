@@ -2,9 +2,11 @@ import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
 
 import { IUserValidation } from '../../@types/validation/IUser';
+import { errorStatusCode } from '../../utils/errorsCode';
 
 class UserValidation implements IUserValidation {
   private createUserSchema: Joi.ObjectSchema;
+  private loginUserSchema: Joi.ObjectSchema;
 
   constructor() {
     this.createUserSchema = Joi.object({
@@ -12,14 +14,30 @@ class UserValidation implements IUserValidation {
       username: Joi.string().min(3).max(10).required(),
       password: Joi.string().min(6).max(16).alphanum().required(),
     });
+
+    this.loginUserSchema = Joi.object({
+      email: Joi.string().email().required(),
+      password: Joi.string().required(),
+    });
   }
 
   createValidation = (req: Request, res: Response, next: NextFunction) => {
     const { error } = this.createUserSchema.validate(req.body);
 
     if (error) {
-      return res.status(400).json({
-        statusCode: 'BAD_REQUEST',
+      return res.status(errorStatusCode.BAD_REQUEST).json({
+        message: error.details[0].message,
+      });
+    }
+
+    next();
+  };
+
+  loginValidation = (req: Request, res: Response, next: NextFunction) => {
+    const { error } = this.loginUserSchema.validate(req.body);
+
+    if (error) {
+      return res.status(errorStatusCode.BAD_REQUEST).json({
         message: error.details[0].message,
       });
     }
