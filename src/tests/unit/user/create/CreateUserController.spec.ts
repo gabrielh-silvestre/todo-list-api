@@ -31,6 +31,11 @@ describe('Test CreateUserController', () => {
     spiedJson = Sinon.spy(response, 'json');
   });
 
+  after(() => {
+    spiedResponse.restore();
+    spiedJson.restore();
+  });
+
   describe('Success case', () => {
     const SUCCES_RESPONSE: ISuccess<User> = {
       statusCode: 'CREATED',
