@@ -18,22 +18,16 @@ const userRepository = new UserRepository();
 const createUserUseCase = new CreateUserUseCase(userRepository);
 
 describe('Test CreateUserCase', () => {
-  let findByEmailStub: Sinon.SinonStub;
   let createStub: Sinon.SinonStub;
 
   describe('Success case', () => {
     before(() => {
-      findByEmailStub = Sinon
-        .stub(userRepository, 'findByEmail')
-        .resolves(null);
-
       createStub = Sinon
         .stub(userRepository, 'create')
         .resolves(NEW_USER);
     });
 
     after(() => {
-      findByEmailStub.restore();
       createStub.restore();
     });
 
@@ -58,42 +52,6 @@ describe('Test CreateUserCase', () => {
         }) as ISuccess<User>;
 
         expect(response.data).to.be.deep.equal(NEW_USER);
-      });
-    });
-  });
-
-  describe('Error case', () => {
-    const ERROR_OBJECT: IError = {
-      statusCode: 'CONFLICT',
-      message: 'User already exists',
-    };
-
-    before(() => {
-      findByEmailStub = Sinon
-        .stub(userRepository, 'findByEmail')
-        .resolves(users[0]);
-
-      createStub = Sinon
-        .stub(userRepository, 'create')
-        .resolves(ERROR_OBJECT as unknown as User);
-    });
-
-    after(() => {
-      findByEmailStub.restore();
-      createStub.restore();
-    });
-
-    describe('Should return a object with an error status and message', () => {
-      it('error status should be "CONFLICT"', async () => {
-        const response = await createUserUseCase.execute(users[0]);
-
-        expect(response.statusCode).to.be.equal('CONFLICT');
-      });
-
-      it('message should be "User already exists"', async () => {
-        const response = await createUserUseCase.execute(users[0]) as IError;
-
-        expect(response.message).to.be.equal('User already exists');
       });
     });
   });
