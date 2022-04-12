@@ -7,7 +7,11 @@ interface IUsersRepositoryDTO {
 }
 
 interface IUsersRepository {
-  create({ email, username, password }: IUsersRepositoryDTO): Promise<User>;
+  create({
+    email,
+    username,
+    password,
+  }: IUsersRepositoryDTO): Promise<User['id']>;
   findByEmail(email: string): Promise<User | null>;
   findById(id: string): Promise<User | null>;
 }
