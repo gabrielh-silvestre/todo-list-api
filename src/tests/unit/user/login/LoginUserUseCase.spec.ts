@@ -23,6 +23,7 @@ const loginUserUseCase = new LoginUserUseCase(userRepository, authService);
 describe('Test LoginUserUseCase', () => {
   let findByEmailStub: Sinon.SinonStub;
   let createTokenStub: Sinon.SinonStub;
+  let verifyPasswordStub: Sinon.SinonStub;
 
   describe('Success case', () => {
     before(() => {
@@ -31,12 +32,18 @@ describe('Test LoginUserUseCase', () => {
       );
 
       createTokenStub = Sinon.stub(authService, 'createToken').returns(
-        FAKE_TOKEN,
+        FAKE_TOKEN
+      );
+
+      verifyPasswordStub = Sinon.stub(authService, 'verifyPassword').resolves(
+        true
       );
     });
 
     after(() => {
       findByEmailStub.restore();
+      createTokenStub.restore();
+      verifyPasswordStub.restore();
     });
 
     describe('Should return a object with an success status and data', () => {
