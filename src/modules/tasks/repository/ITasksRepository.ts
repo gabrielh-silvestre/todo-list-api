@@ -2,8 +2,8 @@ import { Task, TaskStatus } from '@prisma/client';
 
 interface ITasksRepositoryDTO {
   title: string;
-  description?: string;
-  status: TaskStatus;
+  description: string | null;
+  status?: TaskStatus;
   userId: string;
 }
 

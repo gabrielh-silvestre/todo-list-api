@@ -33,9 +33,9 @@ class TasksRepository implements ITasksRepository {
   async findById(userId: string, id: string): Promise<Task | null> {
     const findedTask = await this.prisma.task.findUnique({
       where: {
-        id_user_id: {
+        id_userId: {
           id,
-          user_id: userId,
+          userId,
         },
       },
     });
@@ -49,7 +49,7 @@ class TasksRepository implements ITasksRepository {
         title: {
           contains: title,
         },
-        user_id: userId,
+        userId,
       },
     });
 
