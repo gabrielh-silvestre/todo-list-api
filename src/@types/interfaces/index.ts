@@ -8,6 +8,10 @@ interface IUserValidation {
   athenticationValidation: Handler;
 }
 
+interface ITaskValidator {
+  createValidation: Handler;
+}
+
 interface IAuthService<T> {
   createToken(id: string): string;
   verifyToken(token: string): T | null;
@@ -28,4 +32,11 @@ interface ISuccess<T> {
   data: T;
 }
 
-export { IUserValidation, IAuthService, IEncriptService, IError, ISuccess };
+export {
+  IUserValidation,
+  ITaskValidator,
+  IAuthService,
+  IEncriptService,
+  IError,
+  ISuccess,
+};
