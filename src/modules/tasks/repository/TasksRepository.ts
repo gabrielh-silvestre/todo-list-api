@@ -1,4 +1,5 @@
-import { PrismaClient, Task } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
+import { TaskReturn } from '../../../@types/types';
 import { ITasksRepository, ITasksRepositoryDTO } from './ITasksRepository';
 
 class TasksRepository implements ITasksRepository {
@@ -12,7 +13,7 @@ class TasksRepository implements ITasksRepository {
     title,
     description,
     userId,
-  }: ITasksRepositoryDTO): Promise<Task> {
+  }: ITasksRepositoryDTO): Promise<TaskReturn> {
     const newTask = await this.prisma.task.create({
       data: {
         title,
@@ -23,12 +24,18 @@ class TasksRepository implements ITasksRepository {
           },
         },
       },
+      select: {
+        title: true,
+        description: true,
+        status: true,
+        updatedAt: true,
+      },
     });
 
     return newTask;
   }
 
-  async findById(userId: string, id: string): Promise<Task | null> {
+  async findById(userId: string, id: string): Promise<TaskReturn | null> {
     const findedTask = await this.prisma.task.findUnique({
       where: {
         id_userId: {
@@ -41,7 +48,10 @@ class TasksRepository implements ITasksRepository {
     return findedTask;
   }
 
-  async findByTitle(userId: string, title: string): Promise<Task[] | null> {
+  async findByTitle(
+    userId: string,
+    title: string
+  ): Promise<TaskReturn[] | null> {
     const findedTask = await this.prisma.task.findMany({
       where: {
         title: {

@@ -1,4 +1,4 @@
-import { Task } from '@prisma/client';
+import { TaskReturn } from '../../../../@types/types';
 import { ISuccess } from '../../../../@types/interfaces';
 import {
   ITasksRepository,
@@ -12,7 +12,7 @@ class CreateTaskUseCase {
     title,
     description,
     userId,
-  }: ITasksRepositoryDTO): Promise<ISuccess<Task>> {
+  }: ITasksRepositoryDTO): Promise<ISuccess<TaskReturn>> {
     const newTask = await this.taskRepository.create({
       title,
       description: description || null,

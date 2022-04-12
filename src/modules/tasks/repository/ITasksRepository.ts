@@ -1,4 +1,5 @@
-import { Task, TaskStatus } from '@prisma/client';
+import { TaskStatus } from '@prisma/client';
+import { TaskReturn } from '../../../@types/types';
 
 interface ITasksRepositoryDTO {
   title: string;
@@ -12,9 +13,9 @@ interface ITasksRepository {
     title,
     description,
     userId,
-  }: ITasksRepositoryDTO): Promise<Task>;
-  findById(userId: string, id: string): Promise<Task | null>;
-  findByTitle(userId: string, title: string): Promise<Task[] | null>;
+  }: ITasksRepositoryDTO): Promise<TaskReturn>;
+  findById(userId: string, id: string): Promise<TaskReturn | null>;
+  findByTitle(userId: string, title: string): Promise<TaskReturn[] | null>;
 }
 
 export { ITasksRepository, ITasksRepositoryDTO };
