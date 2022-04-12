@@ -16,21 +16,13 @@ class CreateUserController {
     const { email, username, password } = req.body;
 
     try {
-      const result = await this.createUserUseCase.execute({
+      const { statusCode, data } = await this.createUserUseCase.execute({
         email,
         username,
         password,
       });
 
-      if (result.statusCode === 'CONFLICT') {
-        const { statusCode, message } = result;
-        return res.status(errorStatusCode[statusCode]).json({ message });
-      }
-
-      if (result.statusCode === 'CREATED') {
-        const { statusCode, data } = result;
-        return res.status(successStatusCode[statusCode]).json(data);
-      }
+      return res.status(successStatusCode[statusCode]).json(data);
     } catch (err) {
       const error: IError = {
         statusCode: 'INTERNAL_SERVER_ERROR',
