@@ -5,8 +5,8 @@ import Sinon from 'sinon';
 import { IError, ISuccess } from '../../../../@types/interfaces';
 
 import { TasksRepository } from '../../../../modules/tasks/repository/TasksRepository';
-import { UniqueTaskUseCase } from '../../../../modules/tasks/useCases/uniqueTitle/UniqueTaskUseCase';
-import { UniqueTaskController } from '../../../../modules/tasks/useCases/uniqueTitle/UniqueTaskController';
+import { UniqueTaskUseCase } from '../../../../modules/tasks/useCases/uniqueTask/UniqueTaskUseCase';
+import { UniqueTaskController } from '../../../../modules/tasks/useCases/uniqueTask/UniqueTaskController';
 
 const MOCK_TASK: Task = {
   id: '5',
