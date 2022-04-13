@@ -16,6 +16,9 @@ type TokenPayload = {
   data: string;
 };
 
-type TaskReturn = Pick<Task, 'title' | 'description' | 'status' | 'updatedAt'>;
+type TaskReturn = Pick<
+  Task,
+  'id' | 'title' | 'description' | 'status' | 'updatedAt'
+>;
 
 export { ErrorStatusCode, SuccessStatusCode, TokenPayload, TaskReturn };

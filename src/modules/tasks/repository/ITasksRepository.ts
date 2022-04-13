@@ -15,7 +15,7 @@ interface ITasksRepository {
     userId,
   }: ITasksRepositoryDTO): Promise<TaskReturn>;
   findById(userId: string, id: string): Promise<TaskReturn | null>;
-  findByTitle(userId: string, title: string): Promise<TaskReturn[] | null>;
+  findByTitle(userId: string, title: string): Promise<TaskReturn[]>;
 }
 
 export { ITasksRepository, ITasksRepositoryDTO };
