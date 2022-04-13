@@ -75,6 +75,17 @@ class TasksRepository implements ITasksRepository {
 
     return findedTask as TaskReturn[];
   }
+
+  async delete(userId: string, id: string) {
+    await this.prisma.task.delete({
+      where: {
+        id_userId: {
+          id,
+          userId,
+        }
+      },
+    });
+  }
 }
 
 export { TasksRepository };
