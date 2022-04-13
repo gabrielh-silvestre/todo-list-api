@@ -2,8 +2,8 @@ import { Task } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
-import { TasksRepository } from '../../../modules/tasks/repository/TasksRepository';
-import { CreateTaskUseCase } from '../../../modules/tasks/useCases/createTask/CreateTaskUseCase';
+import { TasksRepository } from '../../../../modules/tasks/repository/TasksRepository';
+import { CreateTaskUseCase } from '../../../../modules/tasks/useCases/createTask/CreateTaskUseCase';
 
 const NEW_TASK: Task = {
   id: '5',

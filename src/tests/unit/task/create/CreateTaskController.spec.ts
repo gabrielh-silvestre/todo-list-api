@@ -3,10 +3,10 @@ import { Task } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
-import { TasksRepository } from '../../../modules/tasks/repository/TasksRepository';
-import { CreateTaskUseCase } from '../../../modules/tasks/useCases/createTask/CreateTaskUseCase';
-import { CreateTaskController } from '../../../modules/tasks/useCases/createTask/CreateTaskController';
-import { ISuccess } from '../../../@types/interfaces';
+import { TasksRepository } from '../../../../modules/tasks/repository/TasksRepository';
+import { CreateTaskUseCase } from '../../../../modules/tasks/useCases/createTask/CreateTaskUseCase';
+import { CreateTaskController } from '../../../../modules/tasks/useCases/createTask/CreateTaskController';
+import { ISuccess } from '../../../../@types/interfaces';
 
 const NEW_TASK: Task = {
   id: '5',
