@@ -25,7 +25,6 @@ enum TaskStatus {
   TODO
   IN_PROGRESS
   DONE
-  DELETED
 }
 
 model Task {
@@ -38,5 +37,6 @@ model Task {
   updatedAt   DateTime   @default(now()) @updatedAt @map("updated_at")
 
   @@unique([id, userId])
+  @@unique([title, userId])
   @@map("tasks")
 }
