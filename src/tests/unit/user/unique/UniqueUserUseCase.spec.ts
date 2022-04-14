@@ -19,7 +19,7 @@ const NEW_USER: User = {
 const userRepository = new UserRepository();
 const uniqueUserUseCase = new UniqueUserUseCase(userRepository);
 
-describe.only('Test UniqueUserUseCase', () => {
+describe('Test UniqueUserUseCase', () => {
   let findByEmailStub: Sinon.SinonStub;
 
   describe('Success case', () => {
@@ -37,7 +37,9 @@ describe.only('Test UniqueUserUseCase', () => {
       const { email } = NEW_USER;
 
       it('success status should be "OK"', async () => {
-        const response = await uniqueUserUseCase.execute(email);
+        const response = (await uniqueUserUseCase.execute(
+          email
+        )) as ISuccess<null>;
 
         expect(response.statusCode).to.be.equal('OK');
       });
