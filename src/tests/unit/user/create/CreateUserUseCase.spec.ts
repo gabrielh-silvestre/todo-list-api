@@ -29,7 +29,7 @@ const createUserUseCase = new CreateUserUseCase(
   encriptService
 );
 
-describe.only('Test CreateUserCase', () => {
+describe('Test CreateUserCase', () => {
   let createStub: Sinon.SinonStub;
   let createTokenStub: Sinon.SinonStub;
 

@@ -11,6 +11,8 @@ import { CreateUserUseCase } from '../../../../modules/users/useCases/createUser
 import { CreateUserController } from '../../../../modules/users/useCases/createUser/CreateUserController';
 import { AuthService } from '../../../../services/Auth';
 
+import { CustomError } from '../../../../utils/CustomError';
+
 const MOCK_USER: User = {
   id: '5',
   email: 'person5@email.com',
@@ -30,20 +32,25 @@ const createUserUseCase = new CreateUserUseCase(
 );
 const createUserController = new CreateUserController(createUserUseCase);
 
-describe('Test CreateUserController', () => {
+describe.only('Test CreateUserController', () => {
+  let useCaseStub: Sinon.SinonStub;
   let spiedResponse: Sinon.SinonSpy;
   let spiedJson: Sinon.SinonSpy;
-  let useCaseStub: Sinon.SinonStub;
-  const next: NextFunction = () => {};
+  let spiedNext: Sinon.SinonSpy;
+  const next = {
+    next: (args) => {},
+  } as { next: NextFunction };
 
   before(() => {
     spiedResponse = Sinon.spy(response, 'status');
     spiedJson = Sinon.spy(response, 'json');
+    spiedNext = Sinon.spy(next, 'next');
   });
 
   after(() => {
     spiedResponse.restore();
     spiedJson.restore();
+    spiedNext.restore();
   });
 
   describe('Success case', () => {
@@ -67,19 +74,50 @@ describe('Test CreateUserController', () => {
 
     after(() => {
       useCaseStub.restore();
+      request.body = {};
     });
 
     it('should return a response with status 201', async () => {
-      await createUserController.handle(request, response, next);
+      await createUserController.handle(request, response, next.next);
 
       expect(spiedResponse.calledWith(201)).to.be.true;
     });
 
     it('should return a response with the user created', async () => {
       const { data } = SUCCES_RESPONSE;
-      await createUserController.handle(request, response, next);
+      await createUserController.handle(request, response, next.next);
 
       expect(spiedJson.calledWith({ token: data })).to.be.true;
+    });
+  });
+
+  describe('Error case', () => {
+    const { email, username, password } = MOCK_USER;
+    const ERROR_RESPONSE = new CustomError('CONFLICT', 'User already exists');
+
+    before(() => {
+      useCaseStub = Sinon.stub(createUserUseCase, 'execute').rejects(
+        ERROR_RESPONSE
+      );
+
+      request.body = {
+        email,
+        username,
+        password,
+      };
+    });
+
+    after(() => {
+      useCaseStub.restore();
+      request.body = {};
+    });
+
+    describe('Should call "next" error middleware', () => {
+      it('"next" error middleware should be called with CustomError as args', async () => {
+        await createUserController.handle(request, response, next.next);
+
+        expect(spiedNext.calledWith(ERROR_RESPONSE)).to.be.true;
+      });
     });
   });
 });
