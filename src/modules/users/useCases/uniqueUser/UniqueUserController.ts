@@ -1,9 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { IError } from '../../../../@types/interfaces';
-
 import { UniqueUserUseCase } from './UniqueUserUseCase';
-import { errorStatusCode } from '../../../../utils/errorsCode';
 
 class UniqueUserController {
   constructor(private uniqueUserUseCase: UniqueUserUseCase) {}
@@ -12,21 +9,11 @@ class UniqueUserController {
     const { email } = request.body;
 
     try {
-      const result = await this.uniqueUserUseCase.execute(email);
-      
-      if (result.statusCode === 'CONFLICT') {
-        const { statusCode, message } = result;
-        return response.status(errorStatusCode[statusCode]).json({ message });
-      }
+      await this.uniqueUserUseCase.execute(email);
 
       next();
     } catch (err) {
-      const error: IError = {
-        statusCode: 'INTERNAL_SERVER_ERROR',
-        message: 'Unexpected error while checking if user is unique',
-      };
-
-      next(error);
+      next(err);
     }
   };
 }
