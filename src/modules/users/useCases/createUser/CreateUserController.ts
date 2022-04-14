@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { CreateUserUseCase } from './CreateUserUseCase';
-import { IError } from '../../../../@types/interfaces';
+import { IError, ISuccess } from '../../../../@types/interfaces';
 import { successStatusCode } from '../../../../utils/successCode';
 
 class CreateUserController {
@@ -15,20 +15,15 @@ class CreateUserController {
     const { email, username, password } = req.body;
 
     try {
-      const { statusCode, data } = await this.createUserUseCase.execute({
+      const { statusCode, data } = (await this.createUserUseCase.execute({
         email,
         username,
         password,
-      });
+      })) as ISuccess<string>;
 
       return res.status(successStatusCode[statusCode]).json({ token: data });
     } catch (err) {
-      const error: IError = {
-        statusCode: 'INTERNAL_SERVER_ERROR',
-        message: 'Unexpected error while creating user',
-      };
-
-      next(error);
+      next(err);
     }
   };
 }
