@@ -9,17 +9,25 @@ import { EncriptService } from '../../../../services/Encript';
 import { UserRepository } from '../../../../modules/users/repository/UsersRepository';
 import { CreateUserUseCase } from '../../../../modules/users/useCases/createUser/CreateUserUseCase';
 import { CreateUserController } from '../../../../modules/users/useCases/createUser/CreateUserController';
+import { AuthService } from '../../../../services/Auth';
 
-const NEW_USER: User = {
+const MOCK_USER: User = {
   id: '5',
   email: 'person5@email.com',
   username: 'person5',
   password: '123456',
 };
 
+const FAKE_TOKEN = '0n0v19nASV-V0n09Masvmz0-xasvzx';
+
+const authService = new AuthService();
 const encriptService = new EncriptService();
 const userRepository = new UserRepository();
-const createUserUseCase = new CreateUserUseCase(userRepository, encriptService);
+const createUserUseCase = new CreateUserUseCase(
+  userRepository,
+  authService,
+  encriptService
+);
 const createUserController = new CreateUserController(createUserUseCase);
 
 describe('Test CreateUserController', () => {
@@ -39,9 +47,10 @@ describe('Test CreateUserController', () => {
   });
 
   describe('Success case', () => {
-    const SUCCES_RESPONSE: ISuccess<User> = {
+    const { email, username, password } = MOCK_USER;
+    const SUCCES_RESPONSE: ISuccess<string> = {
       statusCode: 'CREATED',
-      data: NEW_USER,
+      data: FAKE_TOKEN,
     };
 
     before(() => {
@@ -50,9 +59,9 @@ describe('Test CreateUserController', () => {
       );
 
       request.body = {
-        email: NEW_USER.email,
-        username: NEW_USER.username,
-        password: NEW_USER.password,
+        email,
+        username,
+        password,
       };
     });
 
@@ -67,9 +76,10 @@ describe('Test CreateUserController', () => {
     });
 
     it('should return a response with the user created', async () => {
+      const { data } = SUCCES_RESPONSE;
       await createUserController.handle(request, response, next);
 
-      expect(spiedJson.calledWith(SUCCES_RESPONSE.data)).to.be.true;
+      expect(spiedJson.calledWith({ token: data })).to.be.true;
     });
   });
 });
