@@ -20,7 +20,7 @@ taskRouter.post(
 );
 
 taskRouter.delete(
-  '/',
+  '/:id',
   verifyTaskController.handle,
   deleteTaskController.handle
 );
