@@ -7,7 +7,8 @@ class VerifyTaskController {
   constructor(private verifyTaskUseCase: VerifyTaskUseCase) {}
 
   handle = async (req: Request, res: Response, next: NextFunction) => {
-    const { userId, id } = req.body;
+    const { id } = req.params;
+    const { userId } = req.body;
 
     try {
       const response = await this.verifyTaskUseCase.execute(userId, id);

@@ -50,6 +50,9 @@ describe('Test VerifyTaskController', () => {
 
       request.body = {
         userId,
+      };
+
+      request.params = {
         id,
       };
     });
@@ -57,6 +60,7 @@ describe('Test VerifyTaskController', () => {
     after(() => {
       useCaseStub.restore();
       request.body = {};
+      request.params = {};
     });
 
     describe('Should call "next" middleware', () => {
@@ -83,6 +87,9 @@ describe('Test VerifyTaskController', () => {
 
       request.body = {
         userId,
+      };
+
+      request.params = {
         id,
       };
     });
@@ -90,6 +97,7 @@ describe('Test VerifyTaskController', () => {
     after(() => {
       useCaseStub.restore();
       request.body = {};
+      request.params = {};
     });
 
     describe('Should return a response with an error status and message', () => {
