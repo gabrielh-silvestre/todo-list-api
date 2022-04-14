@@ -32,7 +32,7 @@ const createUserUseCase = new CreateUserUseCase(
 );
 const createUserController = new CreateUserController(createUserUseCase);
 
-describe.only('Test CreateUserController', () => {
+describe('Test CreateUserController', () => {
   let useCaseStub: Sinon.SinonStub;
   let spiedResponse: Sinon.SinonSpy;
   let spiedJson: Sinon.SinonSpy;
