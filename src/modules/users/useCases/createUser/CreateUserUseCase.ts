@@ -22,7 +22,7 @@ class CreateUserUseCase {
     email,
     username,
     password,
-  }: IRequest): Promise<ISuccess<User['id']>> {
+  }: IRequest): Promise<ISuccess<string>> {
     const encryptedPassword = await this.encriptService.encript(password);
 
     const newUserId = await this.userRepository.create({

@@ -65,8 +65,6 @@ describe('Test CreateUserCase', () => {
           password,
         })) as ISuccess<string>;
 
-        console.log({ response, data: response.data });
-
         expect(response.data).to.be.deep.equal(FAKE_TOKEN);
       });
     });
