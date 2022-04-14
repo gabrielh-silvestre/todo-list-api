@@ -21,7 +21,7 @@ class CreateUserController {
         password,
       });
 
-      return res.status(successStatusCode[statusCode]).json(data);
+      return res.status(successStatusCode[statusCode]).json({ token: data });
     } catch (err) {
       const error: IError = {
         statusCode: 'INTERNAL_SERVER_ERROR',

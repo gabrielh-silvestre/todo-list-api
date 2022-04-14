@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
 
-import { IUserValidation } from '../../@types/interfaces';
+import { IUserValidator } from '../../@types/interfaces';
 import { errorStatusCode } from '../../utils/errorsCode';
 
-class UserValidation implements IUserValidation {
+class UserValidator implements IUserValidator {
   private createUserSchema: Joi.ObjectSchema;
   private loginUserSchema: Joi.ObjectSchema;
   private authorizationSchema: Joi.ObjectSchema;
@@ -67,4 +67,4 @@ class UserValidation implements IUserValidation {
   };
 }
 
-export const userValidation = new UserValidation();
+export const userValidator = new UserValidator();

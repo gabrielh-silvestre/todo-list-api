@@ -9,7 +9,7 @@ import { errorStatusCode } from '../../utils/errorsCode';
 class AuthMiddleware {
   constructor(private authService: IAuthService<TokenPayload>) {}
 
-  async handle(req: Request, res: Response, next: NextFunction) {
+  handle = async (req: Request, res: Response, next: NextFunction) => {
     const { authorization } = req.headers;
 
     const isValid = this.authService.verifyToken(authorization as string);
@@ -20,8 +20,12 @@ class AuthMiddleware {
       });
     }
 
+    req.body = {
+      ...req.body,
+      userId: isValid.data,
+    };
     next();
-  }
+  };
 }
 
 const authService = new AuthService();

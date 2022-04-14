@@ -1,7 +1,8 @@
 import { User } from '@prisma/client';
 
-import { ISuccess } from '../../../../@types/interfaces';
+import { IAuthService, ISuccess } from '../../../../@types/interfaces';
 import { IEncriptService } from '../../../../@types/interfaces';
+import { TokenPayload } from '../../../../@types/types';
 import { IUsersRepository } from '../../repository/IUsersRepository';
 
 interface IRequest {
@@ -13,6 +14,7 @@ interface IRequest {
 class CreateUserUseCase {
   constructor(
     private userRepository: IUsersRepository,
+    private authService: IAuthService<TokenPayload>,
     private encriptService: IEncriptService
   ) {}
 
@@ -20,18 +22,20 @@ class CreateUserUseCase {
     email,
     username,
     password,
-  }: IRequest): Promise<ISuccess<User>> {
+  }: IRequest): Promise<ISuccess<string>> {
     const encryptedPassword = await this.encriptService.encript(password);
 
-    const newUser = await this.userRepository.create({
+    const newUserId = await this.userRepository.create({
       email,
       username,
       password: encryptedPassword,
     });
 
+    const token = this.authService.createToken(newUserId);
+
     return {
       statusCode: 'CREATED',
-      data: newUser,
+      data: token,
     };
   }
 }

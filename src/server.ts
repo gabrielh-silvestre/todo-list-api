@@ -3,6 +3,7 @@ import express from 'express';
 // import { PrismaClient } from '@prisma/client';
 
 import { userRouter } from './routes/userRoute';
+import { taskRouter } from './routes/taskRoute';
 import { errorHandler } from './midleware/error';
 
 const PORT = process.env.PORT || 3001;
@@ -18,6 +19,7 @@ const app = express();
 app.use(express.json());
 
 app.use('/v1/api/users', userRouter);
+app.use('/v1/api/tasks', taskRouter);
 
 app.use(errorHandler);
 

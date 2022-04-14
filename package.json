@@ -10,7 +10,8 @@
     "start": "node dist/server.js",
     "dev": "nodemon src/server.ts",
     "test": "mocha -r ts-node/register/transpile-only src/tests/**/*.spec.ts",
-    "test:coverage": "nyc npm test"
+    "test:coverage": "nyc npm test",
+    "db:drop": "ts-node prisma/reset.ts"
   },
   "keywords": [],
   "author": "",

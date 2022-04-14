@@ -2,10 +2,14 @@ import { Handler } from 'express';
 
 import { ErrorStatusCode, SuccessStatusCode } from '../types';
 
-interface IUserValidation {
+interface IUserValidator {
   createValidation: Handler;
   loginValidation: Handler;
   athenticationValidation: Handler;
+}
+
+interface ITaskValidator {
+  createValidation: Handler;
 }
 
 interface IAuthService<T> {
@@ -28,4 +32,11 @@ interface ISuccess<T> {
   data: T;
 }
 
-export { IUserValidation, IAuthService, IEncriptService, IError, ISuccess };
+export {
+  IUserValidator,
+  ITaskValidator,
+  IAuthService,
+  IEncriptService,
+  IError,
+  ISuccess,
+};

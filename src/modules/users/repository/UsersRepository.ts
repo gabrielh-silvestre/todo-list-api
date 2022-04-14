@@ -12,8 +12,8 @@ class UserRepository implements IUsersRepository {
     email,
     username,
     password,
-  }: IUsersRepositoryDTO): Promise<User> {
-    const newUser = await this.prisma.user.create({
+  }: IUsersRepositoryDTO): Promise<User['id']> {
+    const { id } = await this.prisma.user.create({
       data: {
         email,
         username,
@@ -21,7 +21,7 @@ class UserRepository implements IUsersRepository {
       },
     });
 
-    return newUser;
+    return id;
   }
 
   async findByEmail(email: string): Promise<User | null> {
