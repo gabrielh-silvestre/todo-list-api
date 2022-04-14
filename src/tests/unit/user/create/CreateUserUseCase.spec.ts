@@ -9,6 +9,8 @@ import { EncriptService } from '../../../../services/Encript';
 import { UserRepository } from '../../../../modules/users/repository/UsersRepository';
 import { CreateUserUseCase } from '../../../../modules/users/useCases/createUser/CreateUserUseCase';
 
+import { CustomError } from '../../../../utils/CustomError';
+
 const MOCK_USER: User = {
   id: '5',
   email: 'person5@email.com',
@@ -27,7 +29,7 @@ const createUserUseCase = new CreateUserUseCase(
   encriptService
 );
 
-describe('Test CreateUserCase', () => {
+describe.only('Test CreateUserCase', () => {
   let createStub: Sinon.SinonStub;
   let createTokenStub: Sinon.SinonStub;
 
@@ -49,11 +51,11 @@ describe('Test CreateUserCase', () => {
       const { email, username, password } = MOCK_USER;
 
       it('success status should be "CREATED"', async () => {
-        const response = await createUserUseCase.execute({
+        const response = (await createUserUseCase.execute({
           email,
           username,
           password,
-        });
+        })) as ISuccess<string>;
 
         expect(response.statusCode).to.be.equal('CREATED');
       });
@@ -66,6 +68,55 @@ describe('Test CreateUserCase', () => {
         })) as ISuccess<string>;
 
         expect(response.data).to.be.deep.equal(FAKE_TOKEN);
+      });
+    });
+  });
+
+  describe('Database error case', () => {
+    const ERROR = new CustomError(
+      'INTERNAL_SERVER_ERROR',
+      'Unexpected error while creating user'
+    );
+
+    before(() => {
+      createStub = Sinon.stub(userRepository, 'create').rejects(ERROR);
+    });
+
+    after(() => {
+      createStub.restore();
+    });
+
+    describe('Should throw a CustomError with status and message', () => {
+      const { email, username, password } = MOCK_USER;
+
+      it('status should be "INTERNAL_SERVER_ERROR"', async () => {
+        try {
+          await createUserUseCase.execute({
+            email,
+            username,
+            password,
+          });
+          expect.fail('Should throw an error');
+        } catch (err) {
+          const tErr = err as CustomError;
+          expect(tErr.statusCode).to.be.equal('INTERNAL_SERVER_ERROR');
+        }
+      });
+
+      it('message should be "Unexpected error while creating user"', async () => {
+        try {
+          await createUserUseCase.execute({
+            email,
+            username,
+            password,
+          });
+          expect.fail('Should throw an error');
+        } catch (err) {
+          const tErr = err as CustomError;
+          expect(tErr.message).to.be.equal(
+            'Unexpected error while creating user'
+          );
+        }
       });
     });
   });
