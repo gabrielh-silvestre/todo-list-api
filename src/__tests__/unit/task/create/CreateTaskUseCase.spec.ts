@@ -20,6 +20,7 @@ const tasksRepository = new TasksRepository();
 const createTaskUseCase = new CreateTaskUseCase(tasksRepository);
 
 describe('Test CreateTaskUseCase', () => {
+  const { title, description, userId } = MOCK_TASK;
   let createStub: Sinon.SinonStub;
 
   describe('Success case', () => {
@@ -31,27 +32,51 @@ describe('Test CreateTaskUseCase', () => {
       createStub.restore();
     });
 
-    describe('Should return a object with an success status and data', () => {
-      const { title, description, userId } = MOCK_TASK;
+    describe('Create test with description', () => {
+      describe('Should return a object with an success status and data', () => {
+        it('success status should be "CREATED"', async () => {
+          const response = await createTaskUseCase.execute({
+            title,
+            description,
+            userId,
+          });
 
-      it('success status should be "CREATED"', async () => {
-        const response = await createTaskUseCase.execute({
-          title,
-          description,
-          userId,
+          expect(response.statusCode).to.be.equal('CREATED');
         });
 
-        expect(response.statusCode).to.be.equal('CREATED');
+        it('data should be the created Task', async () => {
+          const response = await createTaskUseCase.execute({
+            title,
+            description,
+            userId,
+          });
+
+          expect(response.data).to.be.deep.equal(MOCK_TASK);
+        });
       });
+    });
 
-      it('data should be the created Task', async () => {
-        const response = await createTaskUseCase.execute({
-          title,
-          description,
-          userId,
+    describe('Create test without description', () => {
+      describe('Should return a object with an success status and data', () => {
+        it('success status should be "CREATED"', async () => {
+          const response = await createTaskUseCase.execute({
+            title,
+            description: null,
+            userId,
+          });
+
+          expect(response.statusCode).to.be.equal('CREATED');
         });
 
-        expect(response.data).to.be.deep.equal(MOCK_TASK);
+        it('data should be the created Task', async () => {
+          const response = await createTaskUseCase.execute({
+            title,
+            description: null,
+            userId,
+          });
+
+          expect(response.data).to.be.deep.equal(MOCK_TASK);
+        });
       });
     });
   });
@@ -66,8 +91,6 @@ describe('Test CreateTaskUseCase', () => {
     });
 
     describe('Should throw a CustomError with status and message', () => {
-      const { title, description, userId } = MOCK_TASK;
-
       it('status should be "INTERNAL_SERVER_ERROR"', async () => {
         try {
           await createTaskUseCase.execute({
