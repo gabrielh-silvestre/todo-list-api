@@ -29,7 +29,7 @@ const loginUserUseCase = new LoginUserUseCase(
 );
 const loginUserController = new LoginUserController(loginUserUseCase);
 
-describe.only('Test LoginUserController', () => {
+describe('Test LoginUserController', () => {
   let useCaseStub: Sinon.SinonStub;
   let spiedStatus: Sinon.SinonSpy;
   let spiedJson: Sinon.SinonSpy;
