@@ -1,10 +1,12 @@
 import { Task } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
-import { IError, ISuccess } from '../../../../@types/interfaces';
+import { ISuccess } from '../../../../@types/interfaces';
 
 import { TasksRepository } from '../../../../modules/tasks/repository/TasksRepository';
 import { VerifyTaskUseCase } from '../../../../modules/tasks/useCases/verifyTask/VerifyTaskUseCase';
+
+import { CustomError } from '../../../../utils/CustomError';
 
 const MOCK_TASK: Task = {
   id: '5',
@@ -18,7 +20,8 @@ const MOCK_TASK: Task = {
 const tasksRepository = new TasksRepository();
 const verifyTaskUseCase = new VerifyTaskUseCase(tasksRepository);
 
-describe('Test VerifyTaskUseCase', () => {
+describe.only('Test VerifyTaskUseCase', () => {
+  const { userId, id } = MOCK_TASK;
   let findByIdStub: Sinon.SinonStub;
 
   describe('Success case', () => {
@@ -33,8 +36,6 @@ describe('Test VerifyTaskUseCase', () => {
     });
 
     describe('Should return a object with an success status and data', () => {
-      const { userId, id } = MOCK_TASK;
-
       it('success status should be "OK"', async () => {
         const response = await verifyTaskUseCase.execute(userId, id);
 
@@ -61,22 +62,55 @@ describe('Test VerifyTaskUseCase', () => {
       findByIdStub.restore();
     });
 
-    describe('Should return a object with an error status and message', () => {
-      const { userId, id } = MOCK_TASK;
-
-      it('error status should be "NOT_FOUND"', async () => {
-        const response = await verifyTaskUseCase.execute(userId, id);
-
-        expect(response.statusCode).to.be.equal('NOT_FOUND');
+    describe('Should throw a CustomError with status and message', () => {
+      it('status should be "NOT_FOUND"', async () => {
+        try {
+          await verifyTaskUseCase.execute(userId, id);
+        } catch (err) {
+          const tErr = err as CustomError;
+          expect(tErr.statusCode).to.be.equal('NOT_FOUND');
+        }
       });
 
       it('message should be "Task not found"', async () => {
-        const response = (await verifyTaskUseCase.execute(
-          userId,
-          id
-        )) as IError;
+        try {
+          await verifyTaskUseCase.execute(userId, id);
+        } catch (err) {
+          const tErr = err as CustomError;
+          expect(tErr.message).to.be.equal('Task not found');
+        }
+      });
+    });
+  });
 
-        expect(response.message).to.be.equal('Task not found');
+  describe('Database error case', () => {
+    before(() => {
+      findByIdStub = Sinon.stub(tasksRepository, 'findById').rejects();
+    });
+
+    after(() => {
+      findByIdStub.restore();
+    });
+
+    describe('Should throw a CustomError with status and message', () => {
+      it('status should be "INTERNAL_SERVER_ERROR"', async () => {
+        try {
+          await verifyTaskUseCase.execute(userId, id);
+        } catch (err) {
+          const tErr = err as CustomError;
+          expect(tErr.statusCode).to.be.equal('INTERNAL_SERVER_ERROR');
+        }
+      });
+
+      it('message should be "Unexpected error while checking if task exist"', async () => {
+        try {
+          await verifyTaskUseCase.execute(userId, id);
+        } catch (err) {
+          const tErr = err as CustomError;
+          expect(tErr.message).to.be.equal(
+            'Unexpected error while checking if task exist'
+          );
+        }
       });
     });
   });
