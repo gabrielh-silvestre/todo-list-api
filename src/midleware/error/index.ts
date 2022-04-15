@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { IError } from '../../@types/interfaces';
+import { CustomError } from '../../utils/CustomError';
 import { errorStatusCode } from '../../utils/errorsCode';
 
 const errorHandler = (
-  err: IError,
+  err: CustomError,
   _req: Request,
   res: Response,
   _next: NextFunction
