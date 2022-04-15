@@ -1,5 +1,3 @@
-import { PrismaClient } from '@prisma/client';
-
 import {
   ITasksRepository,
   ITasksRepositoryDTO,
@@ -7,19 +5,15 @@ import {
 } from './ITasksRepository';
 import { TaskReturn } from '../../../@types/types';
 
+import { prisma } from '../../prisma';
+
 class TasksRepository implements ITasksRepository {
-  private prisma: PrismaClient;
-
-  constructor() {
-    this.prisma = new PrismaClient();
-  }
-
   async create({
     title,
     description,
     userId,
   }: ITasksRepositoryDTO): Promise<TaskReturn> {
-    const newTask = await this.prisma.task.create({
+    const newTask = await prisma.task.create({
       data: {
         title,
         description,
@@ -46,7 +40,7 @@ class TasksRepository implements ITasksRepository {
     id: string,
     taskData: ITasksRepositoryUpdateDTO
   ): Promise<TaskReturn> {
-    const updatedTask = await this.prisma.task.update({
+    const updatedTask = await prisma.task.update({
       where: {
         id_userId: {
           id,
@@ -69,7 +63,7 @@ class TasksRepository implements ITasksRepository {
   }
 
   async findAll(userId: string): Promise<TaskReturn[]> {
-    const findedTasks = await this.prisma.task.findMany({
+    const findedTasks = await prisma.task.findMany({
       where: {
         userId,
       },
@@ -86,7 +80,7 @@ class TasksRepository implements ITasksRepository {
   }
 
   async findById(userId: string, id: string): Promise<TaskReturn | null> {
-    const findedTask = await this.prisma.task.findUnique({
+    const findedTask = await prisma.task.findUnique({
       where: {
         id_userId: {
           id,
@@ -106,7 +100,7 @@ class TasksRepository implements ITasksRepository {
   }
 
   async findByTitle(userId: string, title: string): Promise<TaskReturn[]> {
-    const findedTask = await this.prisma.task.findMany({
+    const findedTask = await prisma.task.findMany({
       where: {
         title: {
           contains: title,
@@ -126,7 +120,7 @@ class TasksRepository implements ITasksRepository {
   }
 
   async delete(userId: string, id: string) {
-    await this.prisma.task.delete({
+    await prisma.task.delete({
       where: {
         id_userId: {
           id,
