@@ -1,6 +1,11 @@
 import { PrismaClient } from '@prisma/client';
+
+import {
+  ITasksRepository,
+  ITasksRepositoryDTO,
+  ITasksRepositoryUpdateDTO,
+} from './ITasksRepository';
 import { TaskReturn } from '../../../@types/types';
-import { ITasksRepository, ITasksRepositoryDTO } from './ITasksRepository';
 
 class TasksRepository implements ITasksRepository {
   private prisma: PrismaClient;
@@ -73,7 +78,7 @@ class TasksRepository implements ITasksRepository {
       },
     });
 
-    return findedTask as TaskReturn[];
+    return findedTask;
   }
 
   async delete(userId: string, id: string) {
@@ -82,9 +87,36 @@ class TasksRepository implements ITasksRepository {
         id_userId: {
           id,
           userId,
-        }
+        },
       },
     });
+  }
+
+  async update(
+    userId: string,
+    id: string,
+    taskData: ITasksRepositoryUpdateDTO
+  ): Promise<TaskReturn> {
+    const updatedTask = await this.prisma.task.update({
+      where: {
+        id_userId: {
+          id,
+          userId,
+        },
+      },
+      data: {
+        ...taskData,
+      },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        status: true,
+        updatedAt: true,
+      },
+    });
+
+    return updatedTask;
   }
 }
 
