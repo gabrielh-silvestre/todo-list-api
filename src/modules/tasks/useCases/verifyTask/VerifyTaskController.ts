@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { IError } from '../../../../@types/interfaces';
-import { errorStatusCode } from '../../../../utils/errorsCode';
+
 import { VerifyTaskUseCase } from './VerifyTaskUseCase';
 
 class VerifyTaskController {
@@ -11,21 +10,10 @@ class VerifyTaskController {
     const { userId } = req.body;
 
     try {
-      const response = await this.verifyTaskUseCase.execute(userId, id);
-
-      if (response.statusCode === 'NOT_FOUND') {
-        const { statusCode, message } = response;
-        return res.status(errorStatusCode[statusCode]).json({ message });
-      }
-
+      await this.verifyTaskUseCase.execute(userId, id);
       next();
     } catch (err) {
-      const error: IError = {
-        statusCode: 'INTERNAL_SERVER_ERROR',
-        message: 'Unexpected error while checking if task exist',
-      };
-
-      next(error);
+      next(err);
     }
   };
 }
