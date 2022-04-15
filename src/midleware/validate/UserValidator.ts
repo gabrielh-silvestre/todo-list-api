@@ -1,8 +1,9 @@
-import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
+import { Request, Response, NextFunction } from 'express';
 
 import { IUserValidator } from '../../@types/interfaces';
-import { errorStatusCode } from '../../utils/errorsCode';
+
+import { CustomError } from '../../utils/CustomError';
 
 class UserValidator implements IUserValidator {
   private createUserSchema: Joi.ObjectSchema;
@@ -30,9 +31,8 @@ class UserValidator implements IUserValidator {
     const { error } = this.createUserSchema.validate(req.body);
 
     if (error) {
-      return res.status(errorStatusCode.BAD_REQUEST).json({
-        message: error.details[0].message,
-      });
+      const err = new CustomError('BAD_REQUEST', error.details[0].message);
+      return next(err);
     }
 
     next();
@@ -42,9 +42,8 @@ class UserValidator implements IUserValidator {
     const { error } = this.loginUserSchema.validate(req.body);
 
     if (error) {
-      return res.status(errorStatusCode.BAD_REQUEST).json({
-        message: error.details[0].message,
-      });
+      const err = new CustomError('BAD_REQUEST', error.details[0].message);
+      return next(err);
     }
 
     next();
@@ -58,9 +57,8 @@ class UserValidator implements IUserValidator {
     const { error } = this.authorizationSchema.validate(req.headers);
 
     if (error) {
-      return res.status(errorStatusCode.BAD_REQUEST).json({
-        message: error.details[0].message,
-      });
+      const err = new CustomError('BAD_REQUEST', error.details[0].message);
+      return next(err);
     }
 
     next();
