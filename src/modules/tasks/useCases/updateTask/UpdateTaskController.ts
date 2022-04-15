@@ -8,7 +8,8 @@ class UpdateTaskController {
   constructor(private updateTaskUseCase: UpdateTaskUseCase) {}
 
   handle = async (req: Request, res: Response, next: NextFunction) => {
-    const { id, title, description, status, userId } = req.body;
+    const { id } = req.params;
+    const { title, description, status, userId } = req.body;
 
     try {
       const { statusCode, data } = await this.updateTaskUseCase.execute(

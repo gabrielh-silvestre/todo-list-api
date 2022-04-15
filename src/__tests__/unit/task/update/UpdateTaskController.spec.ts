@@ -65,8 +65,8 @@ describe('Test UpdateTaskController', () => {
         SUCCES_RESPONSE
       );
 
+      request.params = { id };
       request.body = {
-        id,
         title,
         description,
         status,
@@ -105,8 +105,8 @@ describe('Test UpdateTaskController', () => {
         ERROR_RESPONSE
       );
 
+      request.params = { id };
       request.body = {
-        id,
         title,
         description,
         status,
