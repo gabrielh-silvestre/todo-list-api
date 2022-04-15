@@ -5,7 +5,7 @@ import Sinon from 'sinon';
 
 import { TasksRepository } from '../../../../modules/tasks/repository/TasksRepository';
 import { GetAllTasksUseCase } from '../../../../modules/tasks/useCases/getAllTasks/GetAllTasksUseCase';
-import { GetAllTasksController } from '../../../../modules/tasks/useCases/getAllTasks/GetAllTasksController.';
+import { GetAllTasksController } from '../../../../modules/tasks/useCases/getAllTasks/GetAllTasksController';
 
 import { ISuccess } from '../../../../@types/interfaces';
 
