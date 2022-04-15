@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
-import { IError } from '../../../../@types/interfaces';
-import { successStatusCode } from '../../../../utils/successCode';
+
 import { CreateTaskUseCase } from './CreateTaskUseCase';
+import { successStatusCode } from '../../../../utils/successCode';
 
 class CreateTaskController {
   constructor(private createTaskUseCase: CreateTaskUseCase) {}
@@ -21,12 +21,7 @@ class CreateTaskController {
 
       return res.status(successStatusCode[statusCode]).json(data);
     } catch (err) {
-      const error: IError = {
-        statusCode: 'INTERNAL_SERVER_ERROR',
-        message: 'Unexpect error while creating task',
-      };
-
-      next(error);
+      next(err);
     }
   };
 }

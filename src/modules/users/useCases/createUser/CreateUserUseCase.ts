@@ -1,9 +1,9 @@
-import { User } from '@prisma/client';
-
+import { IUsersRepository } from '../../repository/IUsersRepository';
 import { IAuthService, ISuccess } from '../../../../@types/interfaces';
 import { IEncriptService } from '../../../../@types/interfaces';
 import { TokenPayload } from '../../../../@types/types';
-import { IUsersRepository } from '../../repository/IUsersRepository';
+
+import { CustomError } from '../../../../utils/CustomError';
 
 interface IRequest {
   email: string;
@@ -22,21 +22,28 @@ class CreateUserUseCase {
     email,
     username,
     password,
-  }: IRequest): Promise<ISuccess<string>> {
-    const encryptedPassword = await this.encriptService.encript(password);
+  }: IRequest): Promise<ISuccess<string> | void> {
+    try {
+      const encryptedPassword = await this.encriptService.encript(password);
 
-    const newUserId = await this.userRepository.create({
-      email,
-      username,
-      password: encryptedPassword,
-    });
+      const newUserId = await this.userRepository.create({
+        email,
+        username,
+        password: encryptedPassword,
+      });
 
-    const token = this.authService.createToken(newUserId);
+      const token = this.authService.createToken(newUserId);
 
-    return {
-      statusCode: 'CREATED',
-      data: token,
-    };
+      return {
+        statusCode: 'CREATED',
+        data: token,
+      };
+    } catch (err) {
+      throw new CustomError(
+        'INTERNAL_SERVER_ERROR',
+        'Unexpected error while creating user'
+      );
+    }
   }
 }
 

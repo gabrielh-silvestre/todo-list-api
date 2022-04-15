@@ -1,17 +1,26 @@
-import { IError, ISuccess } from '../../../../@types/interfaces';
+import { User as IUser } from '@prisma/client';
+import { ISuccess } from '../../../../@types/interfaces';
 import { IUsersRepository } from '../../repository/IUsersRepository';
+
+import { CustomError } from '../../../../utils/CustomError';
 
 class UniqueUserUseCase {
   constructor(private userRepository: IUsersRepository) {}
 
-  async execute(email: string): Promise<ISuccess<null> | IError> {
-    const user = await this.userRepository.findByEmail(email);
+  async execute(email: string): Promise<ISuccess<null> | void> {
+    let user: IUser | null = null;
+
+    try {
+      user = await this.userRepository.findByEmail(email);
+    } catch (error) {
+      throw new CustomError(
+        'INTERNAL_SERVER_ERROR',
+        'Unexpected error while checking user uniqueness'
+      );
+    }
 
     if (user) {
-      return {
-        statusCode: 'CONFLICT',
-        message: 'User already exists',
-      };
+      throw new CustomError('CONFLICT', 'User already exists');
     }
 
     return {
