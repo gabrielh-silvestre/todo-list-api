@@ -23,7 +23,7 @@ interface ITasksRepository {
   ): Promise<TaskReturn>;
   findAll(userId: string): Promise<TaskReturn[]>;
   findById(userId: string, id: string): Promise<TaskReturn | null>;
-  findByTitle(userId: string, title: string): Promise<TaskReturn[]>;
+  findByExactTitle(userId: string, title: string): Promise<TaskReturn[]>;
   delete(userId: string, id: string): Promise<void>;
 }
 
