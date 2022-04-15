@@ -1,20 +1,26 @@
-import { IError, ISuccess } from '../../../../@types/interfaces';
 import { ITasksRepository } from '../../repository/ITasksRepository';
+import { ISuccess } from '../../../../@types/interfaces';
+import { TaskReturn } from '../../../../@types/types';
+
+import { CustomError } from '../../../../utils/CustomError';
 
 class UniqueTaskUseCase {
   constructor(private taskRepository: ITasksRepository) {}
 
-  async execute(
-    userId: string,
-    title: string
-  ): Promise<ISuccess<null> | IError> {
-    const findedTasks = await this.taskRepository.findByTitle(userId, title);
+  async execute(userId: string, title: string): Promise<ISuccess<null> | void> {
+    let findedTasks: TaskReturn[] = [];
+
+    try {
+      findedTasks = await this.taskRepository.findByTitle(userId, title);
+    } catch (err) {
+      throw new CustomError(
+        'INTERNAL_SERVER_ERROR',
+        'Unexpected error while checking task uniqueness'
+      );
+    }
 
     if (findedTasks.length > 0) {
-      return {
-        statusCode: 'CONFLICT',
-        message: 'Task already exists',
-      };
+      throw new CustomError('CONFLICT', 'Task with this title already exists');
     }
 
     return {
