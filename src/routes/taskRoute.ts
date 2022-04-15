@@ -1,7 +1,7 @@
 import express from 'express';
 
-import { authMiddleware } from '../midleware/auth';
-import { taskValidator } from '../midleware/validate/TaskValidator';
+import { authMiddleware } from '../middleware/auth';
+import { taskValidator } from '../middleware/validate/TaskValidator';
 
 import { uniqueTaskController } from '../modules/tasks/useCases/uniqueTask';
 import { createTaskController } from '../modules/tasks/useCases/createTask';

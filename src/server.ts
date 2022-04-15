@@ -4,7 +4,7 @@ import express from 'express';
 
 import { userRouter } from './routes/userRoute';
 import { taskRouter } from './routes/taskRoute';
-import { errorHandler } from './midleware/error';
+import { errorHandler } from './middleware/error';
 
 const PORT = process.env.PORT || 3001;
 const app = express();
