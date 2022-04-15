@@ -5,7 +5,7 @@ import { VerifyTaskUseCase } from './VerifyTaskUseCase';
 class VerifyTaskController {
   constructor(private verifyTaskUseCase: VerifyTaskUseCase) {}
 
-  handle = async (req: Request, res: Response, next: NextFunction) => {
+  handle = async (req: Request, _res: Response, next: NextFunction) => {
     const { id } = req.params;
     const { userId } = req.body;
 
