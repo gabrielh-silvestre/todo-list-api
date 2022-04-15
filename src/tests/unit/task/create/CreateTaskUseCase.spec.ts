@@ -5,7 +5,9 @@ import Sinon from 'sinon';
 import { TasksRepository } from '../../../../modules/tasks/repository/TasksRepository';
 import { CreateTaskUseCase } from '../../../../modules/tasks/useCases/createTask/CreateTaskUseCase';
 
-const NEW_TASK: Task = {
+import { CustomError } from '../../../../utils/CustomError';
+
+const MOCK_TASK: Task = {
   id: '5',
   title: 'Task 5',
   description: 'Description 5',
@@ -22,7 +24,7 @@ describe('Test CreateTaskUseCase', () => {
 
   describe('Success case', () => {
     before(() => {
-      createStub = Sinon.stub(tasksRepository, 'create').resolves(NEW_TASK);
+      createStub = Sinon.stub(tasksRepository, 'create').resolves(MOCK_TASK);
     });
 
     after(() => {
@@ -30,7 +32,7 @@ describe('Test CreateTaskUseCase', () => {
     });
 
     describe('Should return a object with an success status and data', () => {
-      const { title, description, userId } = NEW_TASK;
+      const { title, description, userId } = MOCK_TASK;
 
       it('success status should be "CREATED"', async () => {
         const response = await createTaskUseCase.execute({
@@ -49,7 +51,49 @@ describe('Test CreateTaskUseCase', () => {
           userId,
         });
 
-        expect(response.data).to.be.deep.equal(NEW_TASK);
+        expect(response.data).to.be.deep.equal(MOCK_TASK);
+      });
+    });
+  });
+
+  describe('Database error case', () => {
+    before(() => {
+      createStub = Sinon.stub(tasksRepository, 'create').rejects();
+    });
+
+    after(() => {
+      createStub.restore();
+    });
+
+    describe('Should throw a CustomError with status and message', () => {
+      const { title, description, userId } = MOCK_TASK;
+
+      it('status should be "INTERNAL_SERVER_ERROR"', async () => {
+        try {
+          await createTaskUseCase.execute({
+            title,
+            description,
+            userId,
+          });
+        } catch (err) {
+          const tErr = err as CustomError;
+          expect(tErr.statusCode).to.be.equal('INTERNAL_SERVER_ERROR');
+        }
+      });
+
+      it('message should be "Unexpected error while creating task"', async () => {
+        try {
+          await createTaskUseCase.execute({
+            title,
+            description,
+            userId,
+          });
+        } catch (err) {
+          const tErr = err as CustomError;
+          expect(tErr.message).to.be.equal(
+            'Unexpected error while creating task'
+          );
+        }
       });
     });
   });
