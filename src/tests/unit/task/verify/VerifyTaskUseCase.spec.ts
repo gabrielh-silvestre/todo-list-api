@@ -20,7 +20,7 @@ const MOCK_TASK: Task = {
 const tasksRepository = new TasksRepository();
 const verifyTaskUseCase = new VerifyTaskUseCase(tasksRepository);
 
-describe.only('Test VerifyTaskUseCase', () => {
+describe('Test VerifyTaskUseCase', () => {
   const { userId, id } = MOCK_TASK;
   let findByIdStub: Sinon.SinonStub;
 
