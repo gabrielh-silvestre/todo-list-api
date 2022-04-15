@@ -20,7 +20,7 @@ const MOCK_TASK: Task = {
 const tasksRepository = new TasksRepository();
 const uniqueTaskUseCase = new UniqueTaskUseCase(tasksRepository);
 
-describe.only('Test UniqueTaskUseCase', () => {
+describe('Test UniqueTaskUseCase', () => {
   let findByTitleStub: Sinon.SinonStub;
 
   describe('Success case', () => {

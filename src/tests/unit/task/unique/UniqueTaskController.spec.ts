@@ -2,11 +2,12 @@ import { NextFunction, request, response } from 'express';
 import { Task } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
-import { IError, ISuccess } from '../../../../@types/interfaces';
 
 import { TasksRepository } from '../../../../modules/tasks/repository/TasksRepository';
 import { UniqueTaskUseCase } from '../../../../modules/tasks/useCases/uniqueTask/UniqueTaskUseCase';
 import { UniqueTaskController } from '../../../../modules/tasks/useCases/uniqueTask/UniqueTaskController';
+
+import { CustomError } from '../../../../utils/CustomError';
 
 const MOCK_TASK: Task = {
   id: '5',
@@ -22,21 +23,24 @@ const uniqueTaskUseCase = new UniqueTaskUseCase(tasksRepository);
 const uniqueTaskController = new UniqueTaskController(uniqueTaskUseCase);
 
 describe('Test UniqueTaskController', () => {
+  let useCaseStub: Sinon.SinonStub;
   let spiedStatus: Sinon.SinonSpy;
   let spiedJson: Sinon.SinonSpy;
-  let useCaseStub: Sinon.SinonStub;
   let spiedNext: Sinon.SinonSpy;
-  const next: NextFunction = () => {};
+  const next = {
+    next: (args) => {},
+  } as { next: NextFunction };
 
   before(() => {
     spiedStatus = Sinon.spy(response, 'status');
     spiedJson = Sinon.spy(response, 'json');
-    spiedNext = Sinon.spy(next);
+    spiedNext = Sinon.spy(next, 'next');
   });
 
   after(() => {
     spiedStatus.restore();
     spiedJson.restore();
+    spiedNext.restore();
   });
 
   describe('Success case', () => {
@@ -59,24 +63,20 @@ describe('Test UniqueTaskController', () => {
 
     describe('Should call "next" middleware', () => {
       it('should call "next" middleware without args', async () => {
-        await uniqueTaskController.handle(request, response, next);
+        await uniqueTaskController.handle(request, response, next.next);
 
-        expect(spiedNext.args).to.be.empty;
+        expect(spiedNext.calledWith()).to.be.true;
       });
     });
   });
 
   describe('Error case', () => {
-    const ERROR_RESPONSE: IError = {
-      statusCode: 'CONFLICT',
-      message: 'Task already exists',
-    };
+    const ERROR_RESPONSE = new CustomError('CONFLICT', 'Task already exists');
 
     before(() => {
-      useCaseStub = Sinon.stub(uniqueTaskUseCase, 'execute').resolves({
-        statusCode: 'CONFLICT',
-        message: 'Task already exists',
-      });
+      useCaseStub = Sinon.stub(uniqueTaskUseCase, 'execute').rejects(
+        ERROR_RESPONSE
+      );
 
       request.body = {
         title: MOCK_TASK.title,
@@ -89,18 +89,11 @@ describe('Test UniqueTaskController', () => {
       request.body = {};
     });
 
-    describe('Should return a response with an error status and message', () => {
-      it('response status should be 409', async () => {
-        await uniqueTaskController.handle(request, response, next);
+    describe('Should call "next" error middleware', () => {
+      it('"next" should be called with CustomError as args', async () => {
+        await uniqueTaskController.handle(request, response, next.next);
 
-        expect(spiedStatus.calledWith(409)).to.be.true;
-      });
-
-      it('response body should be an error message "Task already exists"', async () => {
-        const { message } = ERROR_RESPONSE;
-        await uniqueTaskController.handle(request, response, next);
-
-        expect(spiedJson.calledWith({ message })).to.be.true;
+        expect(spiedNext.calledWith(ERROR_RESPONSE)).to.be.true;
       });
     });
   });
