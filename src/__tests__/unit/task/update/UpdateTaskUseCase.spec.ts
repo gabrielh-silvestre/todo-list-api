@@ -17,7 +17,7 @@ const MOCK_TASK: Task = {
 };
 
 const tasksRepository = new TasksRepository();
-const createTaskUseCase = new UpdateTaskUseCase(tasksRepository);
+const updateTaskUseCase = new UpdateTaskUseCase(tasksRepository);
 
 describe('Test UpdateTaskUseCase', () => {
   const { id, title, description, status, userId } = MOCK_TASK;
@@ -35,7 +35,7 @@ describe('Test UpdateTaskUseCase', () => {
 
       describe('Should return a object with an success status and data', () => {
         it('success status should be "UPDATED"', async () => {
-          const response = await createTaskUseCase.execute(userId, id, {
+          const response = await updateTaskUseCase.execute(userId, id, {
             title,
             description,
             status,
@@ -45,7 +45,7 @@ describe('Test UpdateTaskUseCase', () => {
         });
 
         it('data should be the updated Task', async () => {
-          const response = await createTaskUseCase.execute(userId, id, {
+          const response = await updateTaskUseCase.execute(userId, id, {
             title,
             description,
             status,
@@ -69,7 +69,7 @@ describe('Test UpdateTaskUseCase', () => {
     describe('Should throw a CustomError with status and message', () => {
       it('status should be "INTERNAL_SERVER_ERROR"', async () => {
         try {
-          await createTaskUseCase.execute(userId, id, {
+          await updateTaskUseCase.execute(userId, id, {
             title,
             description,
             status,
@@ -82,7 +82,7 @@ describe('Test UpdateTaskUseCase', () => {
 
       it('message should be "Unexpected error while updating task"', async () => {
         try {
-          await createTaskUseCase.execute(userId, id, {
+          await updateTaskUseCase.execute(userId, id, {
             title,
             description,
             status,
