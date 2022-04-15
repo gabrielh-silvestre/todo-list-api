@@ -1,8 +1,11 @@
+import { User } from '@prisma/client';
 import { IUsersRepository } from '../../repository/IUsersRepository';
 
 import { IAuthService, IEncriptService } from '../../../../@types/interfaces';
 import { IError, ISuccess } from '../../../../@types/interfaces';
 import { TokenPayload } from '../../../../@types/types';
+
+import { CustomError } from '../../../../utils/CustomError';
 
 interface IRequest {
   email: string;
@@ -19,14 +22,20 @@ class LoginUserUseCase {
   async execute({
     email,
     password,
-  }: IRequest): Promise<ISuccess<string> | IError> {
-    const user = await this.userRepository.findByEmail(email);
+  }: IRequest): Promise<ISuccess<string> | void> {
+    let user: User | null = null;
+
+    try {
+      user = await this.userRepository.findByEmail(email);
+    } catch (err) {
+      throw new CustomError(
+        'INTERNAL_SERVER_ERROR',
+        'Unexpected error while login user'
+      );
+    }
 
     if (!user) {
-      return {
-        statusCode: 'NOT_FOUND',
-        message: 'Invalid email or password',
-      };
+      throw new CustomError('NOT_FOUND', 'Invalid email or password');
     }
 
     const isPasswordValid = await this.encriptService.verify(
@@ -35,10 +44,7 @@ class LoginUserUseCase {
     );
 
     if (!isPasswordValid) {
-      return {
-        statusCode: 'NOT_FOUND',
-        message: 'Invalid email or password',
-      };
+      throw new CustomError('NOT_FOUND', 'Invalid email or password');
     }
 
     return {

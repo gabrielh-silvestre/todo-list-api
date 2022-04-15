@@ -1,10 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 
-import { IError } from '../../../../@types/interfaces';
+import { ISuccess } from '../../../../@types/interfaces';
 
 import { LoginUserUseCase } from './LoginUserUseCase';
 import { successStatusCode } from '../../../../utils/successCode';
-import { errorStatusCode } from '../../../../utils/errorsCode';
 
 class LoginUserController {
   constructor(private loginUserUseCase: LoginUserUseCase) {}
@@ -13,25 +12,14 @@ class LoginUserController {
     const { email, password } = req.body;
 
     try {
-      const result = await this.loginUserUseCase.execute({
+      const { statusCode, data } = (await this.loginUserUseCase.execute({
         email,
         password,
-      });
+      })) as ISuccess<string>;
 
-      if (result.statusCode === 'OK') {
-        const { statusCode, data } = result;
-        return res.status(successStatusCode[statusCode]).json({ token: data });
-      }
-
-      const { statusCode, message } = result as IError;
-      return res.status(errorStatusCode[statusCode]).json({ message });
+      return res.status(successStatusCode[statusCode]).json({ token: data });
     } catch (err) {
-      const error: IError = {
-        statusCode: 'INTERNAL_SERVER_ERROR',
-        message: 'Unexpected error while login user',
-      };
-
-      next(error);
+      next(err);
     }
   };
 }
