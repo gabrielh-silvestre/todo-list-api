@@ -11,7 +11,7 @@ class UniqueTaskUseCase {
     let findedTasks: TaskReturn[] = [];
 
     try {
-      findedTasks = await this.taskRepository.findByTitle(userId, title);
+      findedTasks = await this.taskRepository.findByExactTitle(userId, title);
     } catch (err) {
       throw new CustomError(
         'INTERNAL_SERVER_ERROR',

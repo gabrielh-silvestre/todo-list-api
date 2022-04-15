@@ -99,12 +99,10 @@ class TasksRepository implements ITasksRepository {
     return findedTask;
   }
 
-  async findByTitle(userId: string, title: string): Promise<TaskReturn[]> {
+  async findByExactTitle(userId: string, title: string): Promise<TaskReturn[]> {
     const findedTask = await prisma.task.findMany({
       where: {
-        title: {
-          contains: title,
-        },
+        title,
         userId,
       },
       select: {
