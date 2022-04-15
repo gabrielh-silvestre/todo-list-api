@@ -8,8 +8,9 @@ import { AuthService } from '../../../../services/Auth';
 import { UserRepository } from '../../../../modules/users/repository/UsersRepository';
 import { LoginUserUseCase } from '../../../../modules/users/useCases/loginUser/LoginUserUseCase';
 import { LoginUserController } from '../../../../modules/users/useCases/loginUser/LoginUserController';
+import { CustomError } from '../../../../utils/CustomError';
 
-const USER: User = {
+const MOCK_USER: User = {
   id: '5',
   email: 'person5@email.com',
   username: 'person5',
@@ -28,24 +29,29 @@ const loginUserUseCase = new LoginUserUseCase(
 );
 const loginUserController = new LoginUserController(loginUserUseCase);
 
-describe('Test LoginUserController', () => {
+describe.only('Test LoginUserController', () => {
+  let useCaseStub: Sinon.SinonStub;
   let spiedStatus: Sinon.SinonSpy;
   let spiedJson: Sinon.SinonSpy;
-  let useCaseStub: Sinon.SinonStub;
-  const next: NextFunction = () => {};
+  let spiedNext: Sinon.SinonSpy;
+  const next = {
+    next: (args) => {},
+  } as { next: NextFunction };
 
   before(() => {
     spiedStatus = Sinon.spy(response, 'status');
     spiedJson = Sinon.spy(response, 'json');
+    spiedNext = Sinon.spy(next, 'next');
   });
 
   after(() => {
     spiedStatus.restore();
     spiedJson.restore();
+    spiedNext.restore();
   });
 
   describe('Success case', () => {
-    const { email, password } = USER;
+    const { email, password } = MOCK_USER;
 
     before(() => {
       useCaseStub = Sinon.stub(loginUserUseCase, 'execute').resolves({
@@ -67,27 +73,30 @@ describe('Test LoginUserController', () => {
 
     describe('Should return a object with an success status and data', () => {
       it('success status should be 200', async () => {
-        await loginUserController.handle(request, response, next);
+        await loginUserController.handle(request, response, next.next);
 
         expect(spiedStatus.calledWith(200)).to.be.true;
       });
 
       it('data should be a authorization token', async () => {
-        await loginUserController.handle(request, response, next);
+        await loginUserController.handle(request, response, next.next);
 
         expect(spiedJson.calledWith({ token: FAKE_TOKEN })).to.be.true;
       });
     });
   });
 
-  describe('Failure cases', () => {
-    const { email, password } = USER;
+  describe('Error case', () => {
+    const { email, password } = MOCK_USER;
+    const ERROR_RESPONSE = new CustomError(
+      'NOT_FOUND',
+      'Invalid email or password'
+    );
 
     before(() => {
-      useCaseStub = Sinon.stub(loginUserUseCase, 'execute').resolves({
-        statusCode: 'NOT_FOUND',
-        message: 'Invalid email or password',
-      });
+      useCaseStub = Sinon.stub(loginUserUseCase, 'execute').rejects(
+        ERROR_RESPONSE
+      );
 
       request.body = {
         email,
@@ -101,18 +110,11 @@ describe('Test LoginUserController', () => {
       request.body = {};
     });
 
-    describe('Should return a object with an error status and message', () => {
-      it('status should be 404', async () => {
-        await loginUserController.handle(request, response, next);
+    describe('Should call "next" error middleware', () => {
+      it('"next" error middleware should be called with CustomError as args', async () => {
+        await loginUserController.handle(request, response, next.next);
 
-        expect(spiedStatus.calledWith(404)).to.be.true;
-      });
-
-      it('message should be "Invalid email or password"', async () => {
-        await loginUserController.handle(request, response, next);
-
-        expect(spiedJson.calledWith({ message: 'Invalid email or password' }))
-          .to.be.true;
+        expect(spiedNext.calledWith(ERROR_RESPONSE)).to.be.true;
       });
     });
   });

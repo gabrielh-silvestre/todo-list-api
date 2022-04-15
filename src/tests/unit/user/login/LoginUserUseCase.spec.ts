@@ -29,7 +29,7 @@ const loginUserUseCase = new LoginUserUseCase(
   encriptService
 );
 
-describe.only('Test LoginUserUseCase', () => {
+describe('Test LoginUserUseCase', () => {
   let findByEmailStub: Sinon.SinonStub;
   let createTokenStub: Sinon.SinonStub;
   let verifyPasswordStub: Sinon.SinonStub;
@@ -60,7 +60,7 @@ describe.only('Test LoginUserUseCase', () => {
         const response = await loginUserUseCase.execute({
           email,
           password,
-        });
+        }) as ISuccess<string>;
 
         expect(response.statusCode).to.be.equal('OK');
       });
