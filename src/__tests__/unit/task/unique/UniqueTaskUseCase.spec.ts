@@ -25,7 +25,7 @@ describe('Test UniqueTaskUseCase', () => {
 
   describe('Success case', () => {
     before(() => {
-      findByTitleStub = Sinon.stub(tasksRepository, 'findByTitle').resolves([]);
+      findByTitleStub = Sinon.stub(tasksRepository, 'findByExactTitle').resolves([]);
     });
 
     after(() => {
@@ -57,7 +57,7 @@ describe('Test UniqueTaskUseCase', () => {
 
   describe('Error case', () => {
     before(() => {
-      findByTitleStub = Sinon.stub(tasksRepository, 'findByTitle').resolves([
+      findByTitleStub = Sinon.stub(tasksRepository, 'findByExactTitle').resolves([
         MOCK_TASK,
       ]);
     });
@@ -93,7 +93,7 @@ describe('Test UniqueTaskUseCase', () => {
 
   describe('Database error case', () => {
     before(() => {
-      findByTitleStub = Sinon.stub(tasksRepository, 'findByTitle').rejects();
+      findByTitleStub = Sinon.stub(tasksRepository, 'findByExactTitle').rejects();
     });
 
     after(() => {
