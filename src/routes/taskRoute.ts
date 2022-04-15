@@ -9,10 +9,11 @@ import { verifyTaskController } from '../modules/tasks/useCases/verifyTask';
 import { deleteTaskController } from '../modules/tasks/useCases/deleteTask';
 import { updateTaskController } from '../modules/tasks/useCases/updateTask';
 import { getAllTasksController } from '../modules/tasks/useCases/getAllTasks';
+import { verifyUserController } from '../modules/users/useCases/verifyUser';
 
 const taskRouter = express.Router();
 
-taskRouter.use(authMiddleware.handle);
+taskRouter.use(authMiddleware.handle, verifyUserController.handle);
 
 taskRouter.get('/', getAllTasksController.handle);
 
