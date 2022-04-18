@@ -1,5 +1,3 @@
-import { NextFunction, request, response } from 'express';
-import { User } from '@prisma/client';
 import { v4 as uuidV4 } from 'uuid';
 
 import chai, { expect } from 'chai';
@@ -14,7 +12,7 @@ import { app } from '../../../app';
 chai.use(chaiHTTP);
 const CREATE_USERS_ENDPOINT = '/v1/api/users/create';
 
-describe.only('Test POST endpoint "/users/create"', () => {
+describe('Test POST endpoint "/users/create"', () => {
   const { email, username, password } = newUSer;
 
   let repositoryFindByEmailStub: Sinon.SinonStub;
