@@ -27,7 +27,7 @@ class UserValidator implements IUserValidator {
     });
   }
 
-  createValidation = (req: Request, res: Response, next: NextFunction) => {
+  createValidation = (req: Request, _res: Response, next: NextFunction) => {
     const { error } = this.createUserSchema.validate(req.body);
 
     if (error) {
@@ -38,7 +38,7 @@ class UserValidator implements IUserValidator {
     next();
   };
 
-  loginValidation = (req: Request, res: Response, next: NextFunction) => {
+  loginValidation = (req: Request, _res: Response, next: NextFunction) => {
     const { error } = this.loginUserSchema.validate(req.body);
 
     if (error) {
@@ -51,7 +51,7 @@ class UserValidator implements IUserValidator {
 
   athenticationValidation = (
     req: Request,
-    res: Response,
+    _res: Response,
     next: NextFunction
   ) => {
     const { error } = this.authorizationSchema.validate(req.headers);
