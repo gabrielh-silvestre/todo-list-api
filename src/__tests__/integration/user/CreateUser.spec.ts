@@ -37,7 +37,7 @@ describe('Test POST endpoint "/users/create"', () => {
       repositoryCreateStub.resolves(uuidV4());
     });
 
-    describe('Should returna a success status with a new token', () => {
+    describe('Should return a success status with a new token', () => {
       it('status code should be 201', async () => {
         const response = await chai
           .request(app)
