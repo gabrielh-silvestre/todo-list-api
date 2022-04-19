@@ -6,14 +6,14 @@ import Sinon from 'sinon';
 
 import { UserRepository } from '../../../modules/users/repository/UsersRepository';
 
-import { users, newUSer } from '../../mocks/users';
+import { users, newUser } from '../../mocks/users';
 import { app } from '../../../app';
 
 chai.use(chaiHTTP);
 const CREATE_USERS_ENDPOINT = '/v1/api/users/create';
 
 describe('Test POST endpoint "/users/create"', () => {
-  const { email, username, password } = newUSer;
+  const { email, username, password } = newUser;
 
   let repositoryFindByEmailStub: Sinon.SinonStub;
   let repositoryCreateStub: Sinon.SinonStub;

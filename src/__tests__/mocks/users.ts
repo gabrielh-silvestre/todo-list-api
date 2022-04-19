@@ -1,6 +1,6 @@
 import { User } from '@prisma/client';
 
-const newUSer: User = {
+const newUser: User = {
   id: '7c7de5e9-411a-432f-957f-3bd3ed5c2e09',
   email: 'person5@email.com',
   username: 'person5',
@@ -34,4 +34,4 @@ const users: User[] = [
   },
 ];
 
-export { users, newUSer };
+export { users, newUser };
