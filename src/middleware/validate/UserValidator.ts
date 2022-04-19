@@ -48,21 +48,6 @@ class UserValidator implements IUserValidator {
 
     next();
   };
-
-  athenticationValidation = (
-    req: Request,
-    _res: Response,
-    next: NextFunction
-  ) => {
-    const { error } = this.authorizationSchema.validate(req.headers);
-
-    if (error) {
-      const err = new CustomError('BAD_REQUEST', error.details[0].message);
-      return next(err);
-    }
-
-    next();
-  };
 }
 
 export const userValidator = new UserValidator();

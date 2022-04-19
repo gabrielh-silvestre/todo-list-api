@@ -5,7 +5,6 @@ import { ErrorStatusCode, SuccessStatusCode } from '../types';
 interface IUserValidator {
   createValidation: Handler;
   loginValidation: Handler;
-  athenticationValidation: Handler;
 }
 
 interface ITaskValidator {
