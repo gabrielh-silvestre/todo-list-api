@@ -2,9 +2,9 @@ import { TaskStatus } from '@prisma/client';
 
 import { ITasksRepository } from '../../repository/ITasksRepository';
 import { ISuccess } from '../../../../@types/interfaces';
-import { ErrorStatusCode, TaskReturn } from '../../../../@types/types';
+import { TaskReturn } from '../../../../@types/types';
 
-import { CustomError } from '../../../../utils/CustomError';
+import { InternalError } from '../../../../utils/Errors';
 
 interface IRequest {
   title: string;
@@ -32,9 +32,9 @@ class UpdateTaskUseCase {
         data: updatedTask,
       };
     } catch (err) {
-      throw new CustomError(
-        ErrorStatusCode.INTERNAL_SERVER_ERROR,
-        'Unexpected error while updating task'
+      throw new InternalError(
+        'Unexpected error while updating task',
+        err
       );
     }
   }

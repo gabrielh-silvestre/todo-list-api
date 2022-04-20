@@ -3,9 +3,9 @@ import {
   ITasksRepositoryDTO,
 } from '../../repository/ITasksRepository';
 import { ISuccess } from '../../../../@types/interfaces';
-import { ErrorStatusCode, TaskReturn } from '../../../../@types/types';
+import { TaskReturn } from '../../../../@types/types';
 
-import { CustomError } from '../../../../utils/CustomError';
+import { InternalError } from '../../../../utils/Errors';
 
 class CreateTaskUseCase {
   constructor(private taskRepository: ITasksRepository) {}
@@ -24,10 +24,7 @@ class CreateTaskUseCase {
 
       return { statusCode: 'CREATED', data: newTask };
     } catch (err) {
-      throw new CustomError(
-        ErrorStatusCode.INTERNAL_SERVER_ERROR,
-        'Unexpected error while creating task'
-      );
+      throw new InternalError('Unexpected error while creating task', err);
     }
   }
 }

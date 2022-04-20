@@ -1,8 +1,7 @@
 import { ITasksRepository } from '../../repository/ITasksRepository';
 import { ISuccess } from '../../../../@types/interfaces';
-import { ErrorStatusCode } from '../../../../@types/types';
 
-import { CustomError } from '../../../../utils/CustomError';
+import { InternalError } from '../../../../utils/Errors';
 
 class DeleteTaskUseCase {
   constructor(private tasksRepository: ITasksRepository) {}
@@ -11,10 +10,7 @@ class DeleteTaskUseCase {
     try {
       await this.tasksRepository.delete(userId, id);
     } catch (err) {
-      throw new CustomError(
-        ErrorStatusCode.INTERNAL_SERVER_ERROR,
-        'Unexpected error while deleting task'
-      );
+      throw new InternalError('Unexpected error while deleting task', err);
     }
 
     return {

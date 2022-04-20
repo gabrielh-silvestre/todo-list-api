@@ -1,8 +1,8 @@
 import { ITasksRepository } from '../../repository/ITasksRepository';
 import { ISuccess } from '../../../../@types/interfaces';
-import { ErrorStatusCode, TaskReturn } from '../../../../@types/types';
+import { TaskReturn } from '../../../../@types/types';
 
-import { CustomError } from '../../../../utils/CustomError';
+import { ConflictError, InternalError } from '../../../../utils/Errors';
 
 class UniqueTaskUseCase {
   constructor(private taskRepository: ITasksRepository) {}
@@ -13,17 +13,14 @@ class UniqueTaskUseCase {
     try {
       findedTasks = await this.taskRepository.findByExactTitle(userId, title);
     } catch (err) {
-      throw new CustomError(
-        ErrorStatusCode.INTERNAL_SERVER_ERROR,
-        'Unexpected error while checking task uniqueness'
+      throw new InternalError(
+        'Unexpected error while checking task uniqueness',
+        err
       );
     }
 
     if (findedTasks.length > 0) {
-      throw new CustomError(
-        ErrorStatusCode.CONFLICT,
-        'Task with this title already exists'
-      );
+      throw new ConflictError('Task with this title already exists');
     }
 
     return {
