@@ -320,13 +320,13 @@ describe('Test PUT endpoint "/tasks/:id', () => {
           expect(response.body).to.have.property('message');
         });
 
-        it('message should be: Expired ou invalid token', async () => {
+        it('message should be: Expired or invalid token', async () => {
           const response = await chai
             .request(app)
             .put(UPDATE_TASKS_ENDPOINT)
             .send(UPDATE_TASK);
 
-          expect(response.body.message).to.be.equal('Expired ou invalid token');
+          expect(response.body.message).to.be.equal('Expired or invalid token');
         });
       });
 
@@ -353,14 +353,14 @@ describe('Test PUT endpoint "/tasks/:id', () => {
           expect(response.body).to.have.property('message');
         });
 
-        it('message should be: Expired ou invalid token', async () => {
+        it('message should be: Expired or invalid token', async () => {
           const response = await chai
             .request(app)
             .put(UPDATE_TASKS_ENDPOINT)
             .set('Authorization', 'invalidToken')
             .send(UPDATE_TASK);
 
-          expect(response.body.message).to.be.equal('Expired ou invalid token');
+          expect(response.body.message).to.be.equal('Expired or invalid token');
         });
       });
     });
@@ -465,7 +465,7 @@ describe('Test PUT endpoint "/tasks/:id', () => {
         expect(response.body).to.have.property('message');
       });
 
-      it('message should be: Unexpected error while checking user existence', async () => {
+      it('message should be: Internal server error', async () => {
         const response = await chai
           .request(app)
           .put(UPDATE_TASKS_ENDPOINT)
@@ -473,7 +473,7 @@ describe('Test PUT endpoint "/tasks/:id', () => {
           .send(UPDATE_TASK);
 
         expect(response.body.message).to.be.equal(
-          'Unexpected error while checking user existence'
+          'Internal server error'
         );
       });
     });
@@ -504,7 +504,7 @@ describe('Test PUT endpoint "/tasks/:id', () => {
         expect(response.body).to.have.property('message');
       });
 
-      it('message should be: Unexpected error while checking if task exist', async () => {
+      it('message should be: Internal server error', async () => {
         const response = await chai
           .request(app)
           .put(UPDATE_TASKS_ENDPOINT)
@@ -512,7 +512,7 @@ describe('Test PUT endpoint "/tasks/:id', () => {
           .send(UPDATE_TASK);
 
         expect(response.body.message).to.be.equal(
-          'Unexpected error while checking if task exist'
+          'Internal server error'
         );
       });
     });
@@ -544,7 +544,7 @@ describe('Test PUT endpoint "/tasks/:id', () => {
         expect(response.body).to.have.property('message');
       });
 
-      it('message should be: Unexpected error while updating task', async () => {
+      it('message should be: Internal server error', async () => {
         const response = await chai
           .request(app)
           .put(UPDATE_TASKS_ENDPOINT)
@@ -552,7 +552,7 @@ describe('Test PUT endpoint "/tasks/:id', () => {
           .send(UPDATE_TASK);
 
         expect(response.body.message).to.be.equal(
-          'Unexpected error while updating task'
+          'Internal server error'
         );
       });
     });

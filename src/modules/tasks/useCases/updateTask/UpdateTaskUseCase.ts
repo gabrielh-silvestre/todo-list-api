@@ -4,7 +4,7 @@ import { ITasksRepository } from '../../repository/ITasksRepository';
 import { ISuccess } from '../../../../@types/interfaces';
 import { TaskReturn } from '../../../../@types/types';
 
-import { CustomError } from '../../../../utils/CustomError';
+import { InternalError } from '../../../../utils/Errors';
 
 interface IRequest {
   title: string;
@@ -20,23 +20,16 @@ class UpdateTaskUseCase {
     id: string,
     { title, description, status }: IRequest
   ): Promise<ISuccess<TaskReturn>> {
-    try {
-      const updatedTask = await this.tasksRepository.update(userId, id, {
-        title,
-        description,
-        status,
-      });
+    const updatedTask = await this.tasksRepository.update(userId, id, {
+      title,
+      description,
+      status,
+    });
 
-      return {
-        statusCode: 'UPDATED',
-        data: updatedTask,
-      };
-    } catch (err) {
-      throw new CustomError(
-        'INTERNAL_SERVER_ERROR',
-        'Unexpected error while updating task'
-      );
-    }
+    return {
+      statusCode: 'UPDATED',
+      data: updatedTask,
+    };
   }
 }
 

@@ -1,13 +1,16 @@
 import { Task } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
+
 import { ISuccess } from '../../../../@types/interfaces';
+import { ErrorStatusCode } from '../../../../@types/types';
 
 import { TasksRepository } from '../../../../modules/tasks/repository/TasksRepository';
 import { VerifyTaskUseCase } from '../../../../modules/tasks/useCases/verifyTask/VerifyTaskUseCase';
 
-import { CustomError } from '../../../../utils/CustomError';
+import { BaseError } from '../../../../utils/Errors/BaseError';
 
+const { NOT_FOUND, INTERNAL_SERVER_ERROR } = ErrorStatusCode;
 const MOCK_TASK: Task = {
   id: '5',
   title: 'Task 5',
@@ -67,8 +70,8 @@ describe('Test VerifyTaskUseCase', () => {
         try {
           await verifyTaskUseCase.execute(userId, id);
         } catch (err) {
-          const tErr = err as CustomError;
-          expect(tErr.statusCode).to.be.equal('NOT_FOUND');
+          const tErr = err as BaseError;
+          expect(tErr.getBody().errorCode).to.be.equal(NOT_FOUND);
         }
       });
 
@@ -76,40 +79,8 @@ describe('Test VerifyTaskUseCase', () => {
         try {
           await verifyTaskUseCase.execute(userId, id);
         } catch (err) {
-          const tErr = err as CustomError;
+          const tErr = err as BaseError;
           expect(tErr.message).to.be.equal('Task not found');
-        }
-      });
-    });
-  });
-
-  describe('Database error case', () => {
-    before(() => {
-      findByIdStub = Sinon.stub(tasksRepository, 'findById').rejects();
-    });
-
-    after(() => {
-      findByIdStub.restore();
-    });
-
-    describe('Should throw a CustomError with status and message', () => {
-      it('status should be "INTERNAL_SERVER_ERROR"', async () => {
-        try {
-          await verifyTaskUseCase.execute(userId, id);
-        } catch (err) {
-          const tErr = err as CustomError;
-          expect(tErr.statusCode).to.be.equal('INTERNAL_SERVER_ERROR');
-        }
-      });
-
-      it('message should be "Unexpected error while checking if task exist"', async () => {
-        try {
-          await verifyTaskUseCase.execute(userId, id);
-        } catch (err) {
-          const tErr = err as CustomError;
-          expect(tErr.message).to.be.equal(
-            'Unexpected error while checking if task exist'
-          );
         }
       });
     });

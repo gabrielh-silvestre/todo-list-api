@@ -3,14 +3,17 @@ import { expect } from 'chai';
 import Sinon from 'sinon';
 
 import { ISuccess } from '../../../../@types/interfaces';
+import { ErrorStatusCode } from '../../../../@types/types';
 
 import { AuthService } from '../../../../services/Auth';
 import { EncriptService } from '../../../../services/Encript';
 import { UserRepository } from '../../../../modules/users/repository/UsersRepository';
 import { CreateUserUseCase } from '../../../../modules/users/useCases/createUser/CreateUserUseCase';
 
-import { CustomError } from '../../../../utils/CustomError';
+import { BaseError } from '../../../../utils/Errors/BaseError';
+import { InternalError } from '../../../../utils/Errors';
 
+const { INTERNAL_SERVER_ERROR } = ErrorStatusCode;
 const MOCK_USER: User = {
   id: '5',
   email: 'person5@email.com',
@@ -68,55 +71,6 @@ describe('Test CreateUserCase', () => {
         })) as ISuccess<string>;
 
         expect(response.data).to.be.deep.equal(FAKE_TOKEN);
-      });
-    });
-  });
-
-  describe('Database error case', () => {
-    const ERROR = new CustomError(
-      'INTERNAL_SERVER_ERROR',
-      'Unexpected error while creating user'
-    );
-
-    before(() => {
-      createStub = Sinon.stub(userRepository, 'create').rejects(ERROR);
-    });
-
-    after(() => {
-      createStub.restore();
-    });
-
-    describe('Should throw a CustomError with status and message', () => {
-      const { email, username, password } = MOCK_USER;
-
-      it('status should be "INTERNAL_SERVER_ERROR"', async () => {
-        try {
-          await createUserUseCase.execute({
-            email,
-            username,
-            password,
-          });
-          expect.fail('Should throw an error');
-        } catch (err) {
-          const tErr = err as CustomError;
-          expect(tErr.statusCode).to.be.equal('INTERNAL_SERVER_ERROR');
-        }
-      });
-
-      it('message should be "Unexpected error while creating user"', async () => {
-        try {
-          await createUserUseCase.execute({
-            email,
-            username,
-            password,
-          });
-          expect.fail('Should throw an error');
-        } catch (err) {
-          const tErr = err as CustomError;
-          expect(tErr.message).to.be.equal(
-            'Unexpected error while creating user'
-          );
-        }
       });
     });
   });

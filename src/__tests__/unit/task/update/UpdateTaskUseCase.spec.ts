@@ -2,11 +2,14 @@ import { Task } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
+import { ErrorStatusCode } from '../../../../@types/types';
+
 import { TasksRepository } from '../../../../modules/tasks/repository/TasksRepository';
 import { UpdateTaskUseCase } from '../../../../modules/tasks/useCases/updateTask/UpdateTaskUseCase';
 
-import { CustomError } from '../../../../utils/CustomError';
+import { BaseError } from '../../../../utils/Errors/BaseError';
 
+const { INTERNAL_SERVER_ERROR } = ErrorStatusCode;
 const MOCK_TASK: Task = {
   id: '5',
   title: 'Task 5',
@@ -53,46 +56,6 @@ describe('Test UpdateTaskUseCase', () => {
 
           expect(response.data).to.be.deep.equal(MOCK_TASK);
         });
-      });
-    });
-  });
-
-  describe('Databse error case', () => {
-    before(() => {
-      updateStub = Sinon.stub(tasksRepository, 'update').rejects();
-    });
-
-    after(() => {
-      updateStub.restore();
-    });
-
-    describe('Should throw a CustomError with status and message', () => {
-      it('status should be "INTERNAL_SERVER_ERROR"', async () => {
-        try {
-          await updateTaskUseCase.execute(userId, id, {
-            title,
-            description,
-            status,
-          });
-        } catch (err) {
-          const tErr = err as CustomError;
-          expect(tErr.statusCode).to.be.equal('INTERNAL_SERVER_ERROR');
-        }
-      });
-
-      it('message should be "Unexpected error while updating task"', async () => {
-        try {
-          await updateTaskUseCase.execute(userId, id, {
-            title,
-            description,
-            status,
-          });
-        } catch (err) {
-          const tErr = err as CustomError;
-          expect(tErr.message).to.be.equal(
-            'Unexpected error while updating task'
-          );
-        }
       });
     });
   });

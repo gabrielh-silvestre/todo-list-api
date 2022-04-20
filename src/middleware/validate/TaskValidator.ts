@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import { ITaskValidator } from '../../@types/interfaces';
 
-import { CustomError } from '../../utils/CustomError';
+import { BadRequestError } from '../../utils/Errors';
 
 class TaskValidator implements ITaskValidator {
   private createTaskSchema: Joi.ObjectSchema;
@@ -28,7 +28,7 @@ class TaskValidator implements ITaskValidator {
     const { error } = this.createTaskSchema.validate(req.body);
 
     if (error) {
-      const err = new CustomError('BAD_REQUEST', error.details[0].message);
+      const err = new BadRequestError(error.details[0].message);
       return next(err);
     }
 
@@ -39,7 +39,7 @@ class TaskValidator implements ITaskValidator {
     const { error } = this.updateTaskSchema.validate(req.body);
 
     if (error) {
-      const err = new CustomError('BAD_REQUEST', error.details[0].message);
+      const err = new BadRequestError(error.details[0].message);
       return next(err);
     }
 

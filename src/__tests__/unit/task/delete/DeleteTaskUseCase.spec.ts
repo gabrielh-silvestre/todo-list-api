@@ -2,11 +2,14 @@ import { Task } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
+import { ErrorStatusCode } from '../../../../@types/types';
+
 import { TasksRepository } from '../../../../modules/tasks/repository/TasksRepository';
 import { DeleteTaskUseCase } from '../../../../modules/tasks/useCases/deleteTask/DeleteTaskUseCase';
 
-import { CustomError } from '../../../../utils/CustomError';
+import { BaseError } from '../../../../utils/Errors/BaseError';
 
+const { INTERNAL_SERVER_ERROR } = ErrorStatusCode;
 const MOCK_TASK: Task = {
   id: '5',
   title: 'Task 5',
@@ -43,38 +46,6 @@ describe('Test DeleteTaskUseCase', () => {
         const response = await deleteTaskUseCase.execute(userId, id);
 
         expect(response.data).to.be.deep.equal(null);
-      });
-    });
-  });
-
-  describe('Database error case', () => {
-    before(() => {
-      deleteStub = Sinon.stub(tasksRepository, 'delete').rejects();
-    });
-
-    after(() => {
-      deleteStub.restore();
-    });
-
-    describe('Should throw a CustomError with status and message', () => {
-      it('status should be "INTERNAL_SERVER_ERROR"', async () => {
-        try {
-          await deleteTaskUseCase.execute(userId, id);
-        } catch (err) {
-          const tErr = err as CustomError;
-          expect(tErr.statusCode).to.be.equal('INTERNAL_SERVER_ERROR');
-        }
-      });
-
-      it('message should be "Unexpected error while deleting task"', async () => {
-        try {
-          await deleteTaskUseCase.execute(userId, id);
-        } catch (err) {
-          const tErr = err as CustomError;
-          expect(tErr.message).to.be.equal(
-            'Unexpected error while deleting task'
-          );
-        }
       });
     });
   });

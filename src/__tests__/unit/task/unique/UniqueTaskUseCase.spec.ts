@@ -1,13 +1,16 @@
 import { Task } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
+
 import { ISuccess } from '../../../../@types/interfaces';
+import { ErrorStatusCode } from '../../../../@types/types';
 
 import { TasksRepository } from '../../../../modules/tasks/repository/TasksRepository';
 import { UniqueTaskUseCase } from '../../../../modules/tasks/useCases/uniqueTask/UniqueTaskUseCase';
 
-import { CustomError } from '../../../../utils/CustomError';
+import { BaseError } from '../../../../utils/Errors/BaseError';
 
+const { CONFLICT, INTERNAL_SERVER_ERROR } = ErrorStatusCode;
 const MOCK_TASK: Task = {
   id: '5',
   title: 'Task 5',
@@ -25,7 +28,10 @@ describe('Test UniqueTaskUseCase', () => {
 
   describe('Success case', () => {
     before(() => {
-      findByTitleStub = Sinon.stub(tasksRepository, 'findByExactTitle').resolves([]);
+      findByTitleStub = Sinon.stub(
+        tasksRepository,
+        'findByExactTitle'
+      ).resolves([]);
     });
 
     after(() => {
@@ -57,9 +63,10 @@ describe('Test UniqueTaskUseCase', () => {
 
   describe('Error case', () => {
     before(() => {
-      findByTitleStub = Sinon.stub(tasksRepository, 'findByExactTitle').resolves([
-        MOCK_TASK,
-      ]);
+      findByTitleStub = Sinon.stub(
+        tasksRepository,
+        'findByExactTitle'
+      ).resolves([MOCK_TASK]);
     });
 
     after(() => {
@@ -73,8 +80,8 @@ describe('Test UniqueTaskUseCase', () => {
         try {
           await uniqueTaskUseCase.execute(userId, title);
         } catch (err) {
-          const tErr = err as CustomError;
-          expect(tErr.statusCode).to.be.equal('CONFLICT');
+          const tErr = err as BaseError;
+          expect(tErr.getBody().errorCode).to.be.equal(CONFLICT);
         }
       });
 
@@ -82,45 +89,9 @@ describe('Test UniqueTaskUseCase', () => {
         try {
           await uniqueTaskUseCase.execute(userId, title);
         } catch (err) {
-          const tErr = err as CustomError;
+          const tErr = err as BaseError;
           expect(tErr.message).to.be.equal(
             'Task with this title already exists'
-          );
-        }
-      });
-    });
-  });
-
-  describe('Database error case', () => {
-    before(() => {
-      findByTitleStub = Sinon.stub(tasksRepository, 'findByExactTitle').rejects();
-    });
-
-    after(() => {
-      findByTitleStub.restore();
-    });
-
-    describe('Should throw a CustomError with status and message', () => {
-      const { userId, title } = MOCK_TASK;
-
-      it('status should be "INTERNAL_SERVER_ERROR"', async () => {
-        try {
-          await uniqueTaskUseCase.execute(userId, title);
-          expect.fail('Should throw an error');
-        } catch (err) {
-          const tErr = err as CustomError;
-          expect(tErr.statusCode).to.be.equal('INTERNAL_SERVER_ERROR');
-        }
-      });
-
-      it('message should be "Unexpected error while checking task uniqueness"', async () => {
-        try {
-          await uniqueTaskUseCase.execute(userId, title);
-          expect.fail('Should throw an error');
-        } catch (err) {
-          const tErr = err as CustomError;
-          expect(tErr.message).to.be.equal(
-            'Unexpected error while checking task uniqueness'
           );
         }
       });

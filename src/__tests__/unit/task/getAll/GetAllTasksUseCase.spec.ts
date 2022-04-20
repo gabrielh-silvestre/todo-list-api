@@ -2,11 +2,14 @@ import { Task } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
+import { ErrorStatusCode } from '../../../../@types/types';
+
 import { TasksRepository } from '../../../../modules/tasks/repository/TasksRepository';
 import { GetAllTasksUseCase } from '../../../../modules/tasks/useCases/getAllTasks/GetAllTasksUseCase';
 
-import { CustomError } from '../../../../utils/CustomError';
+import { BaseError } from '../../../../utils/Errors/BaseError';
 
+const { INTERNAL_SERVER_ERROR } = ErrorStatusCode;
 const MOCK_TASKS: Task[] = [
   {
     id: '5',
@@ -53,38 +56,6 @@ describe('Test GetAllTasksUseCase', () => {
         const response = await getAllTasksUseCase.execute(userId);
 
         expect(response.data).to.be.deep.equal(MOCK_TASKS);
-      });
-    });
-  });
-
-  describe('Database error case', () => {
-    before(() => {
-      getAllStub = Sinon.stub(tasksRepository, 'findAll').rejects();
-    });
-
-    after(() => {
-      getAllStub.restore();
-    });
-
-    describe('Should throw a CustomError with status and message', () => {
-      it('status should be "INTERNAL_SERVER_ERROR"', async () => {
-        try {
-          await getAllTasksUseCase.execute(userId);
-        } catch (err) {
-          const tErr = err as CustomError;
-          expect(tErr.statusCode).to.be.equal('INTERNAL_SERVER_ERROR');
-        }
-      });
-
-      it('message should be "Unexpected error while finding all tasks"', async () => {
-        try {
-          await getAllTasksUseCase.execute(userId);
-        } catch (err) {
-          const tErr = err as CustomError;
-          expect(tErr.message).to.be.equal(
-            'Unexpected error while finding all tasks'
-          );
-        }
       });
     });
   });

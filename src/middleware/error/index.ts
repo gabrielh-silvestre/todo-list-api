@@ -1,24 +1,26 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { CustomError } from '../../utils/CustomError';
-import { errorStatusCode } from '../../utils/errorsCode';
+import { InternalError } from '../../utils/Errors';
+import { BaseError } from '../../utils/Errors/BaseError';
+
+const normalizeError = (err: any) => {
+  if (err instanceof BaseError) {
+    return err;
+  }
+
+  return new InternalError('Internal server error', err);
+};
 
 const errorHandler = (
-  err: CustomError,
+  err: BaseError,
   _req: Request,
   res: Response,
   _next: NextFunction
 ) => {
-  const { statusCode, message } = err;
+  const error = normalizeError(err);
+  const { errorCode, message } = error.getBody();
 
-  if (statusCode) {
-    return res.status(errorStatusCode[statusCode]).json({ message });
-  }
-
-  console.log(message);
-  return res
-    .status(errorStatusCode.INTERNAL_SERVER_ERROR)
-    .json({ message: 'Internal server error' });
+  return res.status(errorCode).json({ message });
 };
 
 export { errorHandler };

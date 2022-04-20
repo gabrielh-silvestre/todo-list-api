@@ -1,25 +1,16 @@
-import { User } from '@prisma/client';
-import { ISuccess } from '../../../../@types/interfaces';
-import { CustomError } from '../../../../utils/CustomError';
 import { IUsersRepository } from '../../repository/IUsersRepository';
+import { ISuccess } from '../../../../@types/interfaces';
+
+import { NotFoundError } from '../../../../utils/Errors';
 
 class VerifyUserUseCase {
   constructor(private userRepository: IUsersRepository) {}
 
   async execute(id: string): Promise<ISuccess<null>> {
-    let findedUser: User | null = null;
-
-    try {
-      findedUser = await this.userRepository.findById(id);
-    } catch (err) {
-      throw new CustomError(
-        'INTERNAL_SERVER_ERROR',
-        'Unexpected error while checking user existence'
-      );
-    }
+    const findedUser = await this.userRepository.findById(id);
 
     if (!findedUser) {
-      throw new CustomError('NOT_FOUND', 'User does not exist');
+      throw new NotFoundError('User does not exist');
     }
 
     return {

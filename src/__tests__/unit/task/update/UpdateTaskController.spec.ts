@@ -4,13 +4,13 @@ import { expect } from 'chai';
 import Sinon from 'sinon';
 
 import { ISuccess } from '../../../../@types/interfaces';
-import { TaskReturn } from '../../../../@types/types';
+import { ErrorStatusCode, TaskReturn } from '../../../../@types/types';
 
 import { TasksRepository } from '../../../../modules/tasks/repository/TasksRepository';
 import { UpdateTaskUseCase } from '../../../../modules/tasks/useCases/updateTask/UpdateTaskUseCase';
 import { UpdateTaskController } from '../../../../modules/tasks/useCases/updateTask/UpdateTaskController';
 
-import { CustomError } from '../../../../utils/CustomError';
+import { InternalError } from '../../../../utils/Errors';
 
 const MOCK_TASK: Task = {
   id: '5',
@@ -95,9 +95,9 @@ describe('Test UpdateTaskController', () => {
   });
 
   describe('Error case', () => {
-    const ERROR_RESPONSE = new CustomError(
-      'INTERNAL_SERVER_ERROR',
-      'Unexpected error while updating task'
+    const ERROR_RESPONSE = new InternalError(
+      'Unexpected error while updating task',
+      'test env'
     );
 
     before(() => {
