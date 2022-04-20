@@ -3,12 +3,14 @@ import { expect } from 'chai';
 import Sinon from 'sinon';
 
 import { ISuccess } from '../../../../@types/interfaces';
+import { ErrorStatusCode } from '../../../../@types/types';
 
 import { UserRepository } from '../../../../modules/users/repository/UsersRepository';
 import { VerifyUserUseCase } from '../../../../modules/users/useCases/verifyUser/VerifyUserUseUseCase';
 
 import { CustomError } from '../../../../utils/CustomError';
 
+const { NOT_FOUND, INTERNAL_SERVER_ERROR } = ErrorStatusCode;
 const MOCK_USER: User = {
   id: '1',
   email: 'person1@email.com',
@@ -67,7 +69,7 @@ describe('Test VerifyUserUseCase', () => {
           expect.fail('Should throw an error');
         } catch (err) {
           const tErr = err as CustomError;
-          expect(tErr.statusCode).to.be.equal('NOT_FOUND');
+          expect(tErr.statusCode).to.be.equal(NOT_FOUND);
         }
       });
 
@@ -99,7 +101,7 @@ describe('Test VerifyUserUseCase', () => {
           expect.fail('Should throw an error');
         } catch (err) {
           const tErr = err as CustomError;
-          expect(tErr.statusCode).to.be.equal('INTERNAL_SERVER_ERROR');
+          expect(tErr.statusCode).to.be.equal(INTERNAL_SERVER_ERROR);
         }
       });
 

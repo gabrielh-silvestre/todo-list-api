@@ -2,11 +2,14 @@ import { Task } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
+import { ErrorStatusCode } from '../../../../@types/types';
+
 import { TasksRepository } from '../../../../modules/tasks/repository/TasksRepository';
 import { CreateTaskUseCase } from '../../../../modules/tasks/useCases/createTask/CreateTaskUseCase';
 
 import { CustomError } from '../../../../utils/CustomError';
 
+const { INTERNAL_SERVER_ERROR } = ErrorStatusCode;
 const MOCK_TASK: Task = {
   id: '5',
   title: 'Task 5',
@@ -100,7 +103,7 @@ describe('Test CreateTaskUseCase', () => {
           });
         } catch (err) {
           const tErr = err as CustomError;
-          expect(tErr.statusCode).to.be.equal('INTERNAL_SERVER_ERROR');
+          expect(tErr.statusCode).to.be.equal(INTERNAL_SERVER_ERROR);
         }
       });
 

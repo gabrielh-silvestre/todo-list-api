@@ -12,6 +12,7 @@ import { CreateUserUseCase } from '../../../../modules/users/useCases/createUser
 
 import { CustomError } from '../../../../utils/CustomError';
 
+const { INTERNAL_SERVER_ERROR } = ErrorStatusCode;
 const MOCK_USER: User = {
   id: '5',
   email: 'person5@email.com',
@@ -100,7 +101,7 @@ describe('Test CreateUserCase', () => {
           expect.fail('Should throw an error');
         } catch (err) {
           const tErr = err as CustomError;
-          expect(tErr.statusCode).to.be.equal('INTERNAL_SERVER_ERROR');
+          expect(tErr.statusCode).to.be.equal(INTERNAL_SERVER_ERROR);
         }
       });
 

@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import Sinon from 'sinon';
 
 import { ISuccess } from '../../../../@types/interfaces';
+import { ErrorStatusCode } from '../../../../@types/types';
 
 import { EncriptService } from '../../../../services/Encript';
 import { AuthService } from '../../../../services/Auth';
@@ -11,6 +12,7 @@ import { LoginUserUseCase } from '../../../../modules/users/useCases/loginUser/L
 
 import { CustomError } from '../../../../utils/CustomError';
 
+const { NOT_FOUND, INTERNAL_SERVER_ERROR } = ErrorStatusCode;
 const MOCK_USER: User = {
   id: '5',
   email: 'person5@email.com',
@@ -57,10 +59,10 @@ describe('Test LoginUserUseCase', () => {
       const { email, password } = MOCK_USER;
 
       it('success status should be "OK"', async () => {
-        const response = await loginUserUseCase.execute({
+        const response = (await loginUserUseCase.execute({
           email,
           password,
-        }) as ISuccess<string>;
+        })) as ISuccess<string>;
 
         expect(response.statusCode).to.be.equal('OK');
       });
@@ -100,7 +102,7 @@ describe('Test LoginUserUseCase', () => {
             expect.fail('Should throw an error');
           } catch (err) {
             const tErr = err as CustomError;
-            expect(tErr.statusCode).to.be.equal('NOT_FOUND');
+            expect(tErr.statusCode).to.be.equal(NOT_FOUND);
           }
         });
 
@@ -140,7 +142,7 @@ describe('Test LoginUserUseCase', () => {
             expect.fail('Should throw an error');
           } catch (err) {
             const tErr = err as CustomError;
-            expect(tErr.statusCode).to.be.equal('NOT_FOUND');
+            expect(tErr.statusCode).to.be.equal(NOT_FOUND);
           }
         });
 
@@ -181,7 +183,7 @@ describe('Test LoginUserUseCase', () => {
           expect.fail('Should throw an error');
         } catch (err) {
           const tErr = err as CustomError;
-          expect(tErr.statusCode).to.be.equal('INTERNAL_SERVER_ERROR');
+          expect(tErr.statusCode).to.be.equal(INTERNAL_SERVER_ERROR);
         }
       });
 
