@@ -8,7 +8,7 @@ import { ErrorStatusCode } from '../../../../@types/types';
 import { UserRepository } from '../../../../modules/users/repository/UsersRepository';
 import { VerifyUserUseCase } from '../../../../modules/users/useCases/verifyUser/VerifyUserUseUseCase';
 
-import { CustomError } from '../../../../utils/CustomError';
+import { BaseError } from '../../../../utils/Errors/BaseError';
 
 const { NOT_FOUND, INTERNAL_SERVER_ERROR } = ErrorStatusCode;
 const MOCK_USER: User = {
@@ -68,8 +68,8 @@ describe('Test VerifyUserUseCase', () => {
           await verifyUserUseCase.execute(id);
           expect.fail('Should throw an error');
         } catch (err) {
-          const tErr = err as CustomError;
-          expect(tErr.statusCode).to.be.equal(NOT_FOUND);
+          const tErr = err as BaseError;
+          expect(tErr.getBody().errorCode).to.be.equal(NOT_FOUND);
         }
       });
 
@@ -78,7 +78,7 @@ describe('Test VerifyUserUseCase', () => {
           await verifyUserUseCase.execute(id);
           expect.fail('Should throw an error');
         } catch (err) {
-          const tErr = err as CustomError;
+          const tErr = err as BaseError;
           expect(tErr.message).to.be.equal('User does not exist');
         }
       });
@@ -100,8 +100,8 @@ describe('Test VerifyUserUseCase', () => {
           await verifyUserUseCase.execute(id);
           expect.fail('Should throw an error');
         } catch (err) {
-          const tErr = err as CustomError;
-          expect(tErr.statusCode).to.be.equal(INTERNAL_SERVER_ERROR);
+          const tErr = err as BaseError;
+          expect(tErr.getBody().errorCode).to.be.equal(INTERNAL_SERVER_ERROR);
         }
       });
 
@@ -110,7 +110,7 @@ describe('Test VerifyUserUseCase', () => {
           await verifyUserUseCase.execute(id);
           expect.fail('Should throw an error');
         } catch (err) {
-          const tErr = err as CustomError;
+          const tErr = err as BaseError;
           expect(tErr.message).to.be.equal(
             'Unexpected error while checking user existence'
           );

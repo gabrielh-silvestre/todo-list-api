@@ -10,7 +10,8 @@ import { EncriptService } from '../../../../services/Encript';
 import { UserRepository } from '../../../../modules/users/repository/UsersRepository';
 import { CreateUserUseCase } from '../../../../modules/users/useCases/createUser/CreateUserUseCase';
 
-import { CustomError } from '../../../../utils/CustomError';
+import { BaseError } from '../../../../utils/Errors/BaseError';
+import { InternalError } from '../../../../utils/Errors';
 
 const { INTERNAL_SERVER_ERROR } = ErrorStatusCode;
 const MOCK_USER: User = {
@@ -75,9 +76,9 @@ describe('Test CreateUserCase', () => {
   });
 
   describe('Database error case', () => {
-    const ERROR = new CustomError(
-      ErrorStatusCode.INTERNAL_SERVER_ERROR,
-      'Unexpected error while creating user'
+    const ERROR = new InternalError(
+      'Unexpected error while creating user',
+      'test env'
     );
 
     before(() => {
@@ -100,8 +101,8 @@ describe('Test CreateUserCase', () => {
           });
           expect.fail('Should throw an error');
         } catch (err) {
-          const tErr = err as CustomError;
-          expect(tErr.statusCode).to.be.equal(INTERNAL_SERVER_ERROR);
+          const tErr = err as BaseError;
+          expect(tErr.getBody().errorCode).to.be.equal(INTERNAL_SERVER_ERROR);
         }
       });
 
@@ -114,7 +115,7 @@ describe('Test CreateUserCase', () => {
           });
           expect.fail('Should throw an error');
         } catch (err) {
-          const tErr = err as CustomError;
+          const tErr = err as BaseError;
           expect(tErr.message).to.be.equal(
             'Unexpected error while creating user'
           );

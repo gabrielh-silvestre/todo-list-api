@@ -10,7 +10,7 @@ import { AuthService } from '../../../../services/Auth';
 import { UserRepository } from '../../../../modules/users/repository/UsersRepository';
 import { LoginUserUseCase } from '../../../../modules/users/useCases/loginUser/LoginUserUseCase';
 
-import { CustomError } from '../../../../utils/CustomError';
+import { BaseError } from '../../../../utils/Errors/BaseError';
 
 const { NOT_FOUND, INTERNAL_SERVER_ERROR } = ErrorStatusCode;
 const MOCK_USER: User = {
@@ -101,8 +101,8 @@ describe('Test LoginUserUseCase', () => {
             });
             expect.fail('Should throw an error');
           } catch (err) {
-            const tErr = err as CustomError;
-            expect(tErr.statusCode).to.be.equal(NOT_FOUND);
+            const tErr = err as BaseError;
+            expect(tErr.getBody().errorCode).to.be.equal(NOT_FOUND);
           }
         });
 
@@ -114,7 +114,7 @@ describe('Test LoginUserUseCase', () => {
             });
             expect.fail('Should throw an error');
           } catch (err) {
-            const tErr = err as CustomError;
+            const tErr = err as BaseError;
             expect(tErr.message).to.be.equal('Invalid email or password');
           }
         });
@@ -141,8 +141,8 @@ describe('Test LoginUserUseCase', () => {
             });
             expect.fail('Should throw an error');
           } catch (err) {
-            const tErr = err as CustomError;
-            expect(tErr.statusCode).to.be.equal(NOT_FOUND);
+            const tErr = err as BaseError;
+            expect(tErr.getBody().errorCode).to.be.equal(NOT_FOUND);
           }
         });
 
@@ -154,7 +154,7 @@ describe('Test LoginUserUseCase', () => {
             });
             expect.fail('Should throw an error');
           } catch (err) {
-            const tErr = err as CustomError;
+            const tErr = err as BaseError;
             expect(tErr.message).to.be.equal('Invalid email or password');
           }
         });
@@ -182,8 +182,8 @@ describe('Test LoginUserUseCase', () => {
           });
           expect.fail('Should throw an error');
         } catch (err) {
-          const tErr = err as CustomError;
-          expect(tErr.statusCode).to.be.equal(INTERNAL_SERVER_ERROR);
+          const tErr = err as BaseError;
+          expect(tErr.getBody().errorCode).to.be.equal(INTERNAL_SERVER_ERROR);
         }
       });
 
@@ -195,7 +195,7 @@ describe('Test LoginUserUseCase', () => {
           });
           expect.fail('Should throw an error');
         } catch (err) {
-          const tErr = err as CustomError;
+          const tErr = err as BaseError;
           expect(tErr.message).to.be.equal('Unexpected error while login user');
         }
       });
