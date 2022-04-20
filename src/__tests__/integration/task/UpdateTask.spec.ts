@@ -320,13 +320,13 @@ describe('Test PUT endpoint "/tasks/:id', () => {
           expect(response.body).to.have.property('message');
         });
 
-        it('message should be: Expired ou invalid token', async () => {
+        it('message should be: Expired or invalid token', async () => {
           const response = await chai
             .request(app)
             .put(UPDATE_TASKS_ENDPOINT)
             .send(UPDATE_TASK);
 
-          expect(response.body.message).to.be.equal('Expired ou invalid token');
+          expect(response.body.message).to.be.equal('Expired or invalid token');
         });
       });
 
@@ -353,14 +353,14 @@ describe('Test PUT endpoint "/tasks/:id', () => {
           expect(response.body).to.have.property('message');
         });
 
-        it('message should be: Expired ou invalid token', async () => {
+        it('message should be: Expired or invalid token', async () => {
           const response = await chai
             .request(app)
             .put(UPDATE_TASKS_ENDPOINT)
             .set('Authorization', 'invalidToken')
             .send(UPDATE_TASK);
 
-          expect(response.body.message).to.be.equal('Expired ou invalid token');
+          expect(response.body.message).to.be.equal('Expired or invalid token');
         });
       });
     });

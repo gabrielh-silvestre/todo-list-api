@@ -113,13 +113,13 @@ describe('Test POST endpoint "/tasks"', () => {
           expect(response.body).to.have.property('message');
         });
 
-        it('message should be: Expired ou invalid token', async () => {
+        it('message should be: Expired or invalid token', async () => {
           const response = await chai
             .request(app)
             .post(LIST_TASKS_ENDPOINT)
             .send(CREATE_NEW_TASK);
 
-          expect(response.body.message).to.be.equal('Expired ou invalid token');
+          expect(response.body.message).to.be.equal('Expired or invalid token');
         });
       });
 
@@ -146,14 +146,14 @@ describe('Test POST endpoint "/tasks"', () => {
           expect(response.body).to.have.property('message');
         });
 
-        it('message should be: Expired ou invalid token', async () => {
+        it('message should be: Expired or invalid token', async () => {
           const response = await chai
             .request(app)
             .post(LIST_TASKS_ENDPOINT)
             .set('Authorization', 'invalidToken')
             .send(CREATE_NEW_TASK);
 
-          expect(response.body.message).to.be.equal('Expired ou invalid token');
+          expect(response.body.message).to.be.equal('Expired or invalid token');
         });
       });
     });

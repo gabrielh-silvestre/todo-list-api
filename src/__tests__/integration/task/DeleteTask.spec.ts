@@ -84,12 +84,12 @@ describe('Test DELETE endpoint "/tasks/:id"', () => {
           expect(response.body).to.have.property('message');
         });
 
-        it('message should be: Expired ou invalid token', async () => {
+        it('message should be: Expired or invalid token', async () => {
           const response = await chai
             .request(app)
             .delete(DELETE_TASKS_ENDPOINT);
 
-          expect(response.body.message).to.be.equal('Expired ou invalid token');
+          expect(response.body.message).to.be.equal('Expired or invalid token');
         });
       });
 
@@ -114,13 +114,13 @@ describe('Test DELETE endpoint "/tasks/:id"', () => {
           expect(response.body).to.have.property('message');
         });
 
-        it('message should be: Expired ou invalid token', async () => {
+        it('message should be: Expired or invalid token', async () => {
           const response = await chai
             .request(app)
             .delete(DELETE_TASKS_ENDPOINT)
             .set('Authorization', 'invalidToken');
 
-          expect(response.body.message).to.be.equal('Expired ou invalid token');
+          expect(response.body.message).to.be.equal('Expired or invalid token');
         });
       });
     });

@@ -22,7 +22,7 @@ const MOCK_TASK: Task = {
 const tasksRepository = new TasksRepository();
 const deleteTaskUseCase = new DeleteTaskUseCase(tasksRepository);
 
-describe.only('Test DeleteTaskUseCase', () => {
+describe('Test DeleteTaskUseCase', () => {
   const { id, userId } = MOCK_TASK;
   let deleteStub: Sinon.SinonStub;
 
