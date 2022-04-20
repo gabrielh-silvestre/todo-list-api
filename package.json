@@ -10,7 +10,7 @@
     "start": "node dist/server.js",
     "dev": "nodemon src/server.ts",
     "test": "mocha -r ts-node/register/transpile-only src/__tests__/**/*.spec.ts",
-    "test:result": "npm test --reporter json > test-results.json",
+    "test:result": "mocha -R json -O output=test-results.json -r ts-node/register/transpile-only src/__tests__/**/*.spec.ts",
     "test:coverage": "nyc npm test",
     "db:drop": "ts-node prisma/reset.ts"
   },
