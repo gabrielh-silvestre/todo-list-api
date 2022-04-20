@@ -3,3 +3,4 @@ node_modules
 requirements.md
 .vscode
 .nyc_output
+test-results.json
