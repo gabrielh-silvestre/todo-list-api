@@ -97,43 +97,4 @@ describe('Test UniqueTaskUseCase', () => {
       });
     });
   });
-
-  describe('Database error case', () => {
-    before(() => {
-      findByTitleStub = Sinon.stub(
-        tasksRepository,
-        'findByExactTitle'
-      ).rejects();
-    });
-
-    after(() => {
-      findByTitleStub.restore();
-    });
-
-    describe('Should throw a CustomError with status and message', () => {
-      const { userId, title } = MOCK_TASK;
-
-      it('status should be "INTERNAL_SERVER_ERROR"', async () => {
-        try {
-          await uniqueTaskUseCase.execute(userId, title);
-          expect.fail('Should throw an error');
-        } catch (err) {
-          const tErr = err as BaseError;
-          expect(tErr.getBody().errorCode).to.be.equal(INTERNAL_SERVER_ERROR);
-        }
-      });
-
-      it('message should be "Unexpected error while checking task uniqueness"', async () => {
-        try {
-          await uniqueTaskUseCase.execute(userId, title);
-          expect.fail('Should throw an error');
-        } catch (err) {
-          const tErr = err as BaseError;
-          expect(tErr.message).to.be.equal(
-            'Unexpected error while checking task uniqueness'
-          );
-        }
-      });
-    });
-  });
 });

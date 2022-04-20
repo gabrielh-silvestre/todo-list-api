@@ -59,44 +59,4 @@ describe('Test UpdateTaskUseCase', () => {
       });
     });
   });
-
-  describe('Databse error case', () => {
-    before(() => {
-      updateStub = Sinon.stub(tasksRepository, 'update').rejects();
-    });
-
-    after(() => {
-      updateStub.restore();
-    });
-
-    describe('Should throw a CustomError with status and message', () => {
-      it('status should be "INTERNAL_SERVER_ERROR"', async () => {
-        try {
-          await updateTaskUseCase.execute(userId, id, {
-            title,
-            description,
-            status,
-          });
-        } catch (err) {
-          const tErr = err as BaseError;
-          expect(tErr.getBody().errorCode).to.be.equal(INTERNAL_SERVER_ERROR);
-        }
-      });
-
-      it('message should be "Unexpected error while updating task"', async () => {
-        try {
-          await updateTaskUseCase.execute(userId, id, {
-            title,
-            description,
-            status,
-          });
-        } catch (err) {
-          const tErr = err as BaseError;
-          expect(tErr.message).to.be.equal(
-            'Unexpected error while updating task'
-          );
-        }
-      });
-    });
-  });
 });

@@ -83,44 +83,4 @@ describe('Test CreateTaskUseCase', () => {
       });
     });
   });
-
-  describe('Database error case', () => {
-    before(() => {
-      createStub = Sinon.stub(tasksRepository, 'create').rejects();
-    });
-
-    after(() => {
-      createStub.restore();
-    });
-
-    describe('Should throw a CustomError with status and message', () => {
-      it('status should be "INTERNAL_SERVER_ERROR"', async () => {
-        try {
-          await createTaskUseCase.execute({
-            title,
-            description,
-            userId,
-          });
-        } catch (err) {
-          const tErr = err as BaseError;
-          expect(tErr.getBody().errorCode).to.be.equal(INTERNAL_SERVER_ERROR);
-        }
-      });
-
-      it('message should be "Unexpected error while creating task"', async () => {
-        try {
-          await createTaskUseCase.execute({
-            title,
-            description,
-            userId,
-          });
-        } catch (err) {
-          const tErr = err as BaseError;
-          expect(tErr.message).to.be.equal(
-            'Unexpected error while creating task'
-          );
-        }
-      });
-    });
-  });
 });

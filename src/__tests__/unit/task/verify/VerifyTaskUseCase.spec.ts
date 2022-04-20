@@ -85,36 +85,4 @@ describe('Test VerifyTaskUseCase', () => {
       });
     });
   });
-
-  describe('Database error case', () => {
-    before(() => {
-      findByIdStub = Sinon.stub(tasksRepository, 'findById').rejects();
-    });
-
-    after(() => {
-      findByIdStub.restore();
-    });
-
-    describe('Should throw a CustomError with status and message', () => {
-      it('status should be "INTERNAL_SERVER_ERROR"', async () => {
-        try {
-          await verifyTaskUseCase.execute(userId, id);
-        } catch (err) {
-          const tErr = err as BaseError;
-          expect(tErr.getBody().errorCode).to.be.equal(INTERNAL_SERVER_ERROR);
-        }
-      });
-
-      it('message should be "Unexpected error while checking if task exist"', async () => {
-        try {
-          await verifyTaskUseCase.execute(userId, id);
-        } catch (err) {
-          const tErr = err as BaseError;
-          expect(tErr.message).to.be.equal(
-            'Unexpected error while checking if task exist'
-          );
-        }
-      });
-    });
-  });
 });

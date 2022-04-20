@@ -59,36 +59,4 @@ describe('Test GetAllTasksUseCase', () => {
       });
     });
   });
-
-  describe('Database error case', () => {
-    before(() => {
-      getAllStub = Sinon.stub(tasksRepository, 'findAll').rejects();
-    });
-
-    after(() => {
-      getAllStub.restore();
-    });
-
-    describe('Should throw a CustomError with status and message', () => {
-      it('status should be "INTERNAL_SERVER_ERROR"', async () => {
-        try {
-          await getAllTasksUseCase.execute(userId);
-        } catch (err) {
-          const tErr = err as BaseError;
-          expect(tErr.getBody().errorCode).to.be.equal(INTERNAL_SERVER_ERROR);
-        }
-      });
-
-      it('message should be "Unexpected error while finding all tasks"', async () => {
-        try {
-          await getAllTasksUseCase.execute(userId);
-        } catch (err) {
-          const tErr = err as BaseError;
-          expect(tErr.message).to.be.equal(
-            'Unexpected error while finding all tasks'
-          );
-        }
-      });
-    });
-  });
 });

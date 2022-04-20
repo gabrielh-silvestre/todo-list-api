@@ -91,40 +91,4 @@ describe('Test UniqueUserUseCase', () => {
       });
     });
   });
-
-  describe('Database error case', () => {
-    before(() => {
-      findByEmailStub = Sinon.stub(userRepository, 'findByEmail').rejects();
-    });
-
-    after(() => {
-      findByEmailStub.restore();
-    });
-
-    describe('Should throw a CustomError with status and message', () => {
-      const { email } = NEW_USER;
-
-      it('status should be "INTERNAL_SERVER_ERROR"', async () => {
-        try {
-          await uniqueUserUseCase.execute(email);
-          expect.fail('Should throw an error');
-        } catch (err) {
-          const tErr = err as BaseError;
-          expect(tErr.getBody().errorCode).to.be.equal(INTERNAL_SERVER_ERROR);
-        }
-      });
-
-      it('message should be "Unexpected error while checking user uniqueness"', async () => {
-        try {
-          await uniqueUserUseCase.execute(email);
-          expect.fail('Should throw an error');
-        } catch (err) {
-          const tErr = err as BaseError;
-          expect(tErr.message).to.be.equal(
-            'Unexpected error while checking user uniqueness'
-          );
-        }
-      });
-    });
-  });
 });

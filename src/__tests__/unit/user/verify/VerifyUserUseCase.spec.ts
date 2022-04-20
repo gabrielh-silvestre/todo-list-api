@@ -84,38 +84,4 @@ describe('Test VerifyUserUseCase', () => {
       });
     });
   });
-
-  describe('Database error case', () => {
-    before(() => {
-      findByIdStub = Sinon.stub(userRepository, 'findById').rejects();
-    });
-
-    after(() => {
-      findByIdStub.restore();
-    });
-
-    describe('Should throw a CustomError with status and message', () => {
-      it('status should be "INTERNAL_SERVER_ERROR"', async () => {
-        try {
-          await verifyUserUseCase.execute(id);
-          expect.fail('Should throw an error');
-        } catch (err) {
-          const tErr = err as BaseError;
-          expect(tErr.getBody().errorCode).to.be.equal(INTERNAL_SERVER_ERROR);
-        }
-      });
-
-      it('message should be "Unexpected error while checking user existence"', async () => {
-        try {
-          await verifyUserUseCase.execute(id);
-          expect.fail('Should throw an error');
-        } catch (err) {
-          const tErr = err as BaseError;
-          expect(tErr.message).to.be.equal(
-            'Unexpected error while checking user existence'
-          );
-        }
-      });
-    });
-  });
 });
