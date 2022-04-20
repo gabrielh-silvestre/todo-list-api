@@ -21,6 +21,12 @@ jobs:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           TEST_TOKEN: ${{ secrets.TEST_TOKEN }}
 
+      - name: Generate Mocha report
+        run: npm test:result
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          TEST_TOKEN: ${{ secrets.TEST_TOKEN }}
+
       - name: Test Report
         uses: dorny/test-reporter@v1
         if: success() || failure()
