@@ -12,7 +12,7 @@ import { CreateUserUseCase } from '../../../../modules/users/useCases/createUser
 import { CreateUserController } from '../../../../modules/users/useCases/createUser/CreateUserController';
 import { AuthService } from '../../../../services/Auth';
 
-import { CustomError } from '../../../../utils/CustomError';
+import { ConflictError } from '../../../../utils/Errors';
 
 const MOCK_USER: User = {
   id: '5',
@@ -94,10 +94,7 @@ describe('Test CreateUserController', () => {
 
   describe('Error case', () => {
     const { email, username, password } = MOCK_USER;
-    const ERROR_RESPONSE = new CustomError(
-      ErrorStatusCode.CONFLICT,
-      'User already exists'
-    );
+    const ERROR_RESPONSE = new ConflictError('User already exists');
 
     before(() => {
       useCaseStub = Sinon.stub(createUserUseCase, 'execute').rejects(

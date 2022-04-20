@@ -10,7 +10,7 @@ import { TasksRepository } from '../../../../modules/tasks/repository/TasksRepos
 import { UpdateTaskUseCase } from '../../../../modules/tasks/useCases/updateTask/UpdateTaskUseCase';
 import { UpdateTaskController } from '../../../../modules/tasks/useCases/updateTask/UpdateTaskController';
 
-import { CustomError } from '../../../../utils/CustomError';
+import { InternalError } from '../../../../utils/Errors';
 
 const MOCK_TASK: Task = {
   id: '5',
@@ -95,9 +95,9 @@ describe('Test UpdateTaskController', () => {
   });
 
   describe('Error case', () => {
-    const ERROR_RESPONSE = new CustomError(
-      ErrorStatusCode.INTERNAL_SERVER_ERROR,
-      'Unexpected error while updating task'
+    const ERROR_RESPONSE = new InternalError(
+      'Unexpected error while updating task',
+      'test env'
     );
 
     before(() => {

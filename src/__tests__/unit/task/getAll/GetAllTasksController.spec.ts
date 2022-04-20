@@ -10,7 +10,7 @@ import { TasksRepository } from '../../../../modules/tasks/repository/TasksRepos
 import { GetAllTasksUseCase } from '../../../../modules/tasks/useCases/getAllTasks/GetAllTasksUseCase';
 import { GetAllTasksController } from '../../../../modules/tasks/useCases/getAllTasks/GetAllTasksController';
 
-import { CustomError } from '../../../../utils/CustomError';
+import { InternalError } from '../../../../utils/Errors';
 
 const MOCK_TASKS: Task[] = [
   {
@@ -95,9 +95,9 @@ describe('Test GetAllTasksController', () => {
   });
 
   describe('Error case', () => {
-    const ERROR_RESPONSE = new CustomError(
-      ErrorStatusCode.INTERNAL_SERVER_ERROR,
-      'Unexpected error while finding all tasks'
+    const ERROR_RESPONSE = new InternalError(
+      'Unexpected error while finding all tasks',
+      'test env'
     );
 
     before(() => {

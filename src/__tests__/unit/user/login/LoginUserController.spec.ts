@@ -12,7 +12,7 @@ import { UserRepository } from '../../../../modules/users/repository/UsersReposi
 import { LoginUserUseCase } from '../../../../modules/users/useCases/loginUser/LoginUserUseCase';
 import { LoginUserController } from '../../../../modules/users/useCases/loginUser/LoginUserController';
 
-import { CustomError } from '../../../../utils/CustomError';
+import { NotFoundError } from '../../../../utils/Errors';
 
 const MOCK_USER: User = {
   id: '5',
@@ -92,10 +92,7 @@ describe('Test LoginUserController', () => {
 
   describe('Error case', () => {
     const { email, password } = MOCK_USER;
-    const ERROR_RESPONSE = new CustomError(
-      ErrorStatusCode.NOT_FOUND,
-      'Invalid email or password'
-    );
+    const ERROR_RESPONSE = new NotFoundError('Invalid email or password');
 
     before(() => {
       useCaseStub = Sinon.stub(loginUserUseCase, 'execute').rejects(

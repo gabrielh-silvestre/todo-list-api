@@ -10,7 +10,7 @@ import { UserRepository } from '../../../../modules/users/repository/UsersReposi
 import { UniqueUserUseCase } from '../../../../modules/users/useCases/uniqueUser/UniqueUserUseCase';
 import { UniqueUserController } from '../../../../modules/users/useCases/uniqueUser/UniqueUserController';
 
-import { CustomError } from '../../../../utils/CustomError';
+import { ConflictError } from '../../../../utils/Errors';
 
 const NEW_USER: User = {
   id: '1',
@@ -76,10 +76,7 @@ describe('Test UniqueUserController', () => {
   });
 
   describe('Error case', () => {
-    const ERROR_RESPONSE = new CustomError(
-      ErrorStatusCode.CONFLICT,
-      'User already exists'
-    );
+    const ERROR_RESPONSE = new ConflictError('User already exists');
 
     before(() => {
       useCaseStub = Sinon.stub(uniqueUserUseCase, 'execute').rejects(

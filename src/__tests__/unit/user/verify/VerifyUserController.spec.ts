@@ -10,7 +10,7 @@ import { UserRepository } from '../../../../modules/users/repository/UsersReposi
 import { VerifyUserUseCase } from '../../../../modules/users/useCases/verifyUser/VerifyUserUseUseCase';
 import { VerifyUserController } from '../../../../modules/users/useCases/verifyUser/VerifyUserController';
 
-import { CustomError } from '../../../../utils/CustomError';
+import { NotFoundError } from '../../../../utils/Errors';
 
 const MOCK_USER: User = {
   id: '1',
@@ -75,10 +75,7 @@ describe('Test VerifyUserController', () => {
   });
 
   describe('Error case', () => {
-    const ERROR_RESPONSE = new CustomError(
-      ErrorStatusCode.NOT_FOUND,
-      'User does not exist'
-    );
+    const ERROR_RESPONSE = new NotFoundError('User does not exist');
 
     before(() => {
       useCaseStub = Sinon.stub(verifyUserUseCase, 'execute').rejects(

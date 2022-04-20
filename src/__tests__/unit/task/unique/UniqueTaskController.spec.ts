@@ -9,7 +9,7 @@ import { TasksRepository } from '../../../../modules/tasks/repository/TasksRepos
 import { UniqueTaskUseCase } from '../../../../modules/tasks/useCases/uniqueTask/UniqueTaskUseCase';
 import { UniqueTaskController } from '../../../../modules/tasks/useCases/uniqueTask/UniqueTaskController';
 
-import { CustomError } from '../../../../utils/CustomError';
+import { ConflictError } from '../../../../utils/Errors';
 
 const MOCK_TASK: Task = {
   id: '5',
@@ -73,10 +73,7 @@ describe('Test UniqueTaskController', () => {
   });
 
   describe('Error case', () => {
-    const ERROR_RESPONSE = new CustomError(
-      ErrorStatusCode.CONFLICT,
-      'Task already exists'
-    );
+    const ERROR_RESPONSE = new ConflictError('Task already exists');
 
     before(() => {
       useCaseStub = Sinon.stub(uniqueTaskUseCase, 'execute').rejects(

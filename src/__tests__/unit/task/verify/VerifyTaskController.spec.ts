@@ -9,7 +9,7 @@ import { TasksRepository } from '../../../../modules/tasks/repository/TasksRepos
 import { VerifyTaskUseCase } from '../../../../modules/tasks/useCases/verifyTask/VerifyTaskUseCase';
 import { VerifyTaskController } from '../../../../modules/tasks/useCases/verifyTask/VerifyTaskController';
 
-import { CustomError } from '../../../../utils/CustomError';
+import { NotFoundError } from '../../../../utils/Errors';
 
 const MOCK_TASK: Task = {
   id: '5',
@@ -80,10 +80,7 @@ describe('Test VerifyTaskController', () => {
 
   describe('Error case', () => {
     const { userId, id } = MOCK_TASK;
-    const ERROR_RESPONSE = new CustomError(
-      ErrorStatusCode.NOT_FOUND,
-      'Task not found'
-    );
+    const ERROR_RESPONSE = new NotFoundError('Task not found');
 
     before(() => {
       useCaseStub = Sinon.stub(verifyTaskUseCase, 'execute').rejects(
