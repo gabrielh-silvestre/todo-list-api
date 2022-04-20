@@ -365,14 +365,14 @@ describe('Test POST endpoint "/users/create"', () => {
         expect(response.body).to.have.property('message');
       });
 
-      it('message should be: Unexpected error while checking user uniqueness', async () => {
+      it('message should be: Internal server error', async () => {
         const response = await chai
           .request(app)
           .post(CREATE_USERS_ENDPOINT)
           .send({ email, username, password });
 
         expect(response.body.message).to.be.equal(
-          'Unexpected error while checking user uniqueness'
+          'Internal server error'
         );
       });
     });
@@ -401,14 +401,14 @@ describe('Test POST endpoint "/users/create"', () => {
         expect(response.body).to.have.property('message');
       });
 
-      it('message should be: Unexpected error while creating user', async () => {
+      it('message should be: Internal server error', async () => {
         const response = await chai
           .request(app)
           .post(CREATE_USERS_ENDPOINT)
           .send({ email, username, password });
 
         expect(response.body.message).to.be.equal(
-          'Unexpected error while creating user'
+          'Internal server error'
         );
       });
     });

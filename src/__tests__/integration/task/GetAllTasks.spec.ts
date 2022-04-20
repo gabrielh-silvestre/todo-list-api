@@ -174,14 +174,14 @@ describe('Test GET endpoint "/tasks"', () => {
           expect(response.body).to.have.property('message');
         });
 
-        it('message should be: Unexpected error while checking user existence', async () => {
+        it('message should be: Internal server error', async () => {
           const response = await chai
             .request(app)
             .get(LIST_TASKS_ENDPOINT)
             .set('Authorization', FAKE_TOKEN);
 
           expect(response.body.message).to.be.equal(
-            'Unexpected error while checking user existence'
+            'Internal server error'
           );
         });
       });

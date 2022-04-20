@@ -241,14 +241,14 @@ describe('Test POST endpoint "/users/login"', () => {
         expect(response.body).to.have.property('message');
       });
 
-      it('message should be: Unexpected error while login user', async () => {
+      it('message should be: Internal server error', async () => {
         const response = await chai
           .request(app)
           .post(LOGIN_USERS_ENDPOINT)
           .send({ email, password });
 
         expect(response.body.message).to.be.equal(
-          'Unexpected error while login user'
+          'Internal server error'
         );
       });
     });

@@ -433,7 +433,7 @@ describe('Test POST endpoint "/tasks"', () => {
           expect(response.body).to.have.property('message');
         });
 
-        it('message should be: Unexpected error while checking task uniqueness', async () => {
+        it('message should be: Internal server error', async () => {
           const response = await chai
             .request(app)
             .post(LIST_TASKS_ENDPOINT)
@@ -441,7 +441,7 @@ describe('Test POST endpoint "/tasks"', () => {
             .send(CREATE_NEW_TASK);
 
           expect(response.body.message).to.be.equal(
-            'Unexpected error while checking task uniqueness'
+            'Internal server error'
           );
         });
       });
