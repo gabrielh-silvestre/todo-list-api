@@ -4,7 +4,6 @@ import { expect } from 'chai';
 import Sinon from 'sinon';
 
 import { ISuccess } from '../../../../@types/interfaces';
-import { ErrorStatusCode } from '../../../../@types/types';
 
 import { EncriptService } from '../../../../services/Encript';
 import { UserRepository } from '../../../../modules/users/repository/UsersRepository';

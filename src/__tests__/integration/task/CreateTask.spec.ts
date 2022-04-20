@@ -440,8 +440,6 @@ describe('Test POST endpoint "/tasks"', () => {
             .set('Authorization', FAKE_TOKEN)
             .send(CREATE_NEW_TASK);
 
-          console.log(response.body.message);
-
           expect(response.body.message).to.be.equal(
             'Unexpected error while checking task uniqueness'
           );
