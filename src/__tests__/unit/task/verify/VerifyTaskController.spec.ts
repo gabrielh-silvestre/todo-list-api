@@ -3,6 +3,8 @@ import { Task } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
+import { ErrorStatusCode } from '../../../../@types/types';
+
 import { TasksRepository } from '../../../../modules/tasks/repository/TasksRepository';
 import { VerifyTaskUseCase } from '../../../../modules/tasks/useCases/verifyTask/VerifyTaskUseCase';
 import { VerifyTaskController } from '../../../../modules/tasks/useCases/verifyTask/VerifyTaskController';
@@ -78,7 +80,10 @@ describe('Test VerifyTaskController', () => {
 
   describe('Error case', () => {
     const { userId, id } = MOCK_TASK;
-    const ERROR_RESPONSE = new CustomError('NOT_FOUND', 'Task not found');
+    const ERROR_RESPONSE = new CustomError(
+      ErrorStatusCode.NOT_FOUND,
+      'Task not found'
+    );
 
     before(() => {
       useCaseStub = Sinon.stub(verifyTaskUseCase, 'execute').rejects(

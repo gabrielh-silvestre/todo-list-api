@@ -3,6 +3,8 @@ import { Task } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
+import { ErrorStatusCode } from '../../../../@types/types';
+
 import { TasksRepository } from '../../../../modules/tasks/repository/TasksRepository';
 import { DeleteTaskUseCase } from '../../../../modules/tasks/useCases/deleteTask/DeleteTaskUseCase';
 import { DeleteTaskController } from '../../../../modules/tasks/useCases/deleteTask/DeleteTaskController';
@@ -84,7 +86,7 @@ describe('Test DeleteTaskController', () => {
 
   describe('Error case', () => {
     const ERROR_RESPONSE = new CustomError(
-      'INTERNAL_SERVER_ERROR',
+      ErrorStatusCode.INTERNAL_SERVER_ERROR,
       'Unexpected error while deleting task'
     );
 

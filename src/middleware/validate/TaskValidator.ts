@@ -2,6 +2,7 @@ import Joi from 'joi';
 import { NextFunction, Request, Response } from 'express';
 
 import { ITaskValidator } from '../../@types/interfaces';
+import { ErrorStatusCode } from '../../@types/types';
 
 import { CustomError } from '../../utils/CustomError';
 
@@ -28,7 +29,10 @@ class TaskValidator implements ITaskValidator {
     const { error } = this.createTaskSchema.validate(req.body);
 
     if (error) {
-      const err = new CustomError('BAD_REQUEST', error.details[0].message);
+      const err = new CustomError(
+        ErrorStatusCode.BAD_REQUEST,
+        error.details[0].message
+      );
       return next(err);
     }
 
@@ -39,7 +43,10 @@ class TaskValidator implements ITaskValidator {
     const { error } = this.updateTaskSchema.validate(req.body);
 
     if (error) {
-      const err = new CustomError('BAD_REQUEST', error.details[0].message);
+      const err = new CustomError(
+        ErrorStatusCode.BAD_REQUEST,
+        error.details[0].message
+      );
       return next(err);
     }
 

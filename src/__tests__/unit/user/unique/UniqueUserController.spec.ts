@@ -4,6 +4,7 @@ import { expect } from 'chai';
 import Sinon from 'sinon';
 
 import { ISuccess } from '../../../../@types/interfaces';
+import { ErrorStatusCode } from '../../../../@types/types';
 
 import { UserRepository } from '../../../../modules/users/repository/UsersRepository';
 import { UniqueUserUseCase } from '../../../../modules/users/useCases/uniqueUser/UniqueUserUseCase';
@@ -75,7 +76,10 @@ describe('Test UniqueUserController', () => {
   });
 
   describe('Error case', () => {
-    const ERROR_RESPONSE = new CustomError('CONFLICT', 'User already exists');
+    const ERROR_RESPONSE = new CustomError(
+      ErrorStatusCode.CONFLICT,
+      'User already exists'
+    );
 
     before(() => {
       useCaseStub = Sinon.stub(uniqueUserUseCase, 'execute').rejects(

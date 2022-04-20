@@ -3,14 +3,14 @@ import { Task } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
+import { ISuccess } from '../../../../@types/interfaces';
+import { ErrorStatusCode, TaskReturn } from '../../../../@types/types';
+
 import { TasksRepository } from '../../../../modules/tasks/repository/TasksRepository';
 import { GetAllTasksUseCase } from '../../../../modules/tasks/useCases/getAllTasks/GetAllTasksUseCase';
 import { GetAllTasksController } from '../../../../modules/tasks/useCases/getAllTasks/GetAllTasksController';
 
-import { ISuccess } from '../../../../@types/interfaces';
-
 import { CustomError } from '../../../../utils/CustomError';
-import { TaskReturn } from '../../../../@types/types';
 
 const MOCK_TASKS: Task[] = [
   {
@@ -96,7 +96,7 @@ describe('Test GetAllTasksController', () => {
 
   describe('Error case', () => {
     const ERROR_RESPONSE = new CustomError(
-      'INTERNAL_SERVER_ERROR',
+      ErrorStatusCode.INTERNAL_SERVER_ERROR,
       'Unexpected error while finding all tasks'
     );
 

@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import Sinon from 'sinon';
 
 import { ISuccess } from '../../../../@types/interfaces';
+import { ErrorStatusCode } from '../../../../@types/types';
 
 import { AuthService } from '../../../../services/Auth';
 import { EncriptService } from '../../../../services/Encript';
@@ -74,7 +75,7 @@ describe('Test CreateUserCase', () => {
 
   describe('Database error case', () => {
     const ERROR = new CustomError(
-      'INTERNAL_SERVER_ERROR',
+      ErrorStatusCode.INTERNAL_SERVER_ERROR,
       'Unexpected error while creating user'
     );
 

@@ -2,7 +2,7 @@ import { TaskStatus } from '@prisma/client';
 
 import { ITasksRepository } from '../../repository/ITasksRepository';
 import { ISuccess } from '../../../../@types/interfaces';
-import { TaskReturn } from '../../../../@types/types';
+import { ErrorStatusCode, TaskReturn } from '../../../../@types/types';
 
 import { CustomError } from '../../../../utils/CustomError';
 
@@ -33,7 +33,7 @@ class UpdateTaskUseCase {
       };
     } catch (err) {
       throw new CustomError(
-        'INTERNAL_SERVER_ERROR',
+        ErrorStatusCode.INTERNAL_SERVER_ERROR,
         'Unexpected error while updating task'
       );
     }

@@ -2,13 +2,13 @@ import Joi from 'joi';
 import { Request, Response, NextFunction } from 'express';
 
 import { IUserValidator } from '../../@types/interfaces';
+import { ErrorStatusCode } from '../../@types/types';
 
 import { CustomError } from '../../utils/CustomError';
 
 class UserValidator implements IUserValidator {
   private createUserSchema: Joi.ObjectSchema;
   private loginUserSchema: Joi.ObjectSchema;
-  private authorizationSchema: Joi.ObjectSchema;
 
   constructor() {
     this.createUserSchema = Joi.object({
@@ -21,17 +21,16 @@ class UserValidator implements IUserValidator {
       email: Joi.string().email().required(),
       password: Joi.string().required(),
     });
-
-    this.authorizationSchema = Joi.object({
-      authorization: Joi.string().required(),
-    });
   }
 
   createValidation = (req: Request, _res: Response, next: NextFunction) => {
     const { error } = this.createUserSchema.validate(req.body);
 
     if (error) {
-      const err = new CustomError('BAD_REQUEST', error.details[0].message);
+      const err = new CustomError(
+        ErrorStatusCode.BAD_REQUEST,
+        error.details[0].message
+      );
       return next(err);
     }
 
@@ -42,7 +41,10 @@ class UserValidator implements IUserValidator {
     const { error } = this.loginUserSchema.validate(req.body);
 
     if (error) {
-      const err = new CustomError('BAD_REQUEST', error.details[0].message);
+      const err = new CustomError(
+        ErrorStatusCode.BAD_REQUEST,
+        error.details[0].message
+      );
       return next(err);
     }
 

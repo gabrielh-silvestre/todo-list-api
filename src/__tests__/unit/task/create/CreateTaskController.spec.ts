@@ -3,10 +3,13 @@ import { Task } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
+import { ISuccess } from '../../../../@types/interfaces';
+import { ErrorStatusCode } from '../../../../@types/types';
+
 import { TasksRepository } from '../../../../modules/tasks/repository/TasksRepository';
 import { CreateTaskUseCase } from '../../../../modules/tasks/useCases/createTask/CreateTaskUseCase';
 import { CreateTaskController } from '../../../../modules/tasks/useCases/createTask/CreateTaskController';
-import { ISuccess } from '../../../../@types/interfaces';
+
 import { CustomError } from '../../../../utils/CustomError';
 
 const MOCK_TASK: Task = {
@@ -86,7 +89,7 @@ describe('Test CreateTaskController', () => {
   describe('Error case', () => {
     const { title, description, userId } = MOCK_TASK;
     const ERROR_RESPONSE = new CustomError(
-      'INTERNAL_SERVER_ERROR',
+      ErrorStatusCode.INTERNAL_SERVER_ERROR,
       'Unexpected error while creating task'
     );
 

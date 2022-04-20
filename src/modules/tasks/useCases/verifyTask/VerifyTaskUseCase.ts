@@ -1,6 +1,6 @@
 import { ITasksRepository } from '../../repository/ITasksRepository';
 import { ISuccess } from '../../../../@types/interfaces';
-import { TaskReturn } from '../../../../@types/types';
+import { ErrorStatusCode, TaskReturn } from '../../../../@types/types';
 
 import { CustomError } from '../../../../utils/CustomError';
 
@@ -14,13 +14,13 @@ class VerifyTaskUseCase {
       findedTask = await this.taskRepository.findById(userId, id);
     } catch (err) {
       throw new CustomError(
-        'INTERNAL_SERVER_ERROR',
+        ErrorStatusCode.INTERNAL_SERVER_ERROR,
         'Unexpected error while checking if task exist'
       );
     }
 
     if (!findedTask) {
-      throw new CustomError('NOT_FOUND', 'Task not found');
+      throw new CustomError(ErrorStatusCode.NOT_FOUND, 'Task not found');
     }
 
     return {

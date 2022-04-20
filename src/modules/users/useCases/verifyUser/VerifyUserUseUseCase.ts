@@ -1,7 +1,10 @@
 import { User } from '@prisma/client';
-import { ISuccess } from '../../../../@types/interfaces';
-import { CustomError } from '../../../../utils/CustomError';
+
 import { IUsersRepository } from '../../repository/IUsersRepository';
+import { ISuccess } from '../../../../@types/interfaces';
+import { ErrorStatusCode } from '../../../../@types/types';
+
+import { CustomError } from '../../../../utils/CustomError';
 
 class VerifyUserUseCase {
   constructor(private userRepository: IUsersRepository) {}
@@ -13,13 +16,13 @@ class VerifyUserUseCase {
       findedUser = await this.userRepository.findById(id);
     } catch (err) {
       throw new CustomError(
-        'INTERNAL_SERVER_ERROR',
+        ErrorStatusCode.INTERNAL_SERVER_ERROR,
         'Unexpected error while checking user existence'
       );
     }
 
     if (!findedUser) {
-      throw new CustomError('NOT_FOUND', 'User does not exist');
+      throw new CustomError(ErrorStatusCode.NOT_FOUND, 'User does not exist');
     }
 
     return {

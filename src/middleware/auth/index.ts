@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 
 import { IAuthService } from '../../@types/interfaces';
-import { TokenPayload } from '../../@types/types';
+import { ErrorStatusCode, TokenPayload } from '../../@types/types';
 
 import { AuthService } from '../../services/Auth';
 import { CustomError } from '../../utils/CustomError';
@@ -15,7 +15,10 @@ class AuthMiddleware {
     const isValid = this.authService.verifyToken(authorization as string);
 
     if (!isValid) {
-      const err = new CustomError('UNAUTHORIZED', 'Expired ou invalid token');
+      const err = new CustomError(
+        ErrorStatusCode.UNAUTHORIZED,
+        'Expired ou invalid token'
+      );
       return next(err);
     }
 

@@ -1,5 +1,6 @@
 import { ITasksRepository } from '../../repository/ITasksRepository';
 import { ISuccess } from '../../../../@types/interfaces';
+import { ErrorStatusCode } from '../../../../@types/types';
 
 import { CustomError } from '../../../../utils/CustomError';
 
@@ -11,7 +12,7 @@ class DeleteTaskUseCase {
       await this.tasksRepository.delete(userId, id);
     } catch (err) {
       throw new CustomError(
-        'INTERNAL_SERVER_ERROR',
+        ErrorStatusCode.INTERNAL_SERVER_ERROR,
         'Unexpected error while deleting task'
       );
     }

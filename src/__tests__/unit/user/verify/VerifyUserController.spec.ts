@@ -4,6 +4,7 @@ import { expect, should } from 'chai';
 import Sinon from 'sinon';
 
 import { ISuccess } from '../../../../@types/interfaces';
+import { ErrorStatusCode } from '../../../../@types/types';
 
 import { UserRepository } from '../../../../modules/users/repository/UsersRepository';
 import { VerifyUserUseCase } from '../../../../modules/users/useCases/verifyUser/VerifyUserUseUseCase';
@@ -74,7 +75,10 @@ describe('Test VerifyUserController', () => {
   });
 
   describe('Error case', () => {
-    const ERROR_RESPONSE = new CustomError('NOT_FOUND', 'User does not exist');
+    const ERROR_RESPONSE = new CustomError(
+      ErrorStatusCode.NOT_FOUND,
+      'User does not exist'
+    );
 
     before(() => {
       useCaseStub = Sinon.stub(verifyUserUseCase, 'execute').rejects(

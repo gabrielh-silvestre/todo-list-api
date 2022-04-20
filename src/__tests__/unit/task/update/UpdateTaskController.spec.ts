@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import Sinon from 'sinon';
 
 import { ISuccess } from '../../../../@types/interfaces';
-import { TaskReturn } from '../../../../@types/types';
+import { ErrorStatusCode, TaskReturn } from '../../../../@types/types';
 
 import { TasksRepository } from '../../../../modules/tasks/repository/TasksRepository';
 import { UpdateTaskUseCase } from '../../../../modules/tasks/useCases/updateTask/UpdateTaskUseCase';
@@ -96,7 +96,7 @@ describe('Test UpdateTaskController', () => {
 
   describe('Error case', () => {
     const ERROR_RESPONSE = new CustomError(
-      'INTERNAL_SERVER_ERROR',
+      ErrorStatusCode.INTERNAL_SERVER_ERROR,
       'Unexpected error while updating task'
     );
 

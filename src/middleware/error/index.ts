@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { CustomError } from '../../utils/CustomError';
-import { errorStatusCode } from '../../utils/errorsCode';
 
 const errorHandler = (
   err: CustomError,
@@ -12,12 +11,12 @@ const errorHandler = (
   const { statusCode, message } = err;
 
   if (statusCode) {
-    return res.status(errorStatusCode[statusCode]).json({ message });
+    return res.status(statusCode).json({ message });
   }
 
   console.log(message);
   return res
-    .status(errorStatusCode.INTERNAL_SERVER_ERROR)
+    .status(statusCode || 500)
     .json({ message: 'Internal server error' });
 };
 

@@ -3,11 +3,15 @@ import { User } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
+import { ErrorStatusCode } from '../../../../@types/types';
+
 import { EncriptService } from '../../../../services/Encript';
 import { AuthService } from '../../../../services/Auth';
+
 import { UserRepository } from '../../../../modules/users/repository/UsersRepository';
 import { LoginUserUseCase } from '../../../../modules/users/useCases/loginUser/LoginUserUseCase';
 import { LoginUserController } from '../../../../modules/users/useCases/loginUser/LoginUserController';
+
 import { CustomError } from '../../../../utils/CustomError';
 
 const MOCK_USER: User = {
@@ -89,7 +93,7 @@ describe('Test LoginUserController', () => {
   describe('Error case', () => {
     const { email, password } = MOCK_USER;
     const ERROR_RESPONSE = new CustomError(
-      'NOT_FOUND',
+      ErrorStatusCode.NOT_FOUND,
       'Invalid email or password'
     );
 

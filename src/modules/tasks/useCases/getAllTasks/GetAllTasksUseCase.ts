@@ -1,7 +1,8 @@
-import { ISuccess } from '../../../../@types/interfaces';
-import { TaskReturn } from '../../../../@types/types';
-import { CustomError } from '../../../../utils/CustomError';
 import { ITasksRepository } from '../../repository/ITasksRepository';
+import { ISuccess } from '../../../../@types/interfaces';
+import { ErrorStatusCode, TaskReturn } from '../../../../@types/types';
+
+import { CustomError } from '../../../../utils/CustomError';
 
 class GetAllTasksUseCase {
   constructor(private tasksRepository: ITasksRepository) {}
@@ -16,7 +17,7 @@ class GetAllTasksUseCase {
       };
     } catch (err) {
       throw new CustomError(
-        'INTERNAL_SERVER_ERROR',
+        ErrorStatusCode.INTERNAL_SERVER_ERROR,
         'Unexpected error while finding all tasks'
       );
     }

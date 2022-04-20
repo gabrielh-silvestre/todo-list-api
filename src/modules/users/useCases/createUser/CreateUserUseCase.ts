@@ -1,7 +1,7 @@
 import { IUsersRepository } from '../../repository/IUsersRepository';
 import { IAuthService, ISuccess } from '../../../../@types/interfaces';
 import { IEncriptService } from '../../../../@types/interfaces';
-import { TokenPayload } from '../../../../@types/types';
+import { ErrorStatusCode, TokenPayload } from '../../../../@types/types';
 
 import { CustomError } from '../../../../utils/CustomError';
 
@@ -40,7 +40,7 @@ class CreateUserUseCase {
       };
     } catch (err) {
       throw new CustomError(
-        'INTERNAL_SERVER_ERROR',
+        ErrorStatusCode.INTERNAL_SERVER_ERROR,
         'Unexpected error while creating user'
       );
     }
