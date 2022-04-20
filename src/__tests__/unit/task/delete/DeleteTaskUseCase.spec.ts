@@ -7,7 +7,7 @@ import { ErrorStatusCode } from '../../../../@types/types';
 import { TasksRepository } from '../../../../modules/tasks/repository/TasksRepository';
 import { DeleteTaskUseCase } from '../../../../modules/tasks/useCases/deleteTask/DeleteTaskUseCase';
 
-import { CustomError } from '../../../../utils/CustomError';
+import { BaseError } from '../../../../utils/Errors/BaseError';
 
 const { INTERNAL_SERVER_ERROR } = ErrorStatusCode;
 const MOCK_TASK: Task = {
@@ -22,7 +22,7 @@ const MOCK_TASK: Task = {
 const tasksRepository = new TasksRepository();
 const deleteTaskUseCase = new DeleteTaskUseCase(tasksRepository);
 
-describe('Test DeleteTaskUseCase', () => {
+describe.only('Test DeleteTaskUseCase', () => {
   const { id, userId } = MOCK_TASK;
   let deleteStub: Sinon.SinonStub;
 
@@ -64,8 +64,8 @@ describe('Test DeleteTaskUseCase', () => {
         try {
           await deleteTaskUseCase.execute(userId, id);
         } catch (err) {
-          const tErr = err as CustomError;
-          expect(tErr.statusCode).to.be.equal(INTERNAL_SERVER_ERROR);
+          const tErr = err as BaseError;
+          expect(tErr.getBody().errorCode).to.be.equal(INTERNAL_SERVER_ERROR);
         }
       });
 
@@ -73,7 +73,7 @@ describe('Test DeleteTaskUseCase', () => {
         try {
           await deleteTaskUseCase.execute(userId, id);
         } catch (err) {
-          const tErr = err as CustomError;
+          const tErr = err as BaseError;
           expect(tErr.message).to.be.equal(
             'Unexpected error while deleting task'
           );

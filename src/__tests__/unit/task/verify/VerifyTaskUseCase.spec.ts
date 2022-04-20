@@ -8,7 +8,7 @@ import { ErrorStatusCode } from '../../../../@types/types';
 import { TasksRepository } from '../../../../modules/tasks/repository/TasksRepository';
 import { VerifyTaskUseCase } from '../../../../modules/tasks/useCases/verifyTask/VerifyTaskUseCase';
 
-import { CustomError } from '../../../../utils/CustomError';
+import { BaseError } from '../../../../utils/Errors/BaseError';
 
 const { NOT_FOUND, INTERNAL_SERVER_ERROR } = ErrorStatusCode;
 const MOCK_TASK: Task = {
@@ -70,8 +70,8 @@ describe('Test VerifyTaskUseCase', () => {
         try {
           await verifyTaskUseCase.execute(userId, id);
         } catch (err) {
-          const tErr = err as CustomError;
-          expect(tErr.statusCode).to.be.equal(NOT_FOUND);
+          const tErr = err as BaseError;
+          expect(tErr.getBody().errorCode).to.be.equal(NOT_FOUND);
         }
       });
 
@@ -79,7 +79,7 @@ describe('Test VerifyTaskUseCase', () => {
         try {
           await verifyTaskUseCase.execute(userId, id);
         } catch (err) {
-          const tErr = err as CustomError;
+          const tErr = err as BaseError;
           expect(tErr.message).to.be.equal('Task not found');
         }
       });
@@ -100,8 +100,8 @@ describe('Test VerifyTaskUseCase', () => {
         try {
           await verifyTaskUseCase.execute(userId, id);
         } catch (err) {
-          const tErr = err as CustomError;
-          expect(tErr.statusCode).to.be.equal(INTERNAL_SERVER_ERROR);
+          const tErr = err as BaseError;
+          expect(tErr.getBody().errorCode).to.be.equal(INTERNAL_SERVER_ERROR);
         }
       });
 
@@ -109,7 +109,7 @@ describe('Test VerifyTaskUseCase', () => {
         try {
           await verifyTaskUseCase.execute(userId, id);
         } catch (err) {
-          const tErr = err as CustomError;
+          const tErr = err as BaseError;
           expect(tErr.message).to.be.equal(
             'Unexpected error while checking if task exist'
           );
