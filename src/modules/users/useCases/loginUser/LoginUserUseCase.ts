@@ -1,11 +1,10 @@
-import { User } from '@prisma/client';
 import { IUsersRepository } from '../../repository/IUsersRepository';
 
 import { IAuthService, IEncriptService } from '../../../../@types/interfaces';
 import { ISuccess } from '../../../../@types/interfaces';
 import { TokenPayload } from '../../../../@types/types';
 
-import { InternalError, NotFoundError } from '../../../../utils/Errors';
+import { NotFoundError } from '../../../../utils/Errors';
 
 interface IRequest {
   email: string;
@@ -23,16 +22,7 @@ class LoginUserUseCase {
     email,
     password,
   }: IRequest): Promise<ISuccess<string> | void> {
-    let user: User | null = null;
-
-    try {
-      user = await this.userRepository.findByEmail(email);
-    } catch (err) {
-      throw new InternalError(
-        'Unexpected error while login user',
-        err
-      );
-    }
+    const user = await this.userRepository.findByEmail(email);
 
     if (!user) {
       throw new NotFoundError('Invalid email or password');

@@ -8,16 +8,10 @@ class UniqueTaskUseCase {
   constructor(private taskRepository: ITasksRepository) {}
 
   async execute(userId: string, title: string): Promise<ISuccess<null> | void> {
-    let findedTasks: TaskReturn[] = [];
-
-    try {
-      findedTasks = await this.taskRepository.findByExactTitle(userId, title);
-    } catch (err) {
-      throw new InternalError(
-        'Unexpected error while checking task uniqueness',
-        err
-      );
-    }
+    const findedTasks = await this.taskRepository.findByExactTitle(
+      userId,
+      title
+    );
 
     if (findedTasks.length > 0) {
       throw new ConflictError('Task with this title already exists');

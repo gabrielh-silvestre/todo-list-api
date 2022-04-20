@@ -3,8 +3,6 @@ import { IAuthService, ISuccess } from '../../../../@types/interfaces';
 import { IEncriptService } from '../../../../@types/interfaces';
 import { TokenPayload } from '../../../../@types/types';
 
-import { InternalError } from '../../../../utils/Errors';
-
 interface IRequest {
   email: string;
   username: string;
@@ -23,24 +21,20 @@ class CreateUserUseCase {
     username,
     password,
   }: IRequest): Promise<ISuccess<string> | void> {
-    try {
-      const encryptedPassword = await this.encriptService.encript(password);
+    const encryptedPassword = await this.encriptService.encript(password);
 
-      const newUserId = await this.userRepository.create({
-        email,
-        username,
-        password: encryptedPassword,
-      });
+    const newUserId = await this.userRepository.create({
+      email,
+      username,
+      password: encryptedPassword,
+    });
 
-      const token = this.authService.createToken(newUserId);
+    const token = this.authService.createToken(newUserId);
 
-      return {
-        statusCode: 'CREATED',
-        data: token,
-      };
-    } catch (err) {
-      throw new InternalError('Unexpected error while creating user', err);
-    }
+    return {
+      statusCode: 'CREATED',
+      data: token,
+    };
   }
 }
 

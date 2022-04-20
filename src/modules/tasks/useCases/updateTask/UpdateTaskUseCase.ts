@@ -20,23 +20,16 @@ class UpdateTaskUseCase {
     id: string,
     { title, description, status }: IRequest
   ): Promise<ISuccess<TaskReturn>> {
-    try {
-      const updatedTask = await this.tasksRepository.update(userId, id, {
-        title,
-        description,
-        status,
-      });
+    const updatedTask = await this.tasksRepository.update(userId, id, {
+      title,
+      description,
+      status,
+    });
 
-      return {
-        statusCode: 'UPDATED',
-        data: updatedTask,
-      };
-    } catch (err) {
-      throw new InternalError(
-        'Unexpected error while updating task',
-        err
-      );
-    }
+    return {
+      statusCode: 'UPDATED',
+      data: updatedTask,
+    };
   }
 }
 

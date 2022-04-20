@@ -8,16 +8,12 @@ class GetAllTasksUseCase {
   constructor(private tasksRepository: ITasksRepository) {}
 
   async execute(userId: string): Promise<ISuccess<TaskReturn[]>> {
-    try {
-      const findedTasks = await this.tasksRepository.findAll(userId);
+    const findedTasks = await this.tasksRepository.findAll(userId);
 
-      return {
-        statusCode: 'OK',
-        data: findedTasks,
-      };
-    } catch (err) {
-      throw new InternalError('Unexpected error while finding all tasks', err);
-    }
+    return {
+      statusCode: 'OK',
+      data: findedTasks,
+    };
   }
 }
 
