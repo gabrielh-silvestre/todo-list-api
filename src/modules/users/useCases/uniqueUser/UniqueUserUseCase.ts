@@ -16,14 +16,14 @@ class UniqueUserUseCase {
       user = await this.userRepository.findByEmail(email);
     } catch (error) {
       throw new CustomError(
-        ErrorStatusCode.BAD_REQUEST,
+        ErrorStatusCode.INTERNAL_SERVER_ERROR,
         'Unexpected error while checking user uniqueness'
       );
     }
 
     if (user) {
       throw new CustomError(
-        ErrorStatusCode.INTERNAL_SERVER_ERROR,
+        ErrorStatusCode.CONFLICT,
         'User already exists'
       );
     }
