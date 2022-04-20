@@ -1,9 +1,9 @@
 import { IUsersRepository } from '../../repository/IUsersRepository';
 import { IAuthService, ISuccess } from '../../../../@types/interfaces';
 import { IEncriptService } from '../../../../@types/interfaces';
-import { ErrorStatusCode, TokenPayload } from '../../../../@types/types';
+import { TokenPayload } from '../../../../@types/types';
 
-import { CustomError } from '../../../../utils/CustomError';
+import { InternalError } from '../../../../utils/Errors';
 
 interface IRequest {
   email: string;
@@ -39,10 +39,7 @@ class CreateUserUseCase {
         data: token,
       };
     } catch (err) {
-      throw new CustomError(
-        ErrorStatusCode.INTERNAL_SERVER_ERROR,
-        'Unexpected error while creating user'
-      );
+      throw new InternalError('Unexpected error while creating user', err);
     }
   }
 }

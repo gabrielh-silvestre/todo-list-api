@@ -2,9 +2,8 @@ import { User as IUser } from '@prisma/client';
 
 import { IUsersRepository } from '../../repository/IUsersRepository';
 import { ISuccess } from '../../../../@types/interfaces';
-import { ErrorStatusCode } from '../../../../@types/types';
 
-import { CustomError } from '../../../../utils/CustomError';
+import { ConflictError, InternalError } from '../../../../utils/Errors';
 
 class UniqueUserUseCase {
   constructor(private userRepository: IUsersRepository) {}
@@ -14,18 +13,15 @@ class UniqueUserUseCase {
 
     try {
       user = await this.userRepository.findByEmail(email);
-    } catch (error) {
-      throw new CustomError(
-        ErrorStatusCode.INTERNAL_SERVER_ERROR,
-        'Unexpected error while checking user uniqueness'
+    } catch (err) {
+      throw new InternalError(
+        'Unexpected error while checking user uniqueness',
+        err
       );
     }
 
     if (user) {
-      throw new CustomError(
-        ErrorStatusCode.CONFLICT,
-        'User already exists'
-      );
+      throw new ConflictError('User already exists');
     }
 
     return {
