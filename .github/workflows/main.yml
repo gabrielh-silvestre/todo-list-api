@@ -18,8 +18,8 @@ jobs:
       - name: Run tests
         run: npm test
         env:
-          JWT_SECRET: $JWT_SECRET
-          TEST_TOKEN: $TEST_TOKEN
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          TEST_TOKEN: ${{ secrets.TEST_TOKEN }}
 
       - name: Test Report
         uses: dorny/test-reporter@v1
