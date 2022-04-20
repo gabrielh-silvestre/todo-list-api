@@ -23,7 +23,6 @@ jobs:
 
       - name: Test Report
         uses: dorny/test-reporter@v1
-        run: npm run test:result
         if: success() || failure()
         with:
           name: MOCHA Tests
