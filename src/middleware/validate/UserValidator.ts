@@ -2,9 +2,8 @@ import Joi from 'joi';
 import { Request, Response, NextFunction } from 'express';
 
 import { IUserValidator } from '../../@types/interfaces';
-import { ErrorStatusCode } from '../../@types/types';
 
-import { CustomError } from '../../utils/CustomError';
+import { BadRequestError } from '../../utils/Errors';
 
 class UserValidator implements IUserValidator {
   private createUserSchema: Joi.ObjectSchema;
@@ -27,10 +26,7 @@ class UserValidator implements IUserValidator {
     const { error } = this.createUserSchema.validate(req.body);
 
     if (error) {
-      const err = new CustomError(
-        ErrorStatusCode.BAD_REQUEST,
-        error.details[0].message
-      );
+      const err = new BadRequestError(error.details[0].message);
       return next(err);
     }
 
@@ -41,10 +37,7 @@ class UserValidator implements IUserValidator {
     const { error } = this.loginUserSchema.validate(req.body);
 
     if (error) {
-      const err = new CustomError(
-        ErrorStatusCode.BAD_REQUEST,
-        error.details[0].message
-      );
+      const err = new BadRequestError(error.details[0].message);
       return next(err);
     }
 
