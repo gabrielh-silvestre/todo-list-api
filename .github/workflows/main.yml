@@ -22,7 +22,7 @@ jobs:
           TEST_TOKEN: ${{ secrets.TEST_TOKEN }}
 
       - name: Generate Mocha report
-        run: npm test:result
+        run: npm run test:result
         env:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           TEST_TOKEN: ${{ secrets.TEST_TOKEN }}
