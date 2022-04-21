@@ -3,7 +3,6 @@ import express from 'express';
 import { authMiddleware } from '../middleware/auth';
 import { taskValidator } from '../middleware/validate/TaskValidator';
 
-import { uniqueTaskController } from '../modules/tasks/useCases/uniqueTask';
 import { createTaskController } from '../modules/tasks/useCases/createTask';
 import { verifyTaskController } from '../modules/tasks/useCases/verifyTask';
 import { deleteTaskController } from '../modules/tasks/useCases/deleteTask';
@@ -20,7 +19,6 @@ taskRouter.get('/', getAllTasksController.handle);
 taskRouter.post(
   '/',
   taskValidator.createValidation,
-  uniqueTaskController.handle,
   createTaskController.handle
 );
 
