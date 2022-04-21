@@ -1,32 +1,31 @@
-import { Task } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
 import { TasksRepository } from '../../../../src/modules/tasks/repository/TasksRepository';
 import { CreateTaskUseCase } from '../../../../src/modules/tasks/useCases/createTask/CreateTaskUseCase';
 
-const MOCK_TASK: Task = {
-  id: '5',
-  title: 'Task 5',
-  description: 'Description 5',
-  status: 'TODO',
-  userId: '1',
-  updatedAt: new Date(),
-};
+import { newTask, tasks } from '../../../mocks/tasks';
 
 const tasksRepository = new TasksRepository();
 const createTaskUseCase = new CreateTaskUseCase(tasksRepository);
 
 describe('Test CreateTaskUseCase', () => {
-  const { title, description, userId } = MOCK_TASK;
+  const { title, description, userId } = newTask;
+
   let createStub: Sinon.SinonStub;
+  let findByTitleStub: Sinon.SinonStub;
 
   describe('Success case', () => {
     before(() => {
-      createStub = Sinon.stub(tasksRepository, 'create').resolves(MOCK_TASK);
+      findByTitleStub = Sinon.stub(
+        tasksRepository,
+        'findByExactTitle'
+      ).resolves([]);
+      createStub = Sinon.stub(tasksRepository, 'create').resolves(newTask);
     });
 
     after(() => {
+      findByTitleStub.restore();
       createStub.restore();
     });
 
@@ -49,7 +48,7 @@ describe('Test CreateTaskUseCase', () => {
             userId,
           });
 
-          expect(response.data).to.be.deep.equal(MOCK_TASK);
+          expect(response.data).to.be.deep.equal(newTask);
         });
       });
     });
@@ -73,7 +72,52 @@ describe('Test CreateTaskUseCase', () => {
             userId,
           });
 
-          expect(response.data).to.be.deep.equal(MOCK_TASK);
+          expect(response.data).to.be.deep.equal(newTask);
+        });
+      });
+    });
+  });
+
+  describe('Error case', () => {
+    describe('Task with this title already exists', () => {
+      before(() => {
+        findByTitleStub = Sinon.stub(
+          tasksRepository,
+          'findByExactTitle'
+        ).resolves(tasks);
+      });
+
+      after(() => {
+        findByTitleStub.restore();
+      });
+
+      describe('Should throw a conflict error with status and message', () => {
+        it('status should be 409', async () => {
+          try {
+            await createTaskUseCase.execute({
+              title,
+              description,
+              userId,
+            });
+            expect.fail('Should throw a conflict error');
+          } catch (err) {
+            expect(err.getBody().errorCode).to.be.equal(409);
+          }
+        });
+
+        it('message should be "Task with this title already exists"', async () => {
+          try {
+            await createTaskUseCase.execute({
+              title,
+              description,
+              userId,
+            });
+            expect.fail('Should throw a conflict error');
+          } catch (err) {
+            expect(err.message).to.be.equal(
+              'Task with this title already exists'
+            );
+          }
         });
       });
     });
