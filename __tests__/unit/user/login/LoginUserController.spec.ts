@@ -1,5 +1,4 @@
 import { NextFunction, request, response } from 'express';
-import { User } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
@@ -11,13 +10,7 @@ import { LoginUserUseCase } from '../../../../src/modules/users/useCases/loginUs
 import { LoginUserController } from '../../../../src/modules/users/useCases/loginUser/LoginUserController';
 
 import { NotFoundError } from '../../../../src/utils/Errors';
-
-const MOCK_USER: User = {
-  id: '5',
-  email: 'person5@email.com',
-  username: 'person5',
-  password: '123a456',
-};
+import { newUser } from '../../../mocks/users';
 
 const FAKE_TOKEN = 'nASOmifoniv-auns09812jsnipoas-wpnioAa09sjvcawh012';
 
@@ -32,6 +25,8 @@ const loginUserUseCase = new LoginUserUseCase(
 const loginUserController = new LoginUserController(loginUserUseCase);
 
 describe('Test LoginUserController', () => {
+  const { email, password } = newUser;
+
   let useCaseStub: Sinon.SinonStub;
   let spiedStatus: Sinon.SinonSpy;
   let spiedJson: Sinon.SinonSpy;
@@ -53,8 +48,6 @@ describe('Test LoginUserController', () => {
   });
 
   describe('Success case', () => {
-    const { email, password } = MOCK_USER;
-
     before(() => {
       useCaseStub = Sinon.stub(loginUserUseCase, 'execute').resolves({
         statusCode: 'OK',
@@ -89,7 +82,6 @@ describe('Test LoginUserController', () => {
   });
 
   describe('Error case', () => {
-    const { email, password } = MOCK_USER;
     const ERROR_RESPONSE = new NotFoundError('Invalid email or password');
 
     before(() => {

@@ -1,5 +1,4 @@
 import { NextFunction, request, response } from 'express';
-import { User } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
@@ -12,13 +11,7 @@ import { CreateUserController } from '../../../../src/modules/users/useCases/cre
 import { AuthService } from '../../../../src/services/Auth';
 
 import { ConflictError } from '../../../../src/utils/Errors';
-
-const MOCK_USER: User = {
-  id: '5',
-  email: 'person5@email.com',
-  username: 'person5',
-  password: '123456',
-};
+import { newUser } from '../../../mocks/users';
 
 const FAKE_TOKEN = '0n0v19nASV-V0n09Masvmz0-xasvzx';
 
@@ -33,6 +26,8 @@ const createUserUseCase = new CreateUserUseCase(
 const createUserController = new CreateUserController(createUserUseCase);
 
 describe('Test CreateUserController', () => {
+  const { email, username, password } = newUser;
+
   let useCaseStub: Sinon.SinonStub;
   let spiedResponse: Sinon.SinonSpy;
   let spiedJson: Sinon.SinonSpy;
@@ -54,7 +49,6 @@ describe('Test CreateUserController', () => {
   });
 
   describe('Success case', () => {
-    const { email, username, password } = MOCK_USER;
     const SUCCES_RESPONSE: ISuccess<string> = {
       statusCode: 'CREATED',
       data: FAKE_TOKEN,
@@ -92,7 +86,6 @@ describe('Test CreateUserController', () => {
   });
 
   describe('Error case', () => {
-    const { email, username, password } = MOCK_USER;
     const ERROR_RESPONSE = new ConflictError('User already exists');
 
     before(() => {

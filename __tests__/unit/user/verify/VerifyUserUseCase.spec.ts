@@ -1,4 +1,3 @@
-import { User } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
@@ -9,25 +8,20 @@ import { UserRepository } from '../../../../src/modules/users/repository/UsersRe
 import { VerifyUserUseCase } from '../../../../src/modules/users/useCases/verifyUser/VerifyUserUseUseCase';
 
 import { BaseError } from '../../../../src/utils/Errors/BaseError';
+import { users } from '../../../mocks/users';
 
 const { NOT_FOUND } = ErrorStatusCode;
-const MOCK_USER: User = {
-  id: '1',
-  email: 'person1@email.com',
-  username: 'person1',
-  password: '123a456',
-};
 
 const userRepository = new UserRepository();
 const verifyUserUseCase = new VerifyUserUseCase(userRepository);
 
 describe('Test VerifyUserUseCase', () => {
-  const { id } = MOCK_USER;
+  const [{ id }, user] = users;
   let findByIdStub: Sinon.SinonStub;
 
   describe('Success case', () => {
     before(() => {
-      findByIdStub = Sinon.stub(userRepository, 'findById').resolves(MOCK_USER);
+      findByIdStub = Sinon.stub(userRepository, 'findById').resolves(user);
     });
 
     after(() => {
