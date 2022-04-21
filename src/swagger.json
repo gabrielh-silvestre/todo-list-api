@@ -118,6 +118,120 @@
           }
         }
       }
+    },
+    "/tasks": {
+      "get": {
+        "tags": ["Task"],
+        "summary": "Get all tasks",
+        "description": "Get all tasks for a specific user",
+        "operationId": "getTasks",
+        "responses": {
+          "200": {
+            "description": "Tasks found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Return-Tasks"
+                },
+                "example": [
+                  {
+                    "id": "28085a83-c524-4df0-b86a-eaaae14d1830",
+                    "title": "Task 1",
+                    "description": "Description for task 1",
+                    "status": "TODO",
+                    "updatedAt": "2020-01-01T00:00:00.000Z"
+                  },
+                  {
+                    "id": "28085a83-c524-4df0-b86a-eaaae14d1831",
+                    "title": "Task 2",
+                    "description": null,
+                    "status": "IN_PROGRESS",
+                    "updatedAt": "2020-01-01T00:00:00.000Z"
+                  }
+                ]
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Task"],
+        "summary": "Create a task",
+        "description": "Create a new task for a specific user",
+        "operationId": "createTask",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Create-Task"
+              },
+              "example": {
+                "title": "Task 1",
+                "description": "Description for task 1"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Task created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Return-Task"
+                },
+                "example": {
+                  "id": "28085a83-c524-4df0-b86a-eaaae14d1830",
+                  "title": "Task 1",
+                  "description": "Description for task 1",
+                  "status": "TODO",
+                  "updatedAt": "2020-01-01T00:00:00.000Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Task with this title already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
