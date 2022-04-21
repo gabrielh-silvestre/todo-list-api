@@ -3,6 +3,8 @@ import { IAuthService, ISuccess } from '../../../../@types/interfaces';
 import { IEncriptService } from '../../../../@types/interfaces';
 import { TokenPayload } from '../../../../@types/types';
 
+import { ConflictError } from '../../../../utils/Errors';
+
 interface IRequest {
   email: string;
   username: string;
@@ -16,11 +18,21 @@ class CreateUserUseCase {
     private encriptService: IEncriptService
   ) {}
 
+  async isUnique(email: string): Promise<void> {
+    const user = await this.userRepository.findByEmail(email);
+
+    if (user) {
+      throw new ConflictError('User already exists');
+    }
+  }
+
   async execute({
     email,
     username,
     password,
   }: IRequest): Promise<ISuccess<string> | void> {
+    await this.isUnique(email);
+
     const encryptedPassword = await this.encriptService.encript(password);
 
     const newUserId = await this.userRepository.create({
