@@ -4,7 +4,6 @@ import { authMiddleware } from '../middleware/auth';
 import { taskValidator } from '../middleware/validate/TaskValidator';
 
 import { createTaskController } from '../modules/tasks/useCases/createTask';
-import { verifyTaskController } from '../modules/tasks/useCases/verifyTask';
 import { deleteTaskController } from '../modules/tasks/useCases/deleteTask';
 import { updateTaskController } from '../modules/tasks/useCases/updateTask';
 import { getAllTasksController } from '../modules/tasks/useCases/getAllTasks';
@@ -24,14 +23,12 @@ taskRouter.post(
 
 taskRouter.delete(
   '/:id',
-  verifyTaskController.handle,
   deleteTaskController.handle
 );
 
 taskRouter.put(
   '/:id',
   taskValidator.updateValidation,
-  verifyTaskController.handle,
   updateTaskController.handle
 );
 
