@@ -4,3 +4,4 @@ requirements.md
 .vscode
 .nyc_output
 test-results.json
+dist
