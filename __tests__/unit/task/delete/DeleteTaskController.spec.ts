@@ -1,5 +1,4 @@
 import { NextFunction, request, response } from 'express';
-import { Task } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
@@ -8,22 +7,14 @@ import { DeleteTaskUseCase } from '../../../../src/modules/tasks/useCases/delete
 import { DeleteTaskController } from '../../../../src/modules/tasks/useCases/deleteTask/DeleteTaskController';
 
 import { InternalError } from '../../../../src/utils/Errors';
-
-const MOCK_TASK: Task = {
-  id: '5',
-  title: 'Task 5',
-  description: 'Description 5',
-  status: 'TODO',
-  userId: '1',
-  updatedAt: new Date(),
-};
+import { newTask } from '../../../mocks/tasks';
 
 const tasksRepository = new TasksRepository();
 const deleteTaskUseCase = new DeleteTaskUseCase(tasksRepository);
 const deleteTaskController = new DeleteTaskController(deleteTaskUseCase);
 
 describe('Test DeleteTaskController', () => {
-  const { id, userId } = MOCK_TASK;
+  const { id, userId } = newTask;
 
   let useCaseStub: Sinon.SinonStub;
   let spiedStatus: Sinon.SinonSpy;
