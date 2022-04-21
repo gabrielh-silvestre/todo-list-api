@@ -7,7 +7,7 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "scripts": {
-    "start": "node dist/server.js",
+    "start": "node dist/src/server.js",
     "dev": "nodemon src/server.ts",
     "test": "mocha -r ts-node/register/transpile-only __tests__/**/*.spec.ts",
     "test:result": "mocha -R json -O output=test-results.json -r ts-node/register/transpile-only __tests__/**/*.spec.ts",
