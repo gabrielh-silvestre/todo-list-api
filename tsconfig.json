@@ -104,5 +104,6 @@
     "esModuleInterop": true,
     "strict": true,
     "strictPropertyInitialization": false,
+    "resolveJsonModule": true
   }
 }
