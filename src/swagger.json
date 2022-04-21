@@ -136,6 +136,17 @@
           }
         }
       },
+      "Login-User": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      },
       "Return-Token": {
         "type": "object",
         "properties": {
