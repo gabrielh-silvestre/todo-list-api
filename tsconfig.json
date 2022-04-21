@@ -99,11 +99,14 @@
     // "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
     "module": "commonjs",
     "target": "es6",
-    "rootDir": "./src",
+    "rootDir": ".",
     "outDir": "./dist",
     "esModuleInterop": true,
     "strict": true,
     "strictPropertyInitialization": false,
     "resolveJsonModule": true
-  }
+  },
+  "include": [
+    "src/**/*.ts",
+  ],
 }
