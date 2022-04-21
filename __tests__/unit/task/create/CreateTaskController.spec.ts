@@ -9,16 +9,9 @@ import { TasksRepository } from '../../../../src/modules/tasks/repository/TasksR
 import { CreateTaskUseCase } from '../../../../src/modules/tasks/useCases/createTask/CreateTaskUseCase';
 import { CreateTaskController } from '../../../../src/modules/tasks/useCases/createTask/CreateTaskController';
 
-import { InternalError } from '../../../../src/utils/Errors';
+import { newTask } from '../../../mocks/tasks';
 
-const MOCK_TASK: Task = {
-  id: '5',
-  title: 'Task 5',
-  description: 'Description 5',
-  status: 'TODO',
-  userId: '1',
-  updatedAt: new Date(),
-};
+import { InternalError } from '../../../../src/utils/Errors';
 
 const tasksRepository = new TasksRepository();
 const createTaskUseCase = new CreateTaskUseCase(tasksRepository);
@@ -46,11 +39,11 @@ describe('Test CreateTaskController', () => {
   });
 
   describe('Success case', () => {
-    const { title, description, userId } = MOCK_TASK;
+    const { title, description, userId } = newTask;
 
     const SUCCES_RESPONSE: ISuccess<Task> = {
       statusCode: 'CREATED',
-      data: MOCK_TASK,
+      data: newTask,
     };
 
     before(() => {
@@ -80,13 +73,13 @@ describe('Test CreateTaskController', () => {
       it('data should be the created Task', async () => {
         await createTaskController.handle(request, response, next.next);
 
-        expect(spiedJson.calledWith(MOCK_TASK)).to.be.true;
+        expect(spiedJson.calledWith(newTask)).to.be.true;
       });
     });
   });
 
   describe('Error case', () => {
-    const { title, description, userId } = MOCK_TASK;
+    const { title, description, userId } = newTask;
     const ERROR_RESPONSE = new InternalError(
       'Unexpected error while creating task',
       'test env'

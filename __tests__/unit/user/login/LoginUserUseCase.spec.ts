@@ -11,15 +11,9 @@ import { UserRepository } from '../../../../src/modules/users/repository/UsersRe
 import { LoginUserUseCase } from '../../../../src/modules/users/useCases/loginUser/LoginUserUseCase';
 
 import { BaseError } from '../../../../src/utils/Errors/BaseError';
+import { users, newUser } from '../../../mocks/users';
 
 const { NOT_FOUND } = ErrorStatusCode;
-const MOCK_USER: User = {
-  id: '5',
-  email: 'person5@email.com',
-  username: 'person5',
-  password: '123a456',
-};
-
 const FAKE_TOKEN = 'nASOmifoniv-auns09812jsnipoas-wpnioAa09sjvcawh012';
 
 const encriptService = new EncriptService();
@@ -32,6 +26,9 @@ const loginUserUseCase = new LoginUserUseCase(
 );
 
 describe('Test LoginUserUseCase', () => {
+  const [user] = users;
+  const { email, password } = newUser;
+
   let findByEmailStub: Sinon.SinonStub;
   let createTokenStub: Sinon.SinonStub;
   let verifyPasswordStub: Sinon.SinonStub;
@@ -39,7 +36,7 @@ describe('Test LoginUserUseCase', () => {
   describe('Success case', () => {
     before(() => {
       findByEmailStub = Sinon.stub(userRepository, 'findByEmail').resolves(
-        MOCK_USER
+        user
       );
 
       createTokenStub = Sinon.stub(authService, 'createToken').returns(
@@ -56,8 +53,6 @@ describe('Test LoginUserUseCase', () => {
     });
 
     describe('Should return a object with an success status and data', () => {
-      const { email, password } = MOCK_USER;
-
       it('success status should be "OK"', async () => {
         const response = (await loginUserUseCase.execute({
           email,
@@ -79,8 +74,6 @@ describe('Test LoginUserUseCase', () => {
   });
 
   describe('Error cases', () => {
-    const { email, password } = MOCK_USER;
-
     describe('Not found user', () => {
       before(() => {
         findByEmailStub = Sinon.stub(userRepository, 'findByEmail').resolves(
@@ -124,7 +117,7 @@ describe('Test LoginUserUseCase', () => {
     describe('Invalid password', () => {
       before(() => {
         findByEmailStub = Sinon.stub(userRepository, 'findByEmail').resolves(
-          MOCK_USER
+          user
         );
       });
 

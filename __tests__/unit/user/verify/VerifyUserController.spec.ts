@@ -1,6 +1,5 @@
 import { NextFunction, request, response } from 'express';
-import { User } from '@prisma/client';
-import { expect, should } from 'chai';
+import { expect } from 'chai';
 import Sinon from 'sinon';
 
 import { ISuccess } from '../../../../src/@types/interfaces';
@@ -10,19 +9,15 @@ import { VerifyUserUseCase } from '../../../../src/modules/users/useCases/verify
 import { VerifyUserController } from '../../../../src/modules/users/useCases/verifyUser/VerifyUserController';
 
 import { NotFoundError } from '../../../../src/utils/Errors';
-
-const MOCK_USER: User = {
-  id: '1',
-  email: 'person1@email.com',
-  username: 'person1',
-  password: '123a456',
-};
+import { users } from '../../../mocks/users';
 
 const userRepository = new UserRepository();
 const verifyUserUseCase = new VerifyUserUseCase(userRepository);
 const verifyUserController = new VerifyUserController(verifyUserUseCase);
 
 describe('Test VerifyUserController', () => {
+  const [user] = users;
+
   let useCaseStub: Sinon.SinonStub;
   let spiedStatus: Sinon.SinonSpy;
   let spiedJson: Sinon.SinonSpy;
@@ -55,7 +50,7 @@ describe('Test VerifyUserController', () => {
       );
 
       request.body = {
-        userId: MOCK_USER.id,
+        userId: user.id,
       };
     });
 
@@ -82,7 +77,7 @@ describe('Test VerifyUserController', () => {
       );
 
       request.body = {
-        userId: MOCK_USER.id,
+        userId: user.id,
       };
     });
 

@@ -1,5 +1,4 @@
 import { NextFunction, request, response } from 'express';
-import { Task } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
@@ -11,32 +10,14 @@ import { GetAllTasksUseCase } from '../../../../src/modules/tasks/useCases/getAl
 import { GetAllTasksController } from '../../../../src/modules/tasks/useCases/getAllTasks/GetAllTasksController';
 
 import { InternalError } from '../../../../src/utils/Errors';
-
-const MOCK_TASKS: Task[] = [
-  {
-    id: '5',
-    title: 'Task 5',
-    description: 'Description 5',
-    status: 'TODO',
-    userId: '1',
-    updatedAt: new Date(),
-  },
-  {
-    id: '6',
-    title: 'Task 6',
-    description: 'Description 6',
-    status: 'DONE',
-    userId: '1',
-    updatedAt: new Date(),
-  },
-];
+import { tasks } from '../../../mocks/tasks';
 
 const tasksRepository = new TasksRepository();
 const getAllTasksUseCase = new GetAllTasksUseCase(tasksRepository);
 const getAllTasksController = new GetAllTasksController(getAllTasksUseCase);
 
 describe('Test GetAllTasksController', () => {
-  const [{ userId }] = MOCK_TASKS;
+  const [{ userId }] = tasks;
 
   let useCaseStub: Sinon.SinonStub;
   let spiedStatus: Sinon.SinonSpy;
@@ -61,7 +42,7 @@ describe('Test GetAllTasksController', () => {
   describe('Success case', () => {
     const SUCCES_RESPONSE: ISuccess<TaskReturn[]> = {
       statusCode: 'OK',
-      data: MOCK_TASKS,
+      data: tasks,
     };
 
     before(() => {

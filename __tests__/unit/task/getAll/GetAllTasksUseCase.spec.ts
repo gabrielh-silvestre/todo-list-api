@@ -1,39 +1,21 @@
-import { Task } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
 import { TasksRepository } from '../../../../src/modules/tasks/repository/TasksRepository';
 import { GetAllTasksUseCase } from '../../../../src/modules/tasks/useCases/getAllTasks/GetAllTasksUseCase';
 
-const MOCK_TASKS: Task[] = [
-  {
-    id: '5',
-    title: 'Task 5',
-    description: 'Description 5',
-    status: 'TODO',
-    userId: '1',
-    updatedAt: new Date(),
-  },
-  {
-    id: '6',
-    title: 'Task 6',
-    description: 'Description 6',
-    status: 'DONE',
-    userId: '1',
-    updatedAt: new Date(),
-  },
-];
+import { tasks } from '../../../mocks/tasks';
 
 const tasksRepository = new TasksRepository();
 const getAllTasksUseCase = new GetAllTasksUseCase(tasksRepository);
 
 describe('Test GetAllTasksUseCase', () => {
-  const [{ userId }] = MOCK_TASKS;
+  const [{ userId }] = tasks;
   let getAllStub: Sinon.SinonStub;
 
   describe('Success case', () => {
     before(() => {
-      getAllStub = Sinon.stub(tasksRepository, 'findAll').resolves(MOCK_TASKS);
+      getAllStub = Sinon.stub(tasksRepository, 'findAll').resolves(tasks);
     });
 
     after(() => {
@@ -50,7 +32,7 @@ describe('Test GetAllTasksUseCase', () => {
       it('data should be the finded Tasks', async () => {
         const response = await getAllTasksUseCase.execute(userId);
 
-        expect(response.data).to.be.deep.equal(MOCK_TASKS);
+        expect(response.data).to.be.deep.equal(tasks);
       });
     });
   });
