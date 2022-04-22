@@ -13,7 +13,14 @@ class AuthMiddleware {
   handle = async (req: Request, _res: Response, next: NextFunction) => {
     const { authorization } = req.headers;
 
-    const isValid = this.authService.verifyToken(authorization as string);
+    if (!authorization) {
+      const err = new UnauthorizedError('No authorization header');
+      return next(err);
+    }
+
+    const [_, token] = authorization.split(' ');
+
+    const isValid = this.authService.verifyToken(token);
 
     if (!isValid) {
       const err = new UnauthorizedError('Expired or invalid token');

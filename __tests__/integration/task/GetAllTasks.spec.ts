@@ -12,7 +12,7 @@ import { app } from '../../../src/app';
 
 chai.use(chaiHTTP);
 const LIST_TASKS_ENDPOINT = '/v1/api/tasks';
-const FAKE_TOKEN = process.env.TEST_TOKEN as string;
+const FAKE_TOKEN = `Bearer ${process.env.TEST_TOKEN}` as string;
 
 describe('Test GET endpoint "/tasks"', () => {
   const [{ id }] = tasks;
@@ -78,10 +78,10 @@ describe('Test GET endpoint "/tasks"', () => {
           expect(response.body).to.have.property('message');
         });
 
-        it('message should be: Expired or invalid token', async () => {
+        it('message should be: No authorization header', async () => {
           const response = await chai.request(app).get(LIST_TASKS_ENDPOINT);
 
-          expect(response.body.message).to.be.equal('Expired or invalid token');
+          expect(response.body.message).to.be.equal('No authorization header');
         });
       });
 

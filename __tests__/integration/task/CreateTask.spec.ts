@@ -14,7 +14,7 @@ import { TaskReturn } from '../../../src/@types/types';
 chai.use(chaiHTTP);
 
 const LIST_TASKS_ENDPOINT = '/v1/api/tasks';
-const FAKE_TOKEN = process.env.TEST_TOKEN as string;
+const FAKE_TOKEN = `Bearer ${process.env.TEST_TOKEN}` as string;
 
 const { id, title, description, status, userId, updatedAt } = newTask;
 const TASK_RETURN: TaskReturn = {
@@ -113,13 +113,13 @@ describe('Test POST endpoint "/tasks"', () => {
           expect(response.body).to.have.property('message');
         });
 
-        it('message should be: Expired or invalid token', async () => {
+        it('message should be: No authorization header', async () => {
           const response = await chai
             .request(app)
             .post(LIST_TASKS_ENDPOINT)
             .send(CREATE_NEW_TASK);
 
-          expect(response.body.message).to.be.equal('Expired or invalid token');
+          expect(response.body.message).to.be.equal('No authorization header');
         });
       });
 
