@@ -8,13 +8,12 @@
   },
   "scripts": {
     "start": "node dist/src/server.js",
-    "build": "tsc && rm -v !(dist | node_modules)",
     "dev": "nodemon src/server.ts",
     "test": "mocha -r ts-node/register/transpile-only __tests__/**/*.spec.ts",
     "test:result": "mocha -R json -O output=test-results.json -r ts-node/register/transpile-only __tests__/**/*.spec.ts",
     "test:coverage": "nyc npm test",
     "db:drop": "ts-node prisma/reset.ts",
-    "postinstall": "npm run prisma:deploy tsc && mv -i -v public dist/ && rm -v -rf src",
+    "postinstall": "npm run prisma:deploy && tsc",
     "prisma:deploy": "prisma migrate deploy"
   },
   "keywords": [],
