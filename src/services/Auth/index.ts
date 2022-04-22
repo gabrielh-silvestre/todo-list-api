@@ -4,15 +4,14 @@ import { IAuthService } from '../../@types/interfaces';
 import { TokenPayload } from '../../@types/types';
 import { jwtConfig } from '../../config/jwtConfig';
 
-
 class AuthService implements IAuthService<TokenPayload> {
   createToken(userId: string) {
     const { secret, expiresIn, algorithm } = jwtConfig;
 
-    const token = jwt.sign({ data: userId }, secret, {
-      expiresIn: expiresIn,
-      algorithm: algorithm,
-    });
+    const token = `Bearer ${jwt.sign({ data: userId }, secret, {
+      expiresIn,
+      algorithm,
+    })}`;
 
     return token;
   }
