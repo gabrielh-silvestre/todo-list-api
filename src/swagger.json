@@ -124,6 +124,7 @@
         "tags": ["Task"],
         "summary": "Get all tasks",
         "description": "Get all tasks for a specific user",
+        "security": [{ "bearerAuth": [] }],
         "operationId": "getTasks",
         "responses": {
           "200": {
@@ -168,6 +169,7 @@
         "tags": ["Task"],
         "summary": "Create a task",
         "description": "Create a new task for a specific user",
+        "security": [{ "bearerAuth": [] }],
         "operationId": "createTask",
         "requestBody": {
           "content": {
@@ -236,6 +238,7 @@
         "tags": ["Task"],
         "summary": "Update a task",
         "description": "Update a task for a specific user",
+        "security": [{ "bearerAuth": [] }],
         "operationId": "updateTask",
         "parameters": [
           {
@@ -306,6 +309,7 @@
         "tags": ["Task"],
         "summary": "Delete a task",
         "description": "Delete a task for a specific user",
+        "security": [{ "bearerAuth": [] }],
         "operationId": "deleteTask",
         "parameters": [
           {
@@ -444,6 +448,13 @@
             "type": "string"
           }
         }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   }
