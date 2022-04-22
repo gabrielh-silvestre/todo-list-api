@@ -16,7 +16,7 @@ chai.use(chaiHTTP);
 const { id, title, description, status, userId, updatedAt } = newTask;
 
 const UPDATE_TASKS_ENDPOINT = `/v1/api/tasks/${id}`;
-const FAKE_TOKEN = process.env.TEST_TOKEN as string;
+const FAKE_TOKEN = `Bearer ${process.env.TEST_TOKEN}` as string;
 
 const TASK_RETURN: TaskReturn = {
   id,
@@ -320,13 +320,13 @@ describe('Test PUT endpoint "/tasks/:id', () => {
           expect(response.body).to.have.property('message');
         });
 
-        it('message should be: Expired or invalid token', async () => {
+        it('message should be: No authorization header', async () => {
           const response = await chai
             .request(app)
             .put(UPDATE_TASKS_ENDPOINT)
             .send(UPDATE_TASK);
 
-          expect(response.body.message).to.be.equal('Expired or invalid token');
+          expect(response.body.message).to.be.equal('No authorization header');
         });
       });
 
