@@ -3,13 +3,17 @@ import { ISuccess } from '../../../../@types/interfaces';
 
 import { NotFoundError } from '../../../../utils/Errors';
 
+interface IRequest {
+  id: string;
+}
+
 class VerifyUserUseCase {
   constructor(private userRepository: IUsersRepository) {}
 
-  async execute(id: string): Promise<ISuccess<null>> {
-    const findedUser = await this.userRepository.findById(id);
+  async execute({ id }: IRequest): Promise<ISuccess<null>> {
+    const foundUser = await this.userRepository.findById({ id });
 
-    if (!findedUser) {
+    if (!foundUser) {
       throw new NotFoundError('User does not exist');
     }
 

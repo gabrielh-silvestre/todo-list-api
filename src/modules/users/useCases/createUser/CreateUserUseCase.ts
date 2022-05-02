@@ -1,6 +1,6 @@
 import { IUsersRepository } from '../../repository/IUsersRepository';
 import { IAuthService, ISuccess } from '../../../../@types/interfaces';
-import { IEncriptService } from '../../../../@types/interfaces';
+import { IEncryptService } from '../../../../@types/interfaces';
 import { TokenPayload } from '../../../../@types/types';
 
 import { ConflictError } from '../../../../utils/Errors';
@@ -15,11 +15,11 @@ class CreateUserUseCase {
   constructor(
     private userRepository: IUsersRepository,
     private authService: IAuthService<TokenPayload>,
-    private encriptService: IEncriptService
+    private encryptService: IEncryptService
   ) {}
 
   async isUnique(email: string): Promise<void> {
-    const user = await this.userRepository.findByEmail(email);
+    const user = await this.userRepository.findByEmail({ email });
 
     if (user) {
       throw new ConflictError('User already exists');
@@ -33,7 +33,7 @@ class CreateUserUseCase {
   }: IRequest): Promise<ISuccess<string> | void> {
     await this.isUnique(email);
 
-    const encryptedPassword = await this.encriptService.encript(password);
+    const encryptedPassword = await this.encryptService.encrypt(password);
 
     const newUserId = await this.userRepository.create({
       email,

@@ -5,7 +5,7 @@ import Sinon from 'sinon';
 import { ISuccess } from '../../../../src/@types/interfaces';
 import { ErrorStatusCode } from '../../../../src/@types/types';
 
-import { EncriptService } from '../../../../src/services/Encript';
+import { EncryptService } from '../../../../src/services/Encrypt';
 import { AuthService } from '../../../../src/services/Auth';
 import { UserRepository } from '../../../../src/modules/users/repository/UsersRepository';
 import { LoginUserUseCase } from '../../../../src/modules/users/useCases/loginUser/LoginUserUseCase';
@@ -16,13 +16,13 @@ import { users, newUser } from '../../../mocks/users';
 const { NOT_FOUND } = ErrorStatusCode;
 const FAKE_TOKEN = 'nASOmifoniv-auns09812jsnipoas-wpnioAa09sjvcawh012';
 
-const encriptService = new EncriptService();
+const encryptService = new EncryptService();
 const authService = new AuthService();
 const userRepository = new UserRepository();
 const loginUserUseCase = new LoginUserUseCase(
   userRepository,
   authService,
-  encriptService
+  encryptService
 );
 
 describe('Test LoginUserUseCase', () => {
@@ -43,7 +43,7 @@ describe('Test LoginUserUseCase', () => {
         FAKE_TOKEN
       );
 
-      verifyPasswordStub = Sinon.stub(encriptService, 'verify').resolves(true);
+      verifyPasswordStub = Sinon.stub(encryptService, 'verify').resolves(true);
     });
 
     after(() => {

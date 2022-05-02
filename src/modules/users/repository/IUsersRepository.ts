@@ -1,19 +1,28 @@
 import { User } from '@prisma/client';
 
-interface IUsersRepositoryDTO {
+interface IBasicUserData {
   email: string;
   username: string;
   password: string;
 }
 
-interface IUsersRepository {
-  create({
-    email,
-    username,
-    password,
-  }: IUsersRepositoryDTO): Promise<User['id']>;
-  findByEmail(email: string): Promise<User | null>;
-  findById(id: string): Promise<User | null>;
+interface IUserIdentifier {
+  id: string;
 }
 
-export { IUsersRepository, IUsersRepositoryDTO };
+interface IUserIdentifierByEmail {
+  email: string;
+}
+
+interface IUsersRepository {
+  create({ email, username, password }: IBasicUserData): Promise<string>;
+  findById(id: IUserIdentifier): Promise<User | null>;
+  findByEmail(email: IUserIdentifierByEmail): Promise<User | null>;
+}
+
+export {
+  IUsersRepository,
+  IBasicUserData,
+  IUserIdentifier,
+  IUserIdentifierByEmail,
+};

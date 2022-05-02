@@ -16,8 +16,8 @@ interface IAuthService<T> {
   verifyToken(token: string): T | null;
 }
 
-interface IEncriptService {
-  encript(value: string): Promise<string>;
+interface IEncryptService {
+  encrypt(value: string): Promise<string>;
   verify(value: string, hash: string): Promise<boolean>;
 }
 
@@ -35,7 +35,7 @@ export {
   IUserValidator,
   ITaskValidator,
   IAuthService,
-  IEncriptService,
+  IEncryptService,
   IError,
   ISuccess,
 };

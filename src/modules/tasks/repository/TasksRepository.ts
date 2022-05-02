@@ -1,7 +1,10 @@
 import {
   ITasksRepository,
+  ITaskIdentifierByUser,
   ITasksRepositoryDTO,
+  ITasksRepositoryFindByEmailDTO,
   ITasksRepositoryUpdateDTO,
+  ITaskUserIdentifier,
 } from './ITasksRepository';
 import { TaskReturn } from '../../../@types/types';
 
@@ -35,11 +38,11 @@ class TasksRepository implements ITasksRepository {
     return newTask as TaskReturn;
   }
 
-  async update(
-    userId: string,
-    id: string,
-    taskData: ITasksRepositoryUpdateDTO
-  ): Promise<TaskReturn> {
+  async update({
+    userId,
+    id,
+    taskData,
+  }: ITasksRepositoryUpdateDTO): Promise<TaskReturn> {
     const updatedTask = await prisma.task.update({
       where: {
         id_userId: {
@@ -62,8 +65,8 @@ class TasksRepository implements ITasksRepository {
     return updatedTask;
   }
 
-  async findAll(userId: string): Promise<TaskReturn[]> {
-    const findedTasks = await prisma.task.findMany({
+  async findAll({ userId }: ITaskUserIdentifier): Promise<TaskReturn[]> {
+    const foundTasks = await prisma.task.findMany({
       where: {
         userId,
       },
@@ -76,11 +79,14 @@ class TasksRepository implements ITasksRepository {
       },
     });
 
-    return findedTasks;
+    return foundTasks;
   }
 
-  async findById(userId: string, id: string): Promise<TaskReturn | null> {
-    const findedTask = await prisma.task.findUnique({
+  async findById({
+    id,
+    userId,
+  }: ITaskIdentifierByUser): Promise<TaskReturn | null> {
+    const foundTask = await prisma.task.findUnique({
       where: {
         id_userId: {
           id,
@@ -96,11 +102,14 @@ class TasksRepository implements ITasksRepository {
       },
     });
 
-    return findedTask;
+    return foundTask;
   }
 
-  async findByExactTitle(userId: string, title: string): Promise<TaskReturn[]> {
-    const findedTask = await prisma.task.findMany({
+  async findByExactTitle({
+    title,
+    userId,
+  }: ITasksRepositoryFindByEmailDTO): Promise<TaskReturn[]> {
+    const foundTask = await prisma.task.findMany({
       where: {
         title,
         userId,
@@ -114,10 +123,10 @@ class TasksRepository implements ITasksRepository {
       },
     });
 
-    return findedTask;
+    return foundTask;
   }
 
-  async delete(userId: string, id: string) {
+  async delete({ id, userId }: ITaskIdentifierByUser): Promise<void> {
     await prisma.task.delete({
       where: {
         id_userId: {

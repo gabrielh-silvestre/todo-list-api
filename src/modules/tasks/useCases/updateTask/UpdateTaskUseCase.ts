@@ -16,9 +16,9 @@ class UpdateTaskUseCase {
   constructor(private tasksRepository: ITasksRepository) {}
 
   async taskExists(userId: string, id: string): Promise<void> {
-    const findedTask = await this.tasksRepository.findById(userId, id);
+    const foundTask = await this.tasksRepository.findById({ userId, id });
 
-    if (!findedTask) {
+    if (!foundTask) {
       throw new NotFoundError('Task not found');
     }
   }
@@ -30,10 +30,12 @@ class UpdateTaskUseCase {
   ): Promise<ISuccess<TaskReturn>> {
     await this.taskExists(userId, id);
 
-    const updatedTask = await this.tasksRepository.update(userId, id, {
-      title,
-      description,
-      status,
+    const taskData = { title, description, status };
+
+    const updatedTask = await this.tasksRepository.update({
+      userId,
+      id,
+      taskData,
     });
 
     return {
