@@ -9,9 +9,9 @@ class GetAllTasksController {
     const { userId } = req.body;
 
     try {
-      const { statusCode, data } = await this.getAllTasksUseCase.execute(
-        userId
-      );
+      const { statusCode, data } = await this.getAllTasksUseCase.execute({
+        userId,
+      });
 
       return res.status(successStatusCode[statusCode]).json(data);
     } catch (err) {
