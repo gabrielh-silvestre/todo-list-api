@@ -1,8 +1,9 @@
 import bcrypt from 'bcrypt';
-import { IEncriptService } from '../../@types/interfaces';
 
-class EncriptService implements IEncriptService {
-  async encript(value: string) {
+import { IEncryptService } from '../../@types/interfaces';
+
+class EncryptService implements IEncryptService {
+  async encrypt(value: string) {
     return await bcrypt.hash(value, 10);
   }
 
@@ -11,4 +12,4 @@ class EncriptService implements IEncriptService {
   }
 }
 
-export { EncriptService };
+export { EncryptService };
