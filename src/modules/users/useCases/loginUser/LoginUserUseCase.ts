@@ -22,7 +22,7 @@ class LoginUserUseCase {
     email,
     password,
   }: IRequest): Promise<ISuccess<string> | void> {
-    const user = await this.userRepository.findByEmail(email);
+    const user = await this.userRepository.findByEmail({ email });
 
     if (!user) {
       throw new NotFoundError('Invalid email or password');
