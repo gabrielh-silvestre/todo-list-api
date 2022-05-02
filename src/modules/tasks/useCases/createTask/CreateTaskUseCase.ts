@@ -14,12 +14,12 @@ class CreateTaskUseCase {
   constructor(private taskRepository: ITasksRepository) {}
 
   async isUnique(userId: string, title: string): Promise<void> {
-    const findedTasks = await this.taskRepository.findByExactTitle({
+    const foundTasks = await this.taskRepository.findByExactTitle({
       userId,
       title,
     });
 
-    if (findedTasks.length > 0) {
+    if (foundTasks.length > 0) {
       throw new ConflictError('Task with this title already exists');
     }
   }

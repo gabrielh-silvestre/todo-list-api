@@ -10,11 +10,11 @@ class GetAllTasksUseCase {
   constructor(private tasksRepository: ITasksRepository) {}
 
   async execute({ userId }: IRequest): Promise<ISuccess<TaskReturn[]>> {
-    const findedTasks = await this.tasksRepository.findAll({ userId });
+    const foundTasks = await this.tasksRepository.findAll({ userId });
 
     return {
       statusCode: 'OK',
-      data: findedTasks,
+      data: foundTasks,
     };
   }
 }
