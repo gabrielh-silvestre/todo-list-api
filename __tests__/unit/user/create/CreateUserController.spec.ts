@@ -4,7 +4,7 @@ import Sinon from 'sinon';
 
 import { ISuccess } from '../../../../src/@types/interfaces';
 
-import { EncriptService } from '../../../../src/services/Encript';
+import { EncryptService } from '../../../../src/services/Encrypt';
 import { UserRepository } from '../../../../src/modules/users/repository/UsersRepository';
 import { CreateUserUseCase } from '../../../../src/modules/users/useCases/createUser/CreateUserUseCase';
 import { CreateUserController } from '../../../../src/modules/users/useCases/createUser/CreateUserController';
@@ -16,12 +16,12 @@ import { newUser } from '../../../mocks/users';
 const FAKE_TOKEN = '0n0v19nASV-V0n09Masvmz0-xasvzx';
 
 const authService = new AuthService();
-const encriptService = new EncriptService();
+const encryptService = new EncryptService();
 const userRepository = new UserRepository();
 const createUserUseCase = new CreateUserUseCase(
   userRepository,
   authService,
-  encriptService
+  encryptService
 );
 const createUserController = new CreateUserController(createUserUseCase);
 

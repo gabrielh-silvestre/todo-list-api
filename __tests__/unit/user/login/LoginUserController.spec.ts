@@ -2,7 +2,7 @@ import { NextFunction, request, response } from 'express';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
-import { EncriptService } from '../../../../src/services/Encript';
+import { EncryptService } from '../../../../src/services/Encrypt';
 import { AuthService } from '../../../../src/services/Auth';
 
 import { UserRepository } from '../../../../src/modules/users/repository/UsersRepository';
@@ -14,13 +14,13 @@ import { newUser } from '../../../mocks/users';
 
 const FAKE_TOKEN = 'nASOmifoniv-auns09812jsnipoas-wpnioAa09sjvcawh012';
 
-const encriptService = new EncriptService();
+const encryptService = new EncryptService();
 const authService = new AuthService();
 const userRepository = new UserRepository();
 const loginUserUseCase = new LoginUserUseCase(
   userRepository,
   authService,
-  encriptService
+  encryptService
 );
 const loginUserController = new LoginUserController(loginUserUseCase);
 

@@ -6,7 +6,7 @@ import { UserRepository } from '../../../src/modules/users/repository/UsersRepos
 
 import { newUser } from '../../mocks/users';
 import { app } from '../../../src/app';
-import { EncriptService } from '../../../src/services/Encript';
+import { EncryptService } from '../../../src/services/Encrypt';
 
 chai.use(chaiHTTP);
 
@@ -16,7 +16,7 @@ describe('Test POST endpoint "/users/login"', () => {
   const { email, password } = newUser;
 
   let repositoryFindByEmailStub: Sinon.SinonStub;
-  let encriptVerifyStub: Sinon.SinonStub;
+  let encryptVerifyStub: Sinon.SinonStub;
 
   before(() => {
     repositoryFindByEmailStub = Sinon.stub(
@@ -24,18 +24,18 @@ describe('Test POST endpoint "/users/login"', () => {
       'findByEmail'
     );
 
-    encriptVerifyStub = Sinon.stub(EncriptService.prototype, 'verify');
+    encryptVerifyStub = Sinon.stub(EncryptService.prototype, 'verify');
   });
 
   after(() => {
     repositoryFindByEmailStub.restore();
-    encriptVerifyStub.restore();
+    encryptVerifyStub.restore();
   });
 
   describe('Success case', () => {
     before(() => {
       repositoryFindByEmailStub.resolves(newUser);
-      encriptVerifyStub.resolves(true);
+      encryptVerifyStub.resolves(true);
     });
 
     it('should return a status code 200', async () => {
@@ -185,7 +185,7 @@ describe('Test POST endpoint "/users/login"', () => {
     describe('Login with invalid password', () => {
       before(() => {
         repositoryFindByEmailStub.resolves(newUser);
-        encriptVerifyStub.resolves(false);
+        encryptVerifyStub.resolves(false);
       });
 
       it('should return a status code 404', async () => {
