@@ -66,7 +66,7 @@ class TasksRepository implements ITasksRepository {
   }
 
   async findAll({ userId }: ITaskUserIdentifier): Promise<TaskReturn[]> {
-    const findedTasks = await prisma.task.findMany({
+    const foundTasks = await prisma.task.findMany({
       where: {
         userId,
       },
@@ -79,14 +79,14 @@ class TasksRepository implements ITasksRepository {
       },
     });
 
-    return findedTasks;
+    return foundTasks;
   }
 
   async findById({
     id,
     userId,
   }: ITaskIdentifierByUser): Promise<TaskReturn | null> {
-    const findedTask = await prisma.task.findUnique({
+    const foundTask = await prisma.task.findUnique({
       where: {
         id_userId: {
           id,
@@ -102,14 +102,14 @@ class TasksRepository implements ITasksRepository {
       },
     });
 
-    return findedTask;
+    return foundTask;
   }
 
   async findByExactTitle({
     title,
     userId,
   }: ITasksRepositoryFindByEmailDTO): Promise<TaskReturn[]> {
-    const findedTask = await prisma.task.findMany({
+    const foundTask = await prisma.task.findMany({
       where: {
         title,
         userId,
@@ -123,7 +123,7 @@ class TasksRepository implements ITasksRepository {
       },
     });
 
-    return findedTask;
+    return foundTask;
   }
 
   async delete({ id, userId }: ITaskIdentifierByUser): Promise<void> {
