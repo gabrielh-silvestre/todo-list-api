@@ -1,14 +1,15 @@
 import { User } from '@prisma/client';
 
-import { IUsersRepository, IUsersRepositoryDTO } from './IUsersRepository';
+import {
+  IBasicUserData,
+  IUserIdentifier,
+  IUserIdentifierByEmail,
+  IUsersRepository,
+} from './IUsersRepository';
 import { prisma } from '../../prisma';
 
 class UserRepository implements IUsersRepository {
-  async create({
-    email,
-    username,
-    password,
-  }: IUsersRepositoryDTO): Promise<User['id']> {
+  async create({ email, username, password }: IBasicUserData): Promise<string> {
     const { id } = await prisma.user.create({
       data: {
         email,
@@ -20,7 +21,7 @@ class UserRepository implements IUsersRepository {
     return id;
   }
 
-  async findByEmail(email: string): Promise<User | null> {
+  async findByEmail({ email }: IUserIdentifierByEmail): Promise<User | null> {
     const foundUser = await prisma.user.findUnique({
       where: {
         email,
@@ -30,7 +31,7 @@ class UserRepository implements IUsersRepository {
     return foundUser;
   }
 
-  async findById(id: string): Promise<User | null> {
+  async findById({ id }: IUserIdentifier): Promise<User | null> {
     const foundUser = await prisma.user.findUnique({
       where: {
         id,
