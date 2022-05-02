@@ -1,16 +1,16 @@
 import { AuthService } from '../../../../services/Auth';
-import { EncriptService } from '../../../../services/Encript';
+import { EncryptService } from '../../../../services/Encrypt';
 import { UserRepository } from '../../repository/UsersRepository';
 import { CreateUserUseCase } from './CreateUserUseCase';
 import { CreateUserController } from './CreateUserController';
 
 const authService = new AuthService();
-const encriptService = new EncriptService();
+const encryptService = new EncryptService();
 const userRepository = new UserRepository();
 const createUserUseCase = new CreateUserUseCase(
   userRepository,
   authService,
-  encriptService
+  encryptService
 );
 const createUserController = new CreateUserController(createUserUseCase);
 

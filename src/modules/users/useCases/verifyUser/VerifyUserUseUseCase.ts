@@ -7,9 +7,9 @@ class VerifyUserUseCase {
   constructor(private userRepository: IUsersRepository) {}
 
   async execute(id: string): Promise<ISuccess<null>> {
-    const findedUser = await this.userRepository.findById(id);
+    const foundUser = await this.userRepository.findById(id);
 
-    if (!findedUser) {
+    if (!foundUser) {
       throw new NotFoundError('User does not exist');
     }
 

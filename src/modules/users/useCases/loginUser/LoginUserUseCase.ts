@@ -1,6 +1,6 @@
 import { IUsersRepository } from '../../repository/IUsersRepository';
 
-import { IAuthService, IEncriptService } from '../../../../@types/interfaces';
+import { IAuthService, IEncryptService } from '../../../../@types/interfaces';
 import { ISuccess } from '../../../../@types/interfaces';
 import { TokenPayload } from '../../../../@types/types';
 
@@ -15,7 +15,7 @@ class LoginUserUseCase {
   constructor(
     private userRepository: IUsersRepository,
     private authService: IAuthService<TokenPayload>,
-    private encriptService: IEncriptService
+    private encryptService: IEncryptService
   ) {}
 
   async execute({
@@ -28,7 +28,7 @@ class LoginUserUseCase {
       throw new NotFoundError('Invalid email or password');
     }
 
-    const isPasswordValid = await this.encriptService.verify(
+    const isPasswordValid = await this.encryptService.verify(
       password,
       user.password
     );
