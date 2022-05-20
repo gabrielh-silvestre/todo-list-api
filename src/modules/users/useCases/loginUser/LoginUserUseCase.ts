@@ -1,10 +1,10 @@
+import { NotFoundError } from 'restify-errors';
+
 import { IUsersRepository } from '../../repository/IUsersRepository';
 
 import { IAuthService, IEncryptService } from '../../../../@types/interfaces';
 import { ISuccess } from '../../../../@types/interfaces';
 import { TokenPayload } from '../../../../@types/types';
-
-import { NotFoundError } from '../../../../utils/Errors';
 
 interface IRequest {
   email: string;

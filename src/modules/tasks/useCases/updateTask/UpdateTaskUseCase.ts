@@ -1,10 +1,9 @@
 import { TaskStatus } from '@prisma/client';
+import { NotFoundError } from 'restify-errors';
 
 import { ITasksRepository } from '../../repository/ITasksRepository';
 import { ISuccess } from '../../../../@types/interfaces';
 import { TaskReturn } from '../../../../@types/types';
-
-import { NotFoundError } from '../../../../utils/Errors';
 
 interface IRequest {
   title: string;
