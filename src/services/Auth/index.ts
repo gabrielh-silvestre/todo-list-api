@@ -1,11 +1,10 @@
 import jwt from 'jsonwebtoken';
 
-import { IAuthService } from '../../@types/interfaces';
 import { TokenPayload } from '../../@types/types';
 import { jwtConfig } from '../../config/jwtConfig';
 
-class AuthService implements IAuthService<TokenPayload> {
-  createToken(userId: string) {
+class AuthService {
+  public static createToken(userId: string) {
     const { secret, expiresIn, algorithm } = jwtConfig;
 
     const token = `Bearer ${jwt.sign({ data: userId }, secret, {
@@ -16,7 +15,7 @@ class AuthService implements IAuthService<TokenPayload> {
     return token;
   }
 
-  verifyToken(token: string) {
+  public static verifyToken(token: string) {
     const { secret } = jwtConfig;
 
     try {
