@@ -1,3 +1,5 @@
+import { HttpError } from 'restify-errors';
+
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
@@ -69,7 +71,8 @@ describe('Test UpdateTaskUseCase', () => {
             });
             expect.fail('Should throw a not found error');
           } catch (error) {
-            expect(error.getBody().errorCode).to.be.equal(404);
+            const tErr = error as HttpError;
+            expect(tErr.statusCode).to.be.equal(404);
           }
         });
 
@@ -82,7 +85,8 @@ describe('Test UpdateTaskUseCase', () => {
             });
             expect.fail('Should throw a not found error');
           } catch (error) {
-            expect(error.getBody().message).to.be.equal('Task not found');
+            const tErr = error as HttpError;
+            expect(tErr.message).to.be.equal('Task not found');
           }
         });
       });

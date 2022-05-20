@@ -24,13 +24,13 @@ describe('Test GetAllTasksUseCase', () => {
 
     describe('Should return a object with an success status and data', () => {
       it('success status should be "OK"', async () => {
-        const response = await getAllTasksUseCase.execute(userId);
+        const response = await getAllTasksUseCase.execute({ userId });
 
         expect(response.statusCode).to.be.equal('OK');
       });
 
-      it('data should be the finded Tasks', async () => {
-        const response = await getAllTasksUseCase.execute(userId);
+      it('data should be the found Tasks', async () => {
+        const response = await getAllTasksUseCase.execute({ userId });
 
         expect(response.data).to.be.deep.equal(tasks);
       });

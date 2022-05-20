@@ -1,7 +1,7 @@
+import { NotFoundError } from 'restify-errors';
+
 import { ITasksRepository } from '../../repository/ITasksRepository';
 import { ISuccess } from '../../../../@types/interfaces';
-
-import { NotFoundError } from '../../../../utils/Errors';
 
 class DeleteTaskUseCase {
   constructor(private tasksRepository: ITasksRepository) {}

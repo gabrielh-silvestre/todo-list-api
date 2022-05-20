@@ -1,9 +1,9 @@
-import Joi from 'joi';
 import { Request, Response, NextFunction } from 'express';
+import { BadRequestError } from 'restify-errors';
+import Joi from 'joi';
 
 import { IUserValidator } from '../../@types/interfaces';
 
-import { BadRequestError } from '../../utils/Errors';
 
 class UserValidator implements IUserValidator {
   private createUserSchema: Joi.ObjectSchema;

@@ -1,5 +1,7 @@
 import { NextFunction, request, response } from 'express';
 import { Task } from '@prisma/client';
+import { InternalError } from 'restify-errors';
+
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
@@ -10,8 +12,6 @@ import { CreateTaskUseCase } from '../../../../src/modules/tasks/useCases/create
 import { CreateTaskController } from '../../../../src/modules/tasks/useCases/createTask/CreateTaskController';
 
 import { newTask } from '../../../mocks/tasks';
-
-import { InternalError } from '../../../../src/utils/Errors';
 
 const tasksRepository = new TasksRepository();
 const createTaskUseCase = new CreateTaskUseCase(tasksRepository);

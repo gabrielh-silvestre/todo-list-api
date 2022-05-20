@@ -1,4 +1,6 @@
 import { NextFunction, request, response } from 'express';
+import { InternalError } from 'restify-errors';
+
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
@@ -9,7 +11,6 @@ import { TasksRepository } from '../../../../src/modules/tasks/repository/TasksR
 import { GetAllTasksUseCase } from '../../../../src/modules/tasks/useCases/getAllTasks/GetAllTasksUseCase';
 import { GetAllTasksController } from '../../../../src/modules/tasks/useCases/getAllTasks/GetAllTasksController';
 
-import { InternalError } from '../../../../src/utils/Errors';
 import { tasks } from '../../../mocks/tasks';
 
 const tasksRepository = new TasksRepository();

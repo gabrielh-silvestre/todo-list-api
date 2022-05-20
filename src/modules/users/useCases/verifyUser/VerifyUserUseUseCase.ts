@@ -1,7 +1,7 @@
 import { IUsersRepository } from '../../repository/IUsersRepository';
 import { ISuccess } from '../../../../@types/interfaces';
 
-import { NotFoundError } from '../../../../utils/Errors';
+import { NotFoundError } from 'restify-errors';
 
 interface IRequest {
   id: string;

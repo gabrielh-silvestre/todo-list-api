@@ -1,9 +1,9 @@
+import { ConflictError } from 'restify-errors';
+
 import { IUsersRepository } from '../../repository/IUsersRepository';
 import { IAuthService, ISuccess } from '../../../../@types/interfaces';
 import { IEncryptService } from '../../../../@types/interfaces';
 import { TokenPayload } from '../../../../@types/types';
-
-import { ConflictError } from '../../../../utils/Errors';
 
 interface IRequest {
   email: string;
