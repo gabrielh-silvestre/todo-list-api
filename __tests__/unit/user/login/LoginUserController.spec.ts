@@ -15,12 +15,11 @@ import { newUser } from '../../../mocks/users';
 
 const FAKE_TOKEN = 'nASOmifoniv-auns09812jsnipoas-wpnioAa09sjvcawh012';
 
-const encryptService = new EncryptService();
 const userRepository = new UserRepository();
 const loginUserUseCase = new LoginUserUseCase(
   userRepository,
   AuthService,
-  encryptService
+  EncryptService
 );
 const loginUserController = new LoginUserController(loginUserUseCase);
 

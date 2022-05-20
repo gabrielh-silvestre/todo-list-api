@@ -4,12 +4,11 @@ import { UserRepository } from '../../../../modules/users/repository/UsersReposi
 import { LoginUserUseCase } from '../../../../modules/users/useCases/loginUser/LoginUserUseCase';
 import { LoginUserController } from '../../../../modules/users/useCases/loginUser/LoginUserController';
 
-const encryptService = new EncryptService();
 const userRepository = new UserRepository();
 const loginUserUseCase = new LoginUserUseCase(
   userRepository,
   AuthService,
-  encryptService
+  EncryptService
 );
 const loginUserController = new LoginUserController(loginUserUseCase);
 

@@ -17,12 +17,11 @@ import { users, newUser } from '../../../mocks/users';
 const { NOT_FOUND } = ErrorStatusCode;
 const FAKE_TOKEN = 'nASOmifoniv-auns09812jsnipoas-wpnioAa09sjvcawh012';
 
-const encryptService = new EncryptService();
 const userRepository = new UserRepository();
 const loginUserUseCase = new LoginUserUseCase(
   userRepository,
   AuthService,
-  encryptService
+  EncryptService
 );
 
 describe('Test LoginUserUseCase', () => {
@@ -43,7 +42,7 @@ describe('Test LoginUserUseCase', () => {
         FAKE_TOKEN
       );
 
-      verifyPasswordStub = Sinon.stub(encryptService, 'verify').resolves(true);
+      verifyPasswordStub = Sinon.stub(EncryptService, 'verify').resolves(true);
     });
 
     after(() => {
