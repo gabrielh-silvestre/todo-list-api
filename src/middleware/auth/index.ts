@@ -1,11 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
+import { UnauthorizedError } from 'restify-errors';
 
 import { IAuthService } from '../../@types/interfaces';
 import { TokenPayload } from '../../@types/types';
 
 import { AuthService } from '../../services/Auth';
-
-import { UnauthorizedError } from '../../utils/Errors';
 
 class AuthMiddleware {
   constructor(private authService: IAuthService<TokenPayload>) {}

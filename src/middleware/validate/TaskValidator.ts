@@ -1,9 +1,8 @@
-import Joi from 'joi';
 import { NextFunction, Request, Response } from 'express';
+import { BadRequestError } from 'restify-errors';
+import Joi from 'joi';
 
 import { ITaskValidator } from '../../@types/interfaces';
-
-import { BadRequestError } from '../../utils/Errors';
 
 class TaskValidator implements ITaskValidator {
   private createTaskSchema: Joi.ObjectSchema;
