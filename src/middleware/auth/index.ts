@@ -34,5 +34,4 @@ class AuthMiddleware {
   };
 }
 
-const authService = new AuthService();
-export const authMiddleware = new AuthMiddleware(authService);
+export const authMiddleware = new AuthMiddleware(AuthService);
