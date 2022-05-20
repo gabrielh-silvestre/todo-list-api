@@ -16,12 +16,11 @@ import { newUser } from '../../../mocks/users';
 
 const FAKE_TOKEN = '0n0v19nASV-V0n09Masvmz0-xasvzx';
 
-const authService = new AuthService();
 const encryptService = new EncryptService();
 const userRepository = new UserRepository();
 const createUserUseCase = new CreateUserUseCase(
   userRepository,
-  authService,
+  AuthService,
   encryptService
 );
 const createUserController = new CreateUserController(createUserUseCase);

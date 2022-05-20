@@ -14,12 +14,11 @@ import { users, newUser } from '../../../mocks/users';
 
 const FAKE_TOKEN = '0n0v19nASV-V0n09Masvmz0-xasvzx';
 
-const authService = new AuthService();
 const encryptService = new EncryptService();
 const userRepository = new UserRepository();
 const createUserUseCase = new CreateUserUseCase(
   userRepository,
-  authService,
+  AuthService,
   encryptService
 );
 
@@ -38,7 +37,7 @@ describe('Test CreateUserCase', () => {
 
       createStub = Sinon.stub(userRepository, 'create').resolves(FAKE_TOKEN);
 
-      createTokenStub = Sinon.stub(authService, 'createToken').returns(
+      createTokenStub = Sinon.stub(AuthService, 'createToken').returns(
         FAKE_TOKEN
       );
     });

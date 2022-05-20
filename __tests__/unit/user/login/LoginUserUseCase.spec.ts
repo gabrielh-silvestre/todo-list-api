@@ -18,11 +18,10 @@ const { NOT_FOUND } = ErrorStatusCode;
 const FAKE_TOKEN = 'nASOmifoniv-auns09812jsnipoas-wpnioAa09sjvcawh012';
 
 const encryptService = new EncryptService();
-const authService = new AuthService();
 const userRepository = new UserRepository();
 const loginUserUseCase = new LoginUserUseCase(
   userRepository,
-  authService,
+  AuthService,
   encryptService
 );
 
@@ -40,7 +39,7 @@ describe('Test LoginUserUseCase', () => {
         user
       );
 
-      createTokenStub = Sinon.stub(authService, 'createToken').returns(
+      createTokenStub = Sinon.stub(AuthService, 'createToken').returns(
         FAKE_TOKEN
       );
 
