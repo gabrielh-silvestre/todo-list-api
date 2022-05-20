@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import { HttpError } from 'restify-errors';
 import Sinon from 'sinon';
 
 import { TasksRepository } from '../../../../src/modules/tasks/repository/TasksRepository';
@@ -57,7 +58,8 @@ describe('Test DeleteTaskUseCase', () => {
             await deleteTaskUseCase.execute(userId, id);
             expect.fail('Should throw a not found error');
           } catch (error) {
-            expect(error.getBody().errorCode).to.be.equal(404);
+            const tErr = error as HttpError;
+            expect(tErr.statusCode).to.be.equal(404);
           }
         });
 
@@ -66,7 +68,8 @@ describe('Test DeleteTaskUseCase', () => {
             await deleteTaskUseCase.execute(userId, id);
             expect.fail('Should throw a not found error');
           } catch (error) {
-            expect(error.getBody().message).to.be.equal('Task not found');
+            const tErr = error as HttpError;
+            expect(tErr.message).to.be.equal('Task not found');
           }
         });
       });

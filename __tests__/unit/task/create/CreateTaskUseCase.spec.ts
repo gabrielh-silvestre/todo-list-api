@@ -1,3 +1,5 @@
+import { HttpError } from 'restify-errors';
+
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
@@ -100,8 +102,9 @@ describe('Test CreateTaskUseCase', () => {
               userId,
             });
             expect.fail('Should throw a conflict error');
-          } catch (err) {
-            expect(err.getBody().errorCode).to.be.equal(409);
+          } catch (error) {
+            const tErr = error as HttpError;
+            expect(tErr.statusCode).to.be.equal(409);
           }
         });
 
@@ -113,8 +116,9 @@ describe('Test CreateTaskUseCase', () => {
               userId,
             });
             expect.fail('Should throw a conflict error');
-          } catch (err) {
-            expect(err.message).to.be.equal(
+          } catch (error) {
+            const tErr = error as HttpError;
+            expect(tErr.message).to.be.equal(
               'Task with this title already exists'
             );
           }

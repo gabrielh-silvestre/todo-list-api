@@ -1,3 +1,5 @@
+import { HttpError } from 'restify-errors';
+
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
@@ -88,7 +90,8 @@ describe('Test CreateUserCase', () => {
             await createUserUseCase.execute(newUser);
             expect.fail();
           } catch (err) {
-            expect(err.getBody().errorCode).to.be.equal(409);
+            const tErr = err as HttpError;
+            expect(tErr.statusCode).to.be.equal(409);
           }
         });
 
@@ -97,7 +100,8 @@ describe('Test CreateUserCase', () => {
             await createUserUseCase.execute(newUser);
             expect.fail();
           } catch (err) {
-            expect(err.message).to.be.equal('User already exists');
+            const tErr = err as HttpError;
+            expect(tErr.message).to.be.equal('User already exists');
           }
         });
       });

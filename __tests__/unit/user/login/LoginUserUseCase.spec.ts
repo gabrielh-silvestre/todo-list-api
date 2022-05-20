@@ -1,4 +1,6 @@
 import { User } from '@prisma/client';
+import { HttpError } from 'restify-errors';
+
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
@@ -10,7 +12,6 @@ import { AuthService } from '../../../../src/services/Auth';
 import { UserRepository } from '../../../../src/modules/users/repository/UsersRepository';
 import { LoginUserUseCase } from '../../../../src/modules/users/useCases/loginUser/LoginUserUseCase';
 
-import { BaseError } from '../../../../src/utils/Errors/BaseError';
 import { users, newUser } from '../../../mocks/users';
 
 const { NOT_FOUND } = ErrorStatusCode;
@@ -94,8 +95,8 @@ describe('Test LoginUserUseCase', () => {
             });
             expect.fail('Should throw an error');
           } catch (err) {
-            const tErr = err as BaseError;
-            expect(tErr.getBody().errorCode).to.be.equal(NOT_FOUND);
+            const tErr = err as HttpError;
+            expect(tErr.statusCode).to.be.equal(NOT_FOUND);
           }
         });
 
@@ -107,7 +108,7 @@ describe('Test LoginUserUseCase', () => {
             });
             expect.fail('Should throw an error');
           } catch (err) {
-            const tErr = err as BaseError;
+            const tErr = err as HttpError;
             expect(tErr.message).to.be.equal('Invalid email or password');
           }
         });
@@ -134,8 +135,8 @@ describe('Test LoginUserUseCase', () => {
             });
             expect.fail('Should throw an error');
           } catch (err) {
-            const tErr = err as BaseError;
-            expect(tErr.getBody().errorCode).to.be.equal(NOT_FOUND);
+            const tErr = err as HttpError;
+            expect(tErr.statusCode).to.be.equal(NOT_FOUND);
           }
         });
 
@@ -143,11 +144,11 @@ describe('Test LoginUserUseCase', () => {
           try {
             await loginUserUseCase.execute({
               email,
-              password: 'invalidPassword',
+              password: 'invalid',
             });
             expect.fail('Should throw an error');
           } catch (err) {
-            const tErr = err as BaseError;
+            const tErr = err as HttpError;
             expect(tErr.message).to.be.equal('Invalid email or password');
           }
         });

@@ -1,4 +1,6 @@
 import { NextFunction, request, response } from 'express';
+import { ConflictError } from 'restify-errors';
+
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
@@ -10,7 +12,6 @@ import { CreateUserUseCase } from '../../../../src/modules/users/useCases/create
 import { CreateUserController } from '../../../../src/modules/users/useCases/createUser/CreateUserController';
 import { AuthService } from '../../../../src/services/Auth';
 
-import { ConflictError } from '../../../../src/utils/Errors';
 import { newUser } from '../../../mocks/users';
 
 const FAKE_TOKEN = '0n0v19nASV-V0n09Masvmz0-xasvzx';

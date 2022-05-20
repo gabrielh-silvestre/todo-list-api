@@ -1,4 +1,6 @@
 import { NextFunction, request, response } from 'express';
+import { NotFoundError } from 'restify-errors';
+
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
@@ -8,7 +10,6 @@ import { UserRepository } from '../../../../src/modules/users/repository/UsersRe
 import { VerifyUserUseCase } from '../../../../src/modules/users/useCases/verifyUser/VerifyUserUseUseCase';
 import { VerifyUserController } from '../../../../src/modules/users/useCases/verifyUser/VerifyUserController';
 
-import { NotFoundError } from '../../../../src/utils/Errors';
 import { users } from '../../../mocks/users';
 
 const userRepository = new UserRepository();

@@ -1,3 +1,5 @@
+import { HttpError } from 'restify-errors';
+
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
@@ -7,7 +9,6 @@ import { ErrorStatusCode } from '../../../../src/@types/types';
 import { UserRepository } from '../../../../src/modules/users/repository/UsersRepository';
 import { VerifyUserUseCase } from '../../../../src/modules/users/useCases/verifyUser/VerifyUserUseUseCase';
 
-import { BaseError } from '../../../../src/utils/Errors/BaseError';
 import { users } from '../../../mocks/users';
 
 const { NOT_FOUND } = ErrorStatusCode;
@@ -30,17 +31,17 @@ describe('Test VerifyUserUseCase', () => {
 
     describe('Should return a object with an success status and data', () => {
       it('success status should be "OK"', async () => {
-        const response = (await verifyUserUseCase.execute(
-          id
-        )) as ISuccess<null>;
+        const response = (await verifyUserUseCase.execute({
+          id,
+        })) as ISuccess<null>;
 
         expect(response.statusCode).to.be.equal('OK');
       });
 
       it('data should be null', async () => {
-        const response = (await verifyUserUseCase.execute(
-          id
-        )) as ISuccess<null>;
+        const response = (await verifyUserUseCase.execute({
+          id,
+        })) as ISuccess<null>;
 
         expect(response.data).to.be.null;
       });
@@ -59,20 +60,20 @@ describe('Test VerifyUserUseCase', () => {
     describe('Should throw a CustomError with status and message', () => {
       it('status should be "NOT_FOUND"', async () => {
         try {
-          await verifyUserUseCase.execute(id);
+          await verifyUserUseCase.execute({ id });
           expect.fail('Should throw an error');
         } catch (err) {
-          const tErr = err as BaseError;
-          expect(tErr.getBody().errorCode).to.be.equal(NOT_FOUND);
+          const tErr = err as HttpError;
+          expect(tErr.statusCode).to.be.equal(NOT_FOUND);
         }
       });
 
       it('message should be "User does not exist"', async () => {
         try {
-          await verifyUserUseCase.execute(id);
+          await verifyUserUseCase.execute({ id });
           expect.fail('Should throw an error');
         } catch (err) {
-          const tErr = err as BaseError;
+          const tErr = err as HttpError;
           expect(tErr.message).to.be.equal('User does not exist');
         }
       });

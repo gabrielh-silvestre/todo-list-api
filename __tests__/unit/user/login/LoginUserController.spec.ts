@@ -1,4 +1,6 @@
 import { NextFunction, request, response } from 'express';
+import { NotFoundError } from 'restify-errors';
+
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
@@ -9,7 +11,6 @@ import { UserRepository } from '../../../../src/modules/users/repository/UsersRe
 import { LoginUserUseCase } from '../../../../src/modules/users/useCases/loginUser/LoginUserUseCase';
 import { LoginUserController } from '../../../../src/modules/users/useCases/loginUser/LoginUserController';
 
-import { NotFoundError } from '../../../../src/utils/Errors';
 import { newUser } from '../../../mocks/users';
 
 const FAKE_TOKEN = 'nASOmifoniv-auns09812jsnipoas-wpnioAa09sjvcawh012';
