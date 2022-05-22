@@ -1,11 +1,11 @@
 import { User } from '@prisma/client';
 import { HttpError } from 'restify-errors';
+import { StatusCodes } from 'http-status-codes';
 
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
 import { ISuccess } from '../../../../src/@types/interfaces';
-import { ErrorStatusCode } from '../../../../src/@types/types';
 
 import { EncryptService } from '../../../../src/services/Encrypt';
 import { AuthService } from '../../../../src/services/Auth';
@@ -14,7 +14,7 @@ import { LoginUserUseCase } from '../../../../src/modules/users/useCases/loginUs
 
 import { users, newUser } from '../../../mocks/users';
 
-const { NOT_FOUND } = ErrorStatusCode;
+const { NOT_FOUND } = StatusCodes;
 const FAKE_TOKEN = 'nASOmifoniv-auns09812jsnipoas-wpnioAa09sjvcawh012';
 
 const userRepository = new UserRepository();

@@ -1,22 +1,19 @@
 import { StatusCodes } from 'http-status-codes';
 
-import { ErrorStatusCode } from '../types';
-
 export * from './services.interface';
 export * from './users.interface';
 export * from './tasks.interface';
 
+type StatusCodesKeys = keyof typeof StatusCodes;
+
 interface IError {
-  statusCode: ErrorStatusCode;
+  statusCode: StatusCodesKeys;
   message: string;
 }
 
 interface ISuccess<T> {
-  statusCode: keyof typeof StatusCodes;
+  statusCode: StatusCodesKeys;
   data: T;
 }
 
-export {
-  IError,
-  ISuccess,
-};
+export { IError, ISuccess };
