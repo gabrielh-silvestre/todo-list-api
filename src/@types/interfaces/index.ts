@@ -1,25 +1,8 @@
-import { Handler } from 'express';
-
 import { ErrorStatusCode, SuccessStatusCode } from '../types';
 
-interface IUserValidator {
-  createValidation: Handler;
-  loginValidation: Handler;
-}
-
-interface ITaskValidator {
-  createValidation: Handler;
-}
-
-interface IAuthService<T> {
-  createToken(id: string): string;
-  verifyToken(token: string): T | null;
-}
-
-interface IEncryptService {
-  encrypt(value: string): Promise<string>;
-  verify(value: string, hash: string): Promise<boolean>;
-}
+export * from './services.interface';
+export * from './users.interface';
+export * from './tasks.interface';
 
 interface IError {
   statusCode: ErrorStatusCode;
@@ -32,10 +15,6 @@ interface ISuccess<T> {
 }
 
 export {
-  IUserValidator,
-  ITaskValidator,
-  IAuthService,
-  IEncryptService,
   IError,
   ISuccess,
 };
