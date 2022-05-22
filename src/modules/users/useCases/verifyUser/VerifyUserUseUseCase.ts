@@ -1,11 +1,9 @@
 import { IUsersRepository } from '../../repository/IUsersRepository';
-import { ISuccess } from '../../../../@types/interfaces';
+import { ISuccess, IUserIdentifier } from '../../../../@types/interfaces';
 
 import { NotFoundError } from 'restify-errors';
 
-interface IRequest {
-  id: string;
-}
+interface IRequest extends IUserIdentifier {}
 
 class VerifyUserUseCase {
   constructor(private userRepository: IUsersRepository) {}
