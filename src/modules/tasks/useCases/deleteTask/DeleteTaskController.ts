@@ -12,7 +12,11 @@ class DeleteTaskController {
     const { userId } = req.body;
 
     try {
-      const { statusCode } = await this.deleteTaskUseCase.execute(userId, id);
+      const { statusCode } = await this.deleteTaskUseCase.execute({
+        userId,
+        id,
+      });
+
       return res.status(successStatusCode[statusCode]).end();
     } catch (err) {
       next(err);

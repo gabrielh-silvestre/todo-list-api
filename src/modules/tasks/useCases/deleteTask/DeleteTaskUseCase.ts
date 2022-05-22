@@ -1,7 +1,9 @@
 import { NotFoundError } from 'restify-errors';
 
 import { ITasksRepository } from '../../repository/ITasksRepository';
-import { ISuccess } from '../../../../@types/interfaces';
+import { ISuccess, ITaskIdentifierByUser } from '../../../../@types/interfaces';
+
+interface IRequest extends ITaskIdentifierByUser {}
 
 class DeleteTaskUseCase {
   constructor(private tasksRepository: ITasksRepository) {}
@@ -14,7 +16,7 @@ class DeleteTaskUseCase {
     }
   }
 
-  async execute(userId: string, id: string): Promise<ISuccess<null>> {
+  async execute({ userId, id }: IRequest): Promise<ISuccess<null>> {
     await this.taskExists(userId, id);
 
     await this.tasksRepository.delete({ userId, id });

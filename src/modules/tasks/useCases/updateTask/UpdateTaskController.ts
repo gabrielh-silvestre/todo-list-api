@@ -13,8 +13,7 @@ class UpdateTaskController {
 
     try {
       const { statusCode, data } = await this.updateTaskUseCase.execute(
-        userId,
-        id,
+        { userId, id },
         {
           title,
           description,

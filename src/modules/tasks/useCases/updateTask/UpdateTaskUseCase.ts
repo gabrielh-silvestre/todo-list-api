@@ -2,7 +2,7 @@ import { TaskStatus } from '@prisma/client';
 import { NotFoundError } from 'restify-errors';
 
 import { ITasksRepository } from '../../repository/ITasksRepository';
-import { ISuccess } from '../../../../@types/interfaces';
+import { ISuccess, ITaskIdentifierByUser } from '../../../../@types/interfaces';
 import { TaskReturn } from '../../../../@types/types';
 
 interface IRequest {
@@ -23,8 +23,7 @@ class UpdateTaskUseCase {
   }
 
   async execute(
-    userId: string,
-    id: string,
+    { userId, id }: ITaskIdentifierByUser,
     { title, description, status }: IRequest
   ): Promise<ISuccess<TaskReturn>> {
     await this.taskExists(userId, id);
