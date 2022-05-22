@@ -29,7 +29,7 @@ describe('Test UpdateTaskUseCase', () => {
     });
 
     describe('Should return a object with an success status and data', () => {
-      it('success status should be "UPDATED"', async () => {
+      it('success status should be "OK"', async () => {
         const response = await updateTaskUseCase.execute(
           { userId, id },
           {
@@ -39,7 +39,7 @@ describe('Test UpdateTaskUseCase', () => {
           }
         );
 
-        expect(response.statusCode).to.be.equal('UPDATED');
+        expect(response.statusCode).to.be.equal('OK');
       });
 
       it('data should be the updated Task', async () => {

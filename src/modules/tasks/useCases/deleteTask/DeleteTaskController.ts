@@ -1,8 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
 
 import { DeleteTaskUseCase } from './DeleteTaskUseCase';
-
-import { successStatusCode } from '../../../../utils/successCode';
 
 class DeleteTaskController {
   constructor(private deleteTaskUseCase: DeleteTaskUseCase) {}
@@ -17,7 +16,7 @@ class DeleteTaskController {
         id,
       });
 
-      return res.status(successStatusCode[statusCode]).end();
+      return res.status(StatusCodes[statusCode]).end();
     } catch (err) {
       next(err);
     }

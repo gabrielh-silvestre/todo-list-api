@@ -28,10 +28,10 @@ describe('Test DeleteTaskUseCase', () => {
     });
 
     describe('Should return a object with an success status and data', () => {
-      it('success status should be "DELETED"', async () => {
+      it('success status should be "NO_CONTENT"', async () => {
         const response = await deleteTaskUseCase.execute({ userId, id });
 
-        expect(response.statusCode).to.be.equal('DELETED');
+        expect(response.statusCode).to.be.equal('NO_CONTENT');
       });
 
       it('data should be null', async () => {

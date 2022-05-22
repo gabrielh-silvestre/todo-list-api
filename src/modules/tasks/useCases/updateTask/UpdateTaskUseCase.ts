@@ -37,7 +37,7 @@ class UpdateTaskUseCase {
     });
 
     return {
-      statusCode: 'UPDATED',
+      statusCode: 'OK',
       data: updatedTask,
     };
   }

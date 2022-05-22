@@ -22,7 +22,7 @@ class DeleteTaskUseCase {
     await this.tasksRepository.delete({ userId, id });
 
     return {
-      statusCode: 'DELETED',
+      statusCode: 'NO_CONTENT',
       data: null,
     };
   }
