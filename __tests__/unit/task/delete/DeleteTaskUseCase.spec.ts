@@ -28,14 +28,14 @@ describe('Test DeleteTaskUseCase', () => {
     });
 
     describe('Should return a object with an success status and data', () => {
-      it('success status should be "DELETED"', async () => {
-        const response = await deleteTaskUseCase.execute(userId, id);
+      it('success status should be "NO_CONTENT"', async () => {
+        const response = await deleteTaskUseCase.execute({ userId, id });
 
-        expect(response.statusCode).to.be.equal('DELETED');
+        expect(response.statusCode).to.be.equal('NO_CONTENT');
       });
 
       it('data should be null', async () => {
-        const response = await deleteTaskUseCase.execute(userId, id);
+        const response = await deleteTaskUseCase.execute({ userId, id });
 
         expect(response.data).to.be.deep.equal(null);
       });
@@ -55,7 +55,7 @@ describe('Test DeleteTaskUseCase', () => {
       describe('Should throw a not found error with status and message', () => {
         it('status should be 404', async () => {
           try {
-            await deleteTaskUseCase.execute(userId, id);
+            await deleteTaskUseCase.execute({ userId, id });
             expect.fail('Should throw a not found error');
           } catch (error) {
             const tErr = error as HttpError;
@@ -65,7 +65,7 @@ describe('Test DeleteTaskUseCase', () => {
 
         it('message should be "Task not found"', async () => {
           try {
-            await deleteTaskUseCase.execute(userId, id);
+            await deleteTaskUseCase.execute({ userId, id });
             expect.fail('Should throw a not found error');
           } catch (error) {
             const tErr = error as HttpError;

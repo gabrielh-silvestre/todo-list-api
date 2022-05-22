@@ -40,7 +40,7 @@ describe('Test DeleteTaskController', () => {
   describe('Success case', () => {
     before(() => {
       useCaseStub = Sinon.stub(deleteTaskUseCase, 'execute').resolves({
-        statusCode: 'DELETED',
+        statusCode: 'NO_CONTENT',
         data: null,
       });
 

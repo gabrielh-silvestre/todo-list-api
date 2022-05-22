@@ -1,12 +1,15 @@
 import {
-  ITasksRepository,
   ITaskIdentifierByUser,
+  ITaskUserIdentifier,
+} from '../../../@types/interfaces';
+import { TaskReturn } from '../../../@types/types';
+
+import {
+  ITasksRepository,
   ITasksRepositoryDTO,
   ITasksRepositoryFindByEmailDTO,
   ITasksRepositoryUpdateDTO,
-  ITaskUserIdentifier,
 } from './ITasksRepository';
-import { TaskReturn } from '../../../@types/types';
 
 import { prisma } from '../../prisma';
 

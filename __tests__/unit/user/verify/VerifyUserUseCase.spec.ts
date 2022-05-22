@@ -1,17 +1,17 @@
 import { HttpError } from 'restify-errors';
+import { StatusCodes } from 'http-status-codes';
 
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
 import { ISuccess } from '../../../../src/@types/interfaces';
-import { ErrorStatusCode } from '../../../../src/@types/types';
 
 import { UserRepository } from '../../../../src/modules/users/repository/UsersRepository';
 import { VerifyUserUseCase } from '../../../../src/modules/users/useCases/verifyUser/VerifyUserUseUseCase';
 
 import { users } from '../../../mocks/users';
 
-const { NOT_FOUND } = ErrorStatusCode;
+const { NOT_FOUND } = StatusCodes;
 
 const userRepository = new UserRepository();
 const verifyUserUseCase = new VerifyUserUseCase(userRepository);

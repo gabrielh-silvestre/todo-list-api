@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import { successStatusCode } from '../../../../utils/successCode';
+import { StatusCodes } from 'http-status-codes';
+
 import { GetAllTasksUseCase } from './GetAllTasksUseCase';
 
 class GetAllTasksController {
@@ -13,7 +14,7 @@ class GetAllTasksController {
         userId,
       });
 
-      return res.status(successStatusCode[statusCode]).json(data);
+      return res.status(StatusCodes[statusCode]).json(data);
     } catch (err) {
       next(err);
     }

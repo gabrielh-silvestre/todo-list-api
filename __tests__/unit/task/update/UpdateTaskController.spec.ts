@@ -42,7 +42,7 @@ describe('Test UpdateTaskController', () => {
 
   describe('Success case', () => {
     const SUCCES_RESPONSE: ISuccess<TaskReturn> = {
-      statusCode: 'UPDATED',
+      statusCode: 'OK',
       data: {
         id,
         title,

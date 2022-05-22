@@ -1,11 +1,12 @@
 import { User } from '@prisma/client';
 
+import { IUsersRepository } from './IUsersRepository';
 import {
   IBasicUserData,
   IUserIdentifier,
   IUserIdentifierByEmail,
-  IUsersRepository,
-} from './IUsersRepository';
+} from '../../../@types/interfaces';
+
 import { prisma } from '../../prisma';
 
 class UserRepository implements IUsersRepository {

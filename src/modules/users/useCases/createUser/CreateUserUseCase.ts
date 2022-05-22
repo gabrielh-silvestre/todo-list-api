@@ -1,15 +1,15 @@
 import { ConflictError } from 'restify-errors';
 
 import { IUsersRepository } from '../../repository/IUsersRepository';
-import { IAuthService, ISuccess } from '../../../../@types/interfaces';
-import { IEncryptService } from '../../../../@types/interfaces';
+import {
+  IAuthService,
+  IBasicUserData,
+  ISuccess,
+  IEncryptService,
+} from '../../../../@types/interfaces';
 import { TokenPayload } from '../../../../@types/types';
 
-interface IRequest {
-  email: string;
-  username: string;
-  password: string;
-}
+interface IRequest extends IBasicUserData {}
 
 class CreateUserUseCase {
   constructor(

@@ -1,10 +1,8 @@
 import { ITasksRepository } from '../../repository/ITasksRepository';
-import { ISuccess } from '../../../../@types/interfaces';
+import { ISuccess, ITaskUserIdentifier } from '../../../../@types/interfaces';
 import { TaskReturn } from '../../../../@types/types';
 
-interface IRequest {
-  userId: string;
-}
+interface IRequest extends ITaskUserIdentifier {}
 
 class GetAllTasksUseCase {
   constructor(private tasksRepository: ITasksRepository) {}

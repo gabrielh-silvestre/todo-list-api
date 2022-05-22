@@ -1,21 +1,9 @@
-import { TaskStatus } from '@prisma/client';
+import {
+  IBasicTaskData,
+  ITaskIdentifierByUser,
+  ITaskUserIdentifier,
+} from '../../../@types/interfaces';
 import { TaskReturn } from '../../../@types/types';
-
-interface ITaskUserIdentifier {
-  userId: string;
-}
-
-interface ITaskIdentifier {
-  id: string;
-}
-
-interface IBasicTaskData {
-  title: string;
-  description: string | null;
-  status?: TaskStatus;
-}
-
-interface ITaskIdentifierByUser extends ITaskUserIdentifier, ITaskIdentifier {}
 
 interface ITasksRepositoryDTO extends IBasicTaskData, ITaskUserIdentifier {}
 
@@ -39,9 +27,6 @@ interface ITasksRepository {
 }
 
 export {
-  ITaskUserIdentifier,
-  ITaskIdentifier,
-  ITaskIdentifierByUser,
   ITasksRepository,
   ITasksRepositoryDTO,
   ITasksRepositoryUpdateDTO,

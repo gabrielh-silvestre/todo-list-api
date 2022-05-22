@@ -1,41 +1,19 @@
-import { Handler } from 'express';
+import { StatusCodes } from 'http-status-codes';
 
-import { ErrorStatusCode, SuccessStatusCode } from '../types';
+export * from './services.interface';
+export * from './users.interface';
+export * from './tasks.interface';
 
-interface IUserValidator {
-  createValidation: Handler;
-  loginValidation: Handler;
-}
-
-interface ITaskValidator {
-  createValidation: Handler;
-}
-
-interface IAuthService<T> {
-  createToken(id: string): string;
-  verifyToken(token: string): T | null;
-}
-
-interface IEncryptService {
-  encrypt(value: string): Promise<string>;
-  verify(value: string, hash: string): Promise<boolean>;
-}
+type StatusCodesKeys = keyof typeof StatusCodes;
 
 interface IError {
-  statusCode: ErrorStatusCode;
+  statusCode: StatusCodesKeys;
   message: string;
 }
 
 interface ISuccess<T> {
-  statusCode: SuccessStatusCode;
+  statusCode: StatusCodesKeys;
   data: T;
 }
 
-export {
-  IUserValidator,
-  ITaskValidator,
-  IAuthService,
-  IEncryptService,
-  IError,
-  ISuccess,
-};
+export { IError, ISuccess };

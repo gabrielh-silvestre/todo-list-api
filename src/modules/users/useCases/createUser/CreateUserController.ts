@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
+import { StatusCodes } from 'http-status-codes';
 
 import { ISuccess } from '../../../../@types/interfaces';
 
 import { CreateUserUseCase } from './CreateUserUseCase';
-import { successStatusCode } from '../../../../utils/successCode';
 
 class CreateUserController {
   constructor(private createUserUseCase: CreateUserUseCase) {}
@@ -22,7 +22,7 @@ class CreateUserController {
         password,
       })) as ISuccess<string>;
 
-      return res.status(successStatusCode[statusCode]).json({ token: data });
+      return res.status(StatusCodes[statusCode]).json({ token: data });
     } catch (err) {
       next(err);
     }

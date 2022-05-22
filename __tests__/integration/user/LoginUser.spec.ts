@@ -24,7 +24,7 @@ describe('Test POST endpoint "/users/login"', () => {
       'findByEmail'
     );
 
-    encryptVerifyStub = Sinon.stub(EncryptService.prototype, 'verify');
+    encryptVerifyStub = Sinon.stub(EncryptService, 'verify');
   });
 
   after(() => {
