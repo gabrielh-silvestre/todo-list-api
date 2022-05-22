@@ -1,4 +1,6 @@
-import { ErrorStatusCode, SuccessStatusCode } from '../types';
+import { StatusCodes } from 'http-status-codes';
+
+import { ErrorStatusCode } from '../types';
 
 export * from './services.interface';
 export * from './users.interface';
@@ -10,7 +12,7 @@ interface IError {
 }
 
 interface ISuccess<T> {
-  statusCode: SuccessStatusCode;
+  statusCode: keyof typeof StatusCodes;
   data: T;
 }
 
