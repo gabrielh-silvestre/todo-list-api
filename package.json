@@ -7,6 +7,7 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "scripts": {
+    "build": "tsc && prisma migrate deploy",
     "start": "node dist/src/server.js",
     "dev": "nodemon src/server.ts",
     "test": "mocha -r ts-node/register/transpile-only __tests__/**/*.spec.ts",
