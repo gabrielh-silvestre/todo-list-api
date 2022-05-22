@@ -30,21 +30,27 @@ describe('Test UpdateTaskUseCase', () => {
 
     describe('Should return a object with an success status and data', () => {
       it('success status should be "UPDATED"', async () => {
-        const response = await updateTaskUseCase.execute(userId, id, {
-          title,
-          description,
-          status,
-        });
+        const response = await updateTaskUseCase.execute(
+          { userId, id },
+          {
+            title,
+            description,
+            status,
+          }
+        );
 
         expect(response.statusCode).to.be.equal('UPDATED');
       });
 
       it('data should be the updated Task', async () => {
-        const response = await updateTaskUseCase.execute(userId, id, {
-          title,
-          description,
-          status,
-        });
+        const response = await updateTaskUseCase.execute(
+          { userId, id },
+          {
+            title,
+            description,
+            status,
+          }
+        );
 
         expect(response.data).to.be.deep.equal(newTask);
       });
@@ -64,11 +70,14 @@ describe('Test UpdateTaskUseCase', () => {
       describe('Should throw a not found error with status and message', () => {
         it('status should be 404', async () => {
           try {
-            await updateTaskUseCase.execute(userId, id, {
-              title,
-              description,
-              status,
-            });
+            await updateTaskUseCase.execute(
+              { userId, id },
+              {
+                title,
+                description,
+                status,
+              }
+            );
             expect.fail('Should throw a not found error');
           } catch (error) {
             const tErr = error as HttpError;
@@ -78,11 +87,14 @@ describe('Test UpdateTaskUseCase', () => {
 
         it('message should be "Task not found"', async () => {
           try {
-            await updateTaskUseCase.execute(userId, id, {
-              title,
-              description,
-              status,
-            });
+            await updateTaskUseCase.execute(
+              { userId, id },
+              {
+                title,
+                description,
+                status,
+              }
+            );
             expect.fail('Should throw a not found error');
           } catch (error) {
             const tErr = error as HttpError;
