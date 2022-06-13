@@ -1,7 +1,5 @@
 import type { User } from '@prisma/client';
 
-import { v4 as uuidV4 } from 'uuid';
-
 const newUser: User = {
   id: '7c7de5e9-411a-432f-957f-3bd3ed5c2e09',
   email: 'fourthPerson@gmail.com',
@@ -11,19 +9,19 @@ const newUser: User = {
 
 const users: User[] = [
   {
-    id: uuidV4(),
+    id: '56fbbb34-5c6b-4237-b8ed-22412ca935b7',
     email: 'firstPerson@gmail.com',
     username: 'person1',
     password:'123a456',
   },
   {
-    id: uuidV4(),
+    id: '1d457863-4c42-4d3e-a43f-82e376380070',
     email: 'secondPerson@gmail.com',
     username: 'person2',
     password:'123b456',
   },
   {
-    id: uuidV4(),
+    id: '537ead63-2b37-4348-acd0-07b2e3713559',
     email: 'thirdPerson@gmail.com',
     username: 'person3',
     password:'123c456',
