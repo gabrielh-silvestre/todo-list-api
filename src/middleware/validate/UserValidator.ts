@@ -1,9 +1,9 @@
-import { Request, Response, NextFunction } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 import { BadRequestError } from 'restify-errors';
 import Joi from 'joi';
 
-import { IUserValidator } from '../../@types/interfaces';
-
+import type { IUserValidator } from '../../@types/interfaces';
+import { errorFormatter } from '../../utils';
 
 class UserValidator implements IUserValidator {
   private createUserSchema: Joi.ObjectSchema;
@@ -26,7 +26,7 @@ class UserValidator implements IUserValidator {
     const { error } = this.createUserSchema.validate(req.body);
 
     if (error) {
-      const err = new BadRequestError(error.details[0].message);
+      const err = errorFormatter(error.details[0].message);
       return next(err);
     }
 
