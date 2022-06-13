@@ -15,18 +15,18 @@ async function main() {
       {
         id: firstUserId,
         email: 'firstPerson@gmail.com',
-        username: 'firstPerson',
+        username: 'person1',
         password: bcrypt.hashSync('123a456', 10),
       },
       {
         id: secondUserId,
         email: 'secondPerson@gmail.com',
-        username: 'secondPerson',
+        username: 'person2',
         password: bcrypt.hashSync('123b456', 10),
       },
       {
         email: 'thirdPerson@gmail.com',
-        username: 'thirdPerson',
+        username: 'person3',
         password: bcrypt.hashSync('123c456', 10),
       },
     ],
