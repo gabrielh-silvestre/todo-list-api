@@ -1,5 +1,4 @@
 import type { Request, Response, NextFunction } from 'express';
-import { BadRequestError } from 'restify-errors';
 import Joi from 'joi';
 
 import type { IUserValidator } from '../../@types/interfaces';
@@ -37,7 +36,7 @@ class UserValidator implements IUserValidator {
     const { error } = this.loginUserSchema.validate(req.body);
 
     if (error) {
-      const err = new BadRequestError(error.details[0].message);
+      const err = errorFormatter(error.details[0].message);
       return next(err);
     }
 
