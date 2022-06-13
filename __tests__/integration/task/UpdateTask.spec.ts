@@ -2,14 +2,14 @@ import shell from 'shelljs';
 import chai, { expect } from 'chai';
 import chaiHTTP from 'chai-http';
 
-import { tasks, newTask } from '../../mocks/tasks';
 import { users } from '../../mocks/users';
+import { tasks, newTask } from '../../mocks/tasks';
 import { app } from '../../../src/app';
 
 chai.use(chaiHTTP);
 
-const [{ id }] = tasks;
 const [{ email, password }] = users;
+const [{ id }] = tasks;
 const { title, description, status, userId } = newTask;
 
 const LOGIN_USERS_ENDPOINT = '/v1/api/users/login';

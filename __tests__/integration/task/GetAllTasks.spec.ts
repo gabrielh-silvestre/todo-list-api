@@ -1,189 +1,74 @@
-import 'dotenv/config';
-
+import shell from 'shelljs';
 import chai, { expect } from 'chai';
 import chaiHTTP from 'chai-http';
-import Sinon from 'sinon';
 
-import { UserRepository } from '../../../src/modules/users/repository/UsersRepository';
-import { TasksRepository } from '../../../src/modules/tasks/repository/TasksRepository';
-
-import { tasks } from '../../mocks/tasks';
+import { users } from '../../mocks/users';
 import { app } from '../../../src/app';
 
 chai.use(chaiHTTP);
+
+const [{ email, password }] = users;
+
+const LOGIN_USERS_ENDPOINT = '/v1/api/users/login';
 const LIST_TASKS_ENDPOINT = '/v1/api/tasks';
-const FAKE_TOKEN = `Bearer ${process.env.TEST_TOKEN}` as string;
+const PRISMA_MIGRATE_RESET = 'npx prisma migrate reset --force --skip-generate';
 
-describe('Test GET endpoint "/tasks"', () => {
-  const [{ id }] = tasks;
+describe('Test GET endpoint "/tasks"', function () {
+  this.timeout(5000);
 
-  let userRepositoryFindByIdStub: Sinon.SinonStub;
-  let taskRepositoryFindAllStub: Sinon.SinonStub;
+  let token: string;
 
-  before(() => {
-    userRepositoryFindByIdStub = Sinon.stub(
-      UserRepository.prototype,
-      'findById'
-    );
-    taskRepositoryFindAllStub = Sinon.stub(
-      TasksRepository.prototype,
-      'findAll'
-    );
-  });
+  before(async () => {
+    shell.exec(PRISMA_MIGRATE_RESET, { silent: true });
 
-  after(() => {
-    userRepositoryFindByIdStub.restore();
-    taskRepositoryFindAllStub.restore();
+    await chai
+      .request(app)
+      .post(LOGIN_USERS_ENDPOINT)
+      .send({ email, password })
+      .then((res) => {
+        token = res.body.token;
+      });
   });
 
   describe('Success case', () => {
-    before(() => {
-      userRepositoryFindByIdStub.resolves(id);
-      taskRepositoryFindAllStub.resolves(tasks);
-    });
+    it('should return  a success status with all tasks', async () => {
+      const response = await chai
+        .request(app)
+        .get(LIST_TASKS_ENDPOINT)
+        .set('Authorization', token);
 
-    describe('Should return  a success status with all tasks', () => {
-      it('status code should be 200', async () => {
-        const response = await chai
-          .request(app)
-          .get(LIST_TASKS_ENDPOINT)
-          .set('Authorization', FAKE_TOKEN);
+      expect(response.status).to.be.equal(200);
+      expect(response.body).to.be.an('array');
 
-        expect(response.status).to.be.equal(200);
-      });
-
-      it('should return all tasks', async () => {
-        const response = await chai
-          .request(app)
-          .get(LIST_TASKS_ENDPOINT)
-          .set('Authorization', FAKE_TOKEN);
-
-        expect(response.body).to.be.deep.equal(tasks);
-      });
+      expect(response.body[0]).to.be.an('object');
+      expect(response.body[0]).to.have.property('id');
+      expect(response.body[0]).to.have.property('title');
+      expect(response.body[0]).to.have.property('description');
+      expect(response.body[0]).to.have.property('status');
+      expect(response.body[0]).to.have.property('updatedAt');
+      expect(response.body[0]).to.not.have.property('userId');
     });
   });
 
   describe('Error cases', () => {
-    describe('Invalid authorization', () => {
-      describe('Request without token', () => {
-        it('should return status code 401', async () => {
-          const response = await chai.request(app).get(LIST_TASKS_ENDPOINT);
+    describe('Invalid "authorization" cases', () => {
+      it('should not update a task without authorization', async () => {
+        const response = await chai.request(app).get(LIST_TASKS_ENDPOINT);
 
-          expect(response.status).to.be.equal(401);
-        });
-
-        it('should return a response with "message" property', async () => {
-          const response = await chai.request(app).get(LIST_TASKS_ENDPOINT);
-
-          expect(response.body).to.have.property('message');
-        });
-
-        it('message should be: No authorization header', async () => {
-          const response = await chai.request(app).get(LIST_TASKS_ENDPOINT);
-
-          expect(response.body.message).to.be.equal('No authorization header');
-        });
-      });
-
-      describe('Request with invalid token', () => {
-        before(() => {});
-
-        it('should return status code 401', async () => {
-          const response = await chai
-            .request(app)
-            .get(LIST_TASKS_ENDPOINT)
-            .set('Authorization', 'invalidToken');
-
-          expect(response.status).to.be.equal(401);
-        });
-
-        it('should return a response with "message" property', async () => {
-          const response = await chai
-            .request(app)
-            .get(LIST_TASKS_ENDPOINT)
-            .set('Authorization', 'invalidToken');
-
-          expect(response.body).to.have.property('message');
-        });
-
-        it('message should be: Expired or invalid token', async () => {
-          const response = await chai
-            .request(app)
-            .get(LIST_TASKS_ENDPOINT)
-            .set('Authorization', 'invalidToken');
-
-          expect(response.body.message).to.be.equal('Expired or invalid token');
-        });
-      });
-    });
-
-    describe('Non-existent user', () => {
-      before(() => {
-        userRepositoryFindByIdStub.resolves(null);
-      });
-
-      it('should return status code 404', async () => {
-        const response = await chai
-          .request(app)
-          .get(LIST_TASKS_ENDPOINT)
-          .set('Authorization', FAKE_TOKEN);
-
-        expect(response.status).to.be.equal(404);
-      });
-
-      it('should return a response with "message" property', async () => {
-        const response = await chai
-          .request(app)
-          .get(LIST_TASKS_ENDPOINT)
-          .set('Authorization', FAKE_TOKEN);
-
+        expect(response.status).to.be.equal(401);
         expect(response.body).to.have.property('message');
+        expect(response.body.message).to.be.equal('No authorization header');
       });
 
-      it('message should be: User does not exist', async () => {
+      it('should not update a task with invalid authorization', async () => {
         const response = await chai
           .request(app)
           .get(LIST_TASKS_ENDPOINT)
-          .set('Authorization', FAKE_TOKEN);
+          .set('Authorization', 'invalid-token');
 
-        expect(response.body.message).to.be.equal('User does not exist');
-      });
-    });
-
-    describe('Error on database', () => {
-      describe('Error while verify user existence', () => {
-        before(() => {
-          userRepositoryFindByIdStub.rejects();
-        });
-
-        it('should return status code 500', async () => {
-          const response = await chai
-            .request(app)
-            .get(LIST_TASKS_ENDPOINT)
-            .set('Authorization', FAKE_TOKEN);
-
-          expect(response.status).to.be.equal(500);
-        });
-
-        it('should return a response with "message" property', async () => {
-          const response = await chai
-            .request(app)
-            .get(LIST_TASKS_ENDPOINT)
-            .set('Authorization', FAKE_TOKEN);
-
-          expect(response.body).to.have.property('message');
-        });
-
-        it('message should be: Internal server error', async () => {
-          const response = await chai
-            .request(app)
-            .get(LIST_TASKS_ENDPOINT)
-            .set('Authorization', FAKE_TOKEN);
-
-          expect(response.body.message).to.be.equal(
-            'Internal server error'
-          );
-        });
+        expect(response.status).to.be.equal(401);
+        expect(response.body).to.have.property('message');
+        expect(response.body.message).to.be.equal('Expired or invalid token');
       });
     });
   });
