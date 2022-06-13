@@ -1,449 +1,165 @@
-import 'dotenv/config';
-
+import shell from 'shelljs';
 import chai, { expect } from 'chai';
 import chaiHTTP from 'chai-http';
-import Sinon from 'sinon';
 
-import { UserRepository } from '../../../src/modules/users/repository/UsersRepository';
-import { TasksRepository } from '../../../src/modules/tasks/repository/TasksRepository';
-
-import { tasks, newTask } from '../../mocks/tasks';
+import { newTask } from '../../mocks/tasks';
+import { users } from '../../mocks/users';
 import { app } from '../../../src/app';
-import { TaskReturn } from '../../../src/@types/types';
 
 chai.use(chaiHTTP);
 
+const LOGIN_USERS_ENDPOINT = '/v1/api/users/login';
 const LIST_TASKS_ENDPOINT = '/v1/api/tasks';
-const FAKE_TOKEN = `Bearer ${process.env.TEST_TOKEN}` as string;
+const PRISMA_MIGRATE_RESET = 'npx prisma migrate reset --force --skip-generate';
 
-const { id, title, description, status, userId, updatedAt } = newTask;
-const TASK_RETURN: TaskReturn = {
-  id,
-  title,
-  description,
-  status,
-  updatedAt,
-};
-const CREATE_NEW_TASK = {
-  title,
-  description,
-};
+const [{ email, password }] = users;
+const { title, description, status, userId, updatedAt } = newTask;
 
-describe('Test POST endpoint "/tasks"', () => {
-  let userRepositoryFindByIdStub: Sinon.SinonStub;
-  let taskRepositoryFindByTitle: Sinon.SinonStub;
-  let taskRepositoryCreateStub: Sinon.SinonStub;
+describe('Test POST endpoint "/tasks"', function () {
+  this.timeout(5000);
 
-  before(() => {
-    userRepositoryFindByIdStub = Sinon.stub(
-      UserRepository.prototype,
-      'findById'
-    );
-    taskRepositoryFindByTitle = Sinon.stub(
-      TasksRepository.prototype,
-      'findByExactTitle'
-    );
-    taskRepositoryCreateStub = Sinon.stub(TasksRepository.prototype, 'create');
-  });
+  let token: string;
 
-  after(() => {
-    userRepositoryFindByIdStub.restore();
-    taskRepositoryFindByTitle.restore();
-    taskRepositoryCreateStub.restore();
+  before(async () => {
+    shell.exec(PRISMA_MIGRATE_RESET, { silent: true });
+
+    await chai
+      .request(app)
+      .post(LOGIN_USERS_ENDPOINT)
+      .send({ email, password })
+      .then((res) => {
+        token = res.body.token;
+      });
   });
 
   describe('Success case', () => {
-    before(() => {
-      userRepositoryFindByIdStub.resolves(userId);
-      taskRepositoryFindByTitle.resolves([]);
-      taskRepositoryCreateStub.resolves(TASK_RETURN);
-    });
+    it('Should return a success status with the new task', async () => {
+      const response = await chai
+        .request(app)
+        .post(LIST_TASKS_ENDPOINT)
+        .set('Authorization', token)
+        .send({ title, description });
 
-    describe('Should return  a success status with the new task', () => {
-      it('status code should be 201', async () => {
-        const response = await chai
-          .request(app)
-          .post(LIST_TASKS_ENDPOINT)
-          .set('Authorization', FAKE_TOKEN)
-          .send(CREATE_NEW_TASK);
-
-        expect(response.status).to.be.equal(201);
-      });
-
-      it('the new task should not contain "userId"', async () => {
-        const response = await chai
-          .request(app)
-          .post(LIST_TASKS_ENDPOINT)
-          .set('Authorization', FAKE_TOKEN)
-          .send(CREATE_NEW_TASK);
-
-        expect(response.body).to.not.have.property('userId');
-      });
-
-      it('should return the new task', async () => {
-        const response = await chai
-          .request(app)
-          .post(LIST_TASKS_ENDPOINT)
-          .set('Authorization', FAKE_TOKEN)
-          .send(CREATE_NEW_TASK);
-
-        expect(response.body).to.be.deep.equal(TASK_RETURN);
-      });
+      expect(response.status).to.be.equal(201);
+      expect(response.body).to.be.an('object');
+      expect(response.body).to.have.property('id');
+      expect(response.body).to.have.property('title');
+      expect(response.body).to.have.property('description');
+      expect(response.body).to.have.property('status');
+      expect(response.body).to.have.property('updatedAt');
+      expect(response.body).to.not.have.property('userId');
     });
   });
 
   describe('Error cases', () => {
-    describe('Invalid authorization', () => {
-      describe('Request without token', () => {
-        it('should return status code 401', async () => {
-          const response = await chai
-            .request(app)
-            .post(LIST_TASKS_ENDPOINT)
-            .send(CREATE_NEW_TASK);
-
-          expect(response.status).to.be.equal(401);
-        });
-
-        it('should return a response with "message" property', async () => {
-          const response = await chai
-            .request(app)
-            .post(LIST_TASKS_ENDPOINT)
-            .send(CREATE_NEW_TASK);
-
-          expect(response.body).to.have.property('message');
-        });
-
-        it('message should be: No authorization header', async () => {
-          const response = await chai
-            .request(app)
-            .post(LIST_TASKS_ENDPOINT)
-            .send(CREATE_NEW_TASK);
-
-          expect(response.body.message).to.be.equal('No authorization header');
-        });
-      });
-
-      describe('Request with invalid token', () => {
-        before(() => {});
-
-        it('should return status code 401', async () => {
-          const response = await chai
-            .request(app)
-            .post(LIST_TASKS_ENDPOINT)
-            .set('Authorization', 'invalidToken')
-            .send(CREATE_NEW_TASK);
-
-          expect(response.status).to.be.equal(401);
-        });
-
-        it('should return a response with "message" property', async () => {
-          const response = await chai
-            .request(app)
-            .post(LIST_TASKS_ENDPOINT)
-            .set('Authorization', 'invalidToken')
-            .send(CREATE_NEW_TASK);
-
-          expect(response.body).to.have.property('message');
-        });
-
-        it('message should be: Expired or invalid token', async () => {
-          const response = await chai
-            .request(app)
-            .post(LIST_TASKS_ENDPOINT)
-            .set('Authorization', 'invalidToken')
-            .send(CREATE_NEW_TASK);
-
-          expect(response.body.message).to.be.equal('Expired or invalid token');
-        });
-      });
-    });
-
-    describe('Invalid body', () => {
-      describe('Create task with invalid title', () => {
-        describe('Title with less than 5 characters', () => {
-          it('should return status code 400', async () => {
-            const response = await chai
-              .request(app)
-              .post(LIST_TASKS_ENDPOINT)
-              .set('Authorization', FAKE_TOKEN)
-              .send({ ...CREATE_NEW_TASK, title: 'test' });
-
-            expect(response.status).to.be.equal(400);
-          });
-
-          it('should return a response with "message" property', async () => {
-            const response = await chai
-              .request(app)
-              .post(LIST_TASKS_ENDPOINT)
-              .set('Authorization', FAKE_TOKEN)
-              .send({ ...CREATE_NEW_TASK, title: 'test' });
-
-            expect(response.body).to.have.property('message');
-          });
-
-          it('message should be: "title" length must be at least 5 characters long', async () => {
-            const response = await chai
-              .request(app)
-              .post(LIST_TASKS_ENDPOINT)
-              .set('Authorization', FAKE_TOKEN)
-              .send({ ...CREATE_NEW_TASK, title: 'test' });
-
-            expect(response.body.message).to.be.equal(
-              '"title" length must be at least 5 characters long'
-            );
-          });
-        });
-
-        describe('Title with more than 20 characters', () => {
-          it('should return status code 400', async () => {
-            const response = await chai
-              .request(app)
-              .post(LIST_TASKS_ENDPOINT)
-              .set('Authorization', FAKE_TOKEN)
-              .send({ ...CREATE_NEW_TASK, title: 'test'.repeat(21) });
-
-            expect(response.status).to.be.equal(400);
-          });
-
-          it('should return a response with "message" property', async () => {
-            const response = await chai
-              .request(app)
-              .post(LIST_TASKS_ENDPOINT)
-              .set('Authorization', FAKE_TOKEN)
-              .send({ ...CREATE_NEW_TASK, title: 'test'.repeat(21) });
-
-            expect(response.body).to.have.property('message');
-          });
-
-          it('message should be: "title" length must be less than or equal to 20 characters long', async () => {
-            const response = await chai
-              .request(app)
-              .post(LIST_TASKS_ENDPOINT)
-              .set('Authorization', FAKE_TOKEN)
-              .send({ ...CREATE_NEW_TASK, title: 'test'.repeat(21) });
-
-            expect(response.body.message).to.be.equal(
-              '"title" length must be less than or equal to 20 characters long'
-            );
-          });
-        });
-      });
-
-      describe('Create task without title', () => {
-        const taskWithoutTitle = { description };
-
-        it('should return status code 400', async () => {
-          const response = await chai
-            .request(app)
-            .post(LIST_TASKS_ENDPOINT)
-            .set('Authorization', FAKE_TOKEN)
-            .send(taskWithoutTitle);
-
-          expect(response.status).to.be.equal(400);
-        });
-
-        it('should return a response with "message" property', async () => {
-          const response = await chai
-            .request(app)
-            .post(LIST_TASKS_ENDPOINT)
-            .set('Authorization', FAKE_TOKEN)
-            .send(taskWithoutTitle);
-
-          expect(response.body).to.have.property('message');
-        });
-
-        it('message should be: "title" is required', async () => {
-          const response = await chai
-            .request(app)
-            .post(LIST_TASKS_ENDPOINT)
-            .set('Authorization', FAKE_TOKEN)
-            .send(taskWithoutTitle);
-
-          expect(response.body.message).to.be.equal('"title" is required');
-        });
-      });
-
-      describe('Create task with invalid description', () => {
-        it('should return status code 400', async () => {
-          const response = await chai
-            .request(app)
-            .post(LIST_TASKS_ENDPOINT)
-            .set('Authorization', FAKE_TOKEN)
-            .send({ ...CREATE_NEW_TASK, description: 'test'.repeat(121) });
-
-          expect(response.status).to.be.equal(400);
-        });
-
-        it('should return a response with "message" property', async () => {
-          const response = await chai
-            .request(app)
-            .post(LIST_TASKS_ENDPOINT)
-            .set('Authorization', FAKE_TOKEN)
-            .send({ ...CREATE_NEW_TASK, description: 'test'.repeat(121) });
-
-          expect(response.body).to.have.property('message');
-        });
-
-        it('message should be: "description" length must be less than or equal to 120 characters long', async () => {
-          const response = await chai
-            .request(app)
-            .post(LIST_TASKS_ENDPOINT)
-            .set('Authorization', FAKE_TOKEN)
-            .send({ ...CREATE_NEW_TASK, description: 'test'.repeat(121) });
-
-          expect(response.body.message).to.be.equal(
-            '"description" length must be less than or equal to 120 characters long'
-          );
-        });
-      });
-
-      describe('Create task pass other fields other than title and description', () => {
-        it('should return status code 400', async () => {
-          const response = await chai
-            .request(app)
-            .post(LIST_TASKS_ENDPOINT)
-            .set('Authorization', FAKE_TOKEN)
-            .send({ ...CREATE_NEW_TASK, otherField: 'test' });
-
-          expect(response.status).to.be.equal(400);
-        });
-
-        it('should return a response with "message" property', async () => {
-          const response = await chai
-            .request(app)
-            .post(LIST_TASKS_ENDPOINT)
-            .set('Authorization', FAKE_TOKEN)
-            .send({ ...CREATE_NEW_TASK, otherField: 'test' });
-
-          expect(response.body).to.have.property('message');
-        });
-
-        it('message should be: "otherField" is not allowed', async () => {
-          const response = await chai
-            .request(app)
-            .post(LIST_TASKS_ENDPOINT)
-            .set('Authorization', FAKE_TOKEN)
-            .send({ ...CREATE_NEW_TASK, otherField: 'test' });
-
-          expect(response.body.message).to.be.equal(
-            '"otherField" is not allowed'
-          );
-        });
-      });
-    });
-
-    describe('Non-existent user', () => {
-      before(() => {
-        userRepositoryFindByIdStub.resolves(null);
-      });
-
-      it('should return status code 404', async () => {
+    describe('Invalid "authorization" cases', () => {
+      it('should not create a task without authorization', async () => {
         const response = await chai
           .request(app)
           .post(LIST_TASKS_ENDPOINT)
-          .set('Authorization', FAKE_TOKEN)
-          .send(CREATE_NEW_TASK);
+          .send({ title, description });
 
-        expect(response.status).to.be.equal(404);
-      });
-
-      it('should return a response with "message" property', async () => {
-        const response = await chai
-          .request(app)
-          .post(LIST_TASKS_ENDPOINT)
-          .set('Authorization', FAKE_TOKEN)
-          .send(CREATE_NEW_TASK);
-
+        expect(response.status).to.be.equal(401);
         expect(response.body).to.have.property('message');
+        expect(response.body.message).to.be.equal('No authorization header');
       });
 
-      it('message should be: User does not exist', async () => {
+      it('should not create a task with invalid authorization', async () => {
         const response = await chai
           .request(app)
           .post(LIST_TASKS_ENDPOINT)
-          .set('Authorization', FAKE_TOKEN)
-          .send(CREATE_NEW_TASK);
+          .set('Authorization', 'invalid-token')
+          .send({ title, description });
 
-        expect(response.body.message).to.be.equal('User does not exist');
+        expect(response.status).to.be.equal(401);
+        expect(response.body).to.have.property('message');
+        expect(response.body.message).to.be.equal('Expired or invalid token');
       });
     });
 
-    describe('Task already exists', () => {
-      before(() => {
-        userRepositoryFindByIdStub.resolves(userId);
-        taskRepositoryFindByTitle.resolves([tasks[0]]);
-      });
-
-      it('should return status code 409', async () => {
+    describe('Invalid "title" cases', () => {
+      it('should not create a task without title', async () => {
         const response = await chai
           .request(app)
           .post(LIST_TASKS_ENDPOINT)
-          .set('Authorization', FAKE_TOKEN)
-          .send(CREATE_NEW_TASK);
+          .set('Authorization', token)
+          .send({ description });
+
+        expect(response.status).to.be.equal(400);
+        expect(response.body).to.have.property('message');
+        expect(response.body.message).to.be.equal('"title" is required');
+      });
+
+      it('should not create a task when title has less than 5 characters', async () => {
+        const response = await chai
+          .request(app)
+          .post(LIST_TASKS_ENDPOINT)
+          .set('Authorization', token)
+          .send({ title: 'test', description });
+
+        expect(response.status).to.be.equal(422);
+        expect(response.body).to.have.property('message');
+        expect(response.body.message).to.be.equal(
+          '"title" length must be at least 5 characters long'
+        );
+      });
+
+      it('should not create a task when title has more than 20 characters', async () => {
+        const response = await chai
+          .request(app)
+          .post(LIST_TASKS_ENDPOINT)
+          .set('Authorization', token)
+          .send({ title: 'test'.repeat(21), description });
+
+        expect(response.status).to.be.equal(422);
+        expect(response.body).to.have.property('message');
+        expect(response.body.message).to.be.equal(
+          '"title" length must be less than or equal to 20 characters long'
+        );
+      });
+
+      it('should not create a task with duplicated title', async () => {
+        const response = await chai
+          .request(app)
+          .post(LIST_TASKS_ENDPOINT)
+          .set('Authorization', token)
+          .send({ title, description });
 
         expect(response.status).to.be.equal(409);
-      });
-
-      it('should return a response with "message" property', async () => {
-        const response = await chai
-          .request(app)
-          .post(LIST_TASKS_ENDPOINT)
-          .set('Authorization', FAKE_TOKEN)
-          .send(CREATE_NEW_TASK);
-
         expect(response.body).to.have.property('message');
-      });
-
-      it('message should be: Task with this title already exists', async () => {
-        const response = await chai
-          .request(app)
-          .post(LIST_TASKS_ENDPOINT)
-          .set('Authorization', FAKE_TOKEN)
-          .send(CREATE_NEW_TASK);
-
         expect(response.body.message).to.be.equal(
           'Task with this title already exists'
         );
       });
     });
 
-    describe('Error on database', () => {
-      describe('Error while checking task uniqueness', () => {
-        before(() => {
-          taskRepositoryFindByTitle.rejects();
-        });
+    describe('Invalid "description" cases', () => {
+      it('should not create a task when description has more than 120 characters', async () => {
+        const response = await chai
+          .request(app)
+          .post(LIST_TASKS_ENDPOINT)
+          .set('Authorization', token)
+          .send({ title, description: 'test'.repeat(121) });
 
-        it('should return status code 500', async () => {
-          const response = await chai
-            .request(app)
-            .post(LIST_TASKS_ENDPOINT)
-            .set('Authorization', FAKE_TOKEN)
-            .send(CREATE_NEW_TASK);
+        expect(response.status).to.be.equal(422);
+        expect(response.body).to.have.property('message');
+        expect(response.body.message).to.be.equal(
+          '"description" length must be less than or equal to 120 characters long'
+        );
+      });
+    });
 
-          expect(response.status).to.be.equal(500);
-        });
+    describe('Invalid "other fields" cases', () => {
+      it('should not create a task when gives other fields than "title" and "description"', async () => {
+        const response = await chai
+          .request(app)
+          .post(LIST_TASKS_ENDPOINT)
+          .set('Authorization', token)
+          .send({ title, description, status, userId, updatedAt });
 
-        it('should return a response with "message" property', async () => {
-          const response = await chai
-            .request(app)
-            .post(LIST_TASKS_ENDPOINT)
-            .set('Authorization', FAKE_TOKEN)
-            .send(CREATE_NEW_TASK);
-
-          expect(response.body).to.have.property('message');
-        });
-
-        it('message should be: Internal server error', async () => {
-          const response = await chai
-            .request(app)
-            .post(LIST_TASKS_ENDPOINT)
-            .set('Authorization', FAKE_TOKEN)
-            .send(CREATE_NEW_TASK);
-
-          expect(response.body.message).to.be.equal(
-            'Internal server error'
-          );
-        });
+        expect(response.status).to.be.equal(422);
+        expect(response.body).to.have.property('message');
+        expect(response.body.message).to.be.equal('"status" is not allowed');
       });
     });
   });
