@@ -1,6 +1,5 @@
 import type { User } from '@prisma/client';
 
-import bcrypt from 'bcrypt';
 import { v4 as uuidV4 } from 'uuid';
 
 const newUser: User = {
