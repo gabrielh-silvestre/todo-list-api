@@ -7,13 +7,14 @@ import { users, newUser } from '../../mocks/users';
 import { app } from '../../../src/app';
 
 chai.use(chaiHTTP);
+
 const CREATE_USERS_ENDPOINT = '/v1/api/users/create';
 const PRISMA_MIGRATE_RESET = 'npx prisma migrate reset --force --skip-generate';
 
 const { email, username, password } = newUser;
 const [existingUser] = users;
 
-describe.only('Test POST endpoint "/users/create"', function () {
+describe('Test POST endpoint "/users/create"', function () {
   this.timeout(5000);
 
   before(() => {
