@@ -8,8 +8,8 @@ import { app } from '../../../src/app';
 
 chai.use(chaiHTTP);
 
-const [{ email, password }] = users;
 const [{ id }] = tasks;
+const [{ email, password }] = users;
 const { title, description, status, userId } = newTask;
 
 const LOGIN_USERS_ENDPOINT = '/v1/api/users/login';

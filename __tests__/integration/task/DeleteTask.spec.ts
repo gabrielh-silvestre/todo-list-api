@@ -1,298 +1,81 @@
-import 'dotenv/config';
-
+import shell from 'shelljs';
 import chai, { expect } from 'chai';
 import chaiHTTP from 'chai-http';
-import Sinon from 'sinon';
 
-import { UserRepository } from '../../../src/modules/users/repository/UsersRepository';
-import { TasksRepository } from '../../../src/modules/tasks/repository/TasksRepository';
-
+import { users } from '../../mocks/users';
 import { tasks } from '../../mocks/tasks';
 import { app } from '../../../src/app';
 
 chai.use(chaiHTTP);
 
-const [{ id, userId }] = tasks;
+const [{ email, password }] = users;
+const [{ id }] = tasks;
 
+const LOGIN_USERS_ENDPOINT = '/v1/api/users/login';
 const DELETE_TASKS_ENDPOINT = `/v1/api/tasks/${id}`;
-const FAKE_TOKEN = `Bearer ${process.env.TEST_TOKEN}` as string;
+const PRISMA_MIGRATE_RESET = 'npx prisma migrate reset --force --skip-generate';
 
-describe('Test DELETE endpoint "/tasks/:id"', () => {
-  let userRepositoryFindByIdStub: Sinon.SinonStub;
-  let taskRepositoryFindById: Sinon.SinonStub;
-  let taskRepositoryDelete: Sinon.SinonStub;
+describe('Test DELETE endpoint "/tasks/:id"', function () {
+  this.timeout(5000);
 
-  before(() => {
-    userRepositoryFindByIdStub = Sinon.stub(
-      UserRepository.prototype,
-      'findById'
-    );
-    taskRepositoryFindById = Sinon.stub(TasksRepository.prototype, 'findById');
-    taskRepositoryDelete = Sinon.stub(TasksRepository.prototype, 'delete');
-  });
+  let token: string;
 
-  after(() => {
-    userRepositoryFindByIdStub.restore();
-    taskRepositoryFindById.restore();
-    taskRepositoryDelete.restore();
+  before(async () => {
+    shell.exec(PRISMA_MIGRATE_RESET, { silent: true });
+
+    await chai
+      .request(app)
+      .post(LOGIN_USERS_ENDPOINT)
+      .send({ email, password })
+      .then((res) => {
+        token = res.body.token;
+      });
   });
 
   describe('Success case', () => {
-    before(() => {
-      userRepositoryFindByIdStub.resolves(userId);
-      taskRepositoryFindById.resolves(tasks[0]);
-      taskRepositoryDelete.resolves();
-    });
+    it('should return a success response with status and empty body', async () => {
+      const response = await chai
+        .request(app)
+        .delete(DELETE_TASKS_ENDPOINT)
+        .set('Authorization', token);
 
-    describe('Should return a success response with status', () => {
-      it('status code should be 204', async () => {
-        const response = await chai
-          .request(app)
-          .delete(DELETE_TASKS_ENDPOINT)
-          .set('Authorization', FAKE_TOKEN);
-
-        expect(response.status).to.equal(204);
-      });
-
-      it('request body should be empty', async () => {
-        const response = await chai
-          .request(app)
-          .delete(DELETE_TASKS_ENDPOINT)
-          .set('Authorization', FAKE_TOKEN);
-
-        expect(response.body).to.be.empty;
-      });
+      expect(response.status).to.equal(204);
+      expect(response.body).to.be.empty;
     });
   });
 
   describe('Error cases', () => {
-    describe('Invalid authorization', () => {
-      describe('Request without token', () => {
-        it('should return status code 401', async () => {
-          const response = await chai
-            .request(app)
-            .delete(DELETE_TASKS_ENDPOINT);
+    describe('Invalid "authorization" cases', () => {
+      it('should not delete a task without authorization', async () => {
+        const response = await chai.request(app).delete(DELETE_TASKS_ENDPOINT);
 
-          expect(response.status).to.be.equal(401);
-        });
-
-        it('should return a response with "message" property', async () => {
-          const response = await chai
-            .request(app)
-            .delete(DELETE_TASKS_ENDPOINT);
-
-          expect(response.body).to.have.property('message');
-        });
-
-        it('message should be: No authorization header', async () => {
-          const response = await chai
-            .request(app)
-            .delete(DELETE_TASKS_ENDPOINT);
-
-          expect(response.body.message).to.be.equal('No authorization header');
-        });
+        expect(response.status).to.be.equal(401);
+        expect(response.body).to.have.property('message');
+        expect(response.body.message).to.be.equal('No authorization header');
       });
 
-      describe('Request with invalid token', () => {
-        before(() => {});
+      it('should not delete a task with invalid authorization', async () => {
+        const response = await chai
+          .request(app)
+          .delete(DELETE_TASKS_ENDPOINT)
+          .set('Authorization', 'invalid-token');
 
-        it('should return status code 401', async () => {
-          const response = await chai
-            .request(app)
-            .delete(DELETE_TASKS_ENDPOINT)
-            .set('Authorization', 'invalidToken');
-
-          expect(response.status).to.be.equal(401);
-        });
-
-        it('should return a response with "message" property', async () => {
-          const response = await chai
-            .request(app)
-            .delete(DELETE_TASKS_ENDPOINT)
-            .set('Authorization', 'invalidToken');
-
-          expect(response.body).to.have.property('message');
-        });
-
-        it('message should be: Expired or invalid token', async () => {
-          const response = await chai
-            .request(app)
-            .delete(DELETE_TASKS_ENDPOINT)
-            .set('Authorization', 'invalidToken');
-
-          expect(response.body.message).to.be.equal('Expired or invalid token');
-        });
+        expect(response.status).to.be.equal(401);
+        expect(response.body).to.have.property('message');
+        expect(response.body.message).to.be.equal('Expired or invalid token');
       });
     });
 
-    describe('Non-existent user', () => {
-      before(() => {
-        userRepositoryFindByIdStub.resolves(null);
-      });
-
-      it('should return status code 404', async () => {
+    describe('"Non-existent" task case', () => {
+      it('should not delete a task when task does not exist', async () => {
         const response = await chai
           .request(app)
-          .delete(DELETE_TASKS_ENDPOINT)
-          .set('Authorization', FAKE_TOKEN);
+          .delete('/v1/api/tasks/40')
+          .set('Authorization', token);
 
         expect(response.status).to.be.equal(404);
-      });
-
-      it('should return a response with "message" property', async () => {
-        const response = await chai
-          .request(app)
-          .delete(DELETE_TASKS_ENDPOINT)
-          .set('Authorization', FAKE_TOKEN);
-
         expect(response.body).to.have.property('message');
-      });
-
-      it('message should be: User does not exist', async () => {
-        const response = await chai
-          .request(app)
-          .delete(DELETE_TASKS_ENDPOINT)
-          .set('Authorization', FAKE_TOKEN);
-
-        expect(response.body.message).to.be.equal('User does not exist');
-      });
-    });
-
-    describe('Non-existent task', () => {
-      before(() => {
-        userRepositoryFindByIdStub.resolves(userId);
-        taskRepositoryFindById.resolves(null);
-      });
-
-      it('should return status code 404', async () => {
-        const response = await chai
-          .request(app)
-          .delete(DELETE_TASKS_ENDPOINT)
-          .set('Authorization', FAKE_TOKEN);
-
-        expect(response.status).to.be.equal(404);
-      });
-
-      it('should return a response with "message" property', async () => {
-        const response = await chai
-          .request(app)
-          .delete(DELETE_TASKS_ENDPOINT)
-          .set('Authorization', FAKE_TOKEN);
-
-        expect(response.body).to.have.property('message');
-      });
-
-      it('message should be: Task not found', async () => {
-        const response = await chai
-          .request(app)
-          .delete(DELETE_TASKS_ENDPOINT)
-          .set('Authorization', FAKE_TOKEN);
-
         expect(response.body.message).to.be.equal('Task not found');
-      });
-    });
-
-    describe('Database errors', () => {
-      describe('Error while verify user existence', () => {
-        before(() => {
-          userRepositoryFindByIdStub.rejects();
-        });
-
-        it('should return status code 500', async () => {
-          const response = await chai
-            .request(app)
-            .delete(DELETE_TASKS_ENDPOINT)
-            .set('Authorization', FAKE_TOKEN);
-
-          expect(response.status).to.be.equal(500);
-        });
-
-        it('should return a response with "message" property', async () => {
-          const response = await chai
-            .request(app)
-            .delete(DELETE_TASKS_ENDPOINT)
-            .set('Authorization', FAKE_TOKEN);
-
-          expect(response.body).to.have.property('message');
-        });
-
-        it('message should be: Internal server error', async () => {
-          const response = await chai
-            .request(app)
-            .delete(DELETE_TASKS_ENDPOINT)
-            .set('Authorization', FAKE_TOKEN);
-
-          expect(response.body.message).to.be.equal('Internal server error');
-        });
-      });
-
-      describe('Error while verify task existence', () => {
-        before(() => {
-          userRepositoryFindByIdStub.resolves(userId);
-          taskRepositoryFindById.rejects();
-        });
-
-        it('should return status code 500', async () => {
-          const response = await chai
-            .request(app)
-            .delete(DELETE_TASKS_ENDPOINT)
-            .set('Authorization', FAKE_TOKEN);
-
-          expect(response.status).to.be.equal(500);
-        });
-
-        it('should return a response with "message" property', async () => {
-          const response = await chai
-            .request(app)
-            .delete(DELETE_TASKS_ENDPOINT)
-            .set('Authorization', FAKE_TOKEN);
-
-          expect(response.body).to.have.property('message');
-        });
-
-        it('message should be: Internal server error', async () => {
-          const response = await chai
-            .request(app)
-            .delete(DELETE_TASKS_ENDPOINT)
-            .set('Authorization', FAKE_TOKEN);
-
-          expect(response.body.message).to.be.equal('Internal server error');
-        });
-      });
-
-      describe('Error while delete task', () => {
-        before(() => {
-          userRepositoryFindByIdStub.resolves(userId);
-          taskRepositoryFindById.resolves(id);
-          taskRepositoryDelete.rejects();
-        });
-
-        it('should return status code 500', async () => {
-          const response = await chai
-            .request(app)
-            .delete(DELETE_TASKS_ENDPOINT)
-            .set('Authorization', FAKE_TOKEN);
-
-          expect(response.status).to.be.equal(500);
-        });
-
-        it('should return a response with "message" property', async () => {
-          const response = await chai
-            .request(app)
-            .delete(DELETE_TASKS_ENDPOINT)
-            .set('Authorization', FAKE_TOKEN);
-
-          expect(response.body).to.have.property('message');
-        });
-
-        it('message should be: Internal server error', async () => {
-          const response = await chai
-            .request(app)
-            .delete(DELETE_TASKS_ENDPOINT)
-            .set('Authorization', FAKE_TOKEN);
-
-          expect(response.body.message).to.be.equal('Internal server error');
-        });
       });
     });
   });
