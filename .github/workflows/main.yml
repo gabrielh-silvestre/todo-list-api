@@ -4,7 +4,7 @@ jobs:
   Automatic-Tests:
     runs-on: ubuntu-latest
     services:
-      postgres:
+      PostgresDB:
         image: postgres:14.3-alpine
         env:
           POSTGRES_USER: postgres
@@ -32,13 +32,13 @@ jobs:
       - name: Run tests
         run: npm test
         env:
-          DATABASE_URL: 'postgresql://postgres:postgres@postgres:5432/Todo_List_Test'
+          DATABASE_URL: 'postgresql://postgres:postgres@PostgresDB:5432/Todo_List_Test'
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
       - name: Generate Mocha report
         run: npm run test:result
         env:
-          DATABASE_URL: 'postgresql://postgres:postgres@postgres:5432/Todo_List_Test'
+          DATABASE_URL: 'postgresql://postgres:postgres@PostgresDB:5432/Todo_List_Test'
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
       - name: Test Report
