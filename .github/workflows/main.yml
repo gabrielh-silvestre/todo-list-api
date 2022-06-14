@@ -1,8 +1,22 @@
 on: [pull_request]
 
 jobs:
-  build:
+  Automatic-Tests:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14.3-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: Todo_List_Test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
     steps:
       - name: Verify git repository
         uses: actions/checkout@v2
@@ -18,14 +32,14 @@ jobs:
       - name: Run tests
         run: npm test
         env:
+          DATABASE_URL: 'postgresql://postgres:postgres@postgres:5432/Todo_List_Test'
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          TEST_TOKEN: ${{ secrets.TEST_TOKEN }}
 
       - name: Generate Mocha report
         run: npm run test:result
         env:
+          DATABASE_URL: 'postgresql://postgres:postgres@postgres:5432/Todo_List_Test'
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          TEST_TOKEN: ${{ secrets.TEST_TOKEN }}
 
       - name: Test Report
         uses: dorny/test-reporter@v1
