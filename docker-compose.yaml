@@ -9,7 +9,7 @@ services:
     volumes:
       - .:/app/backend
     ports:
-      - ${PORT}:${PORT}
+      - 3001:${PORT}
     tty: true
     depends_on:
       db:

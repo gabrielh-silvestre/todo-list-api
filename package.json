@@ -11,6 +11,7 @@
     "start": "node dist/src/server.js",
     "predev": "prisma migrate dev && prisma db seed",
     "dev": "nodemon src/server.ts",
+    "pretest": "prisma migrate dev && prisma db seed",
     "test": "mocha -r ts-node/register/transpile-only __tests__/**/*.spec.ts",
     "test:result": "mocha -R json -O output=test-results.json -r ts-node/register/transpile-only __tests__/**/*.spec.ts",
     "test:coverage": "nyc npm test"
