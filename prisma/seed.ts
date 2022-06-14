@@ -7,8 +7,8 @@ async function main() {
   const firstUserId = '56fbbb34-5c6b-4237-b8ed-22412ca935b7';
   const secondUserId = '1d457863-4c42-4d3e-a43f-82e376380070';
 
-  await prisma.user.deleteMany({});
   await prisma.task.deleteMany({});
+  await prisma.user.deleteMany({});
 
   await prisma.user.createMany({
     data: [
