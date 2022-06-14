@@ -9,7 +9,7 @@ import { app } from '../../../src/app';
 chai.use(chaiHTTP);
 
 const LOGIN_USERS_ENDPOINT = '/v1/api/users/login';
-const PRISMA_MIGRATE_RESET = 'npx prisma migrate reset --force --skip-generate';
+const PRISMA_SEED_RESET = 'npx prisma db seed';
 
 const [{ email, password }] = users;
 
@@ -17,7 +17,7 @@ describe('Test POST endpoint "/users/login"', function () {
   this.timeout(5000);
 
   before(() => {
-    shell.exec(PRISMA_MIGRATE_RESET, { silent: true });
+    shell.exec(PRISMA_SEED_RESET, { silent: true });
   });
 
   describe('Success case', () => {

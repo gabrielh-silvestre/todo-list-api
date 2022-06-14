@@ -11,7 +11,7 @@ const [{ email, password }] = users;
 
 const LOGIN_USERS_ENDPOINT = '/v1/api/users/login';
 const LIST_TASKS_ENDPOINT = '/v1/api/tasks';
-const PRISMA_MIGRATE_RESET = 'npx prisma migrate reset --force --skip-generate';
+const PRISMA_SEED_RESET = 'npx prisma db seed';
 
 describe('Test GET endpoint "/tasks"', function () {
   this.timeout(5000);
@@ -19,7 +19,7 @@ describe('Test GET endpoint "/tasks"', function () {
   let token: string;
 
   before(async () => {
-    shell.exec(PRISMA_MIGRATE_RESET, { silent: true });
+    shell.exec(PRISMA_SEED_RESET, { silent: true });
 
     await chai
       .request(app)

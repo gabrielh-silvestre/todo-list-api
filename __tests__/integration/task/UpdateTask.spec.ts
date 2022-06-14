@@ -14,7 +14,7 @@ const { title, description, status, userId } = newTask;
 
 const LOGIN_USERS_ENDPOINT = '/v1/api/users/login';
 const UPDATE_TASKS_ENDPOINT = `/v1/api/tasks/${id}`;
-const PRISMA_MIGRATE_RESET = 'npx prisma migrate reset --force --skip-generate';
+const PRISMA_SEED_RESET = 'npx prisma db seed';
 
 describe('Test PUT endpoint "/tasks/:id', function () {
   this.timeout(5000);
@@ -22,7 +22,7 @@ describe('Test PUT endpoint "/tasks/:id', function () {
   let token: string;
 
   before(async () => {
-    shell.exec(PRISMA_MIGRATE_RESET, { silent: true });
+    shell.exec(PRISMA_SEED_RESET, { silent: true });
 
     await chai
       .request(app)
