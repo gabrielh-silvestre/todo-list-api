@@ -1,82 +1,59 @@
-import { HttpError } from 'restify-errors';
-import { StatusCodes } from 'http-status-codes';
-
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
-import { ISuccess } from '../../../../src/@types/interfaces';
-
 import { UserRepository } from '../../../../src/modules/users/repository/UsersRepository';
-import { VerifyUserUseCase } from '../../../../src/modules/users/useCases/verifyUser/VerifyUserUseUseCase';
+import { verifyUserUseCase } from '../../../../src/modules/users/useCases/verifyUser';
 
 import { users } from '../../../mocks/users';
 
-const { NOT_FOUND } = StatusCodes;
-
-const userRepository = new UserRepository();
-const verifyUserUseCase = new VerifyUserUseCase(userRepository);
+const [{ id }, user] = users;
 
 describe('Test VerifyUserUseCase', () => {
-  const [{ id }, user] = users;
   let findByIdStub: Sinon.SinonStub;
 
   describe('Success case', () => {
     before(() => {
-      findByIdStub = Sinon.stub(userRepository, 'findById').resolves(user);
+      findByIdStub = Sinon.stub(UserRepository.prototype, 'findById');
+      findByIdStub.resolves(user);
     });
 
     after(() => {
       findByIdStub.restore();
     });
 
-    describe('Should return a object with an success status and data', () => {
-      it('success status should be "OK"', async () => {
-        const response = (await verifyUserUseCase.execute({
-          id,
-        })) as ISuccess<null>;
+    it('should return a object with an status code and data', async () => {
+      const response = await verifyUserUseCase.execute({ id });
 
-        expect(response.statusCode).to.be.equal('OK');
-      });
+      expect(response).to.be.an('object');
+      expect(response).to.have.property('statusCode');
+      expect(response).to.have.property('data');
 
-      it('data should be null', async () => {
-        const response = (await verifyUserUseCase.execute({
-          id,
-        })) as ISuccess<null>;
-
-        expect(response.data).to.be.null;
-      });
+      expect(response.statusCode).to.be.equal(200);
+      expect(response.data).to.be.null;
     });
   });
 
   describe('Error case', () => {
     before(() => {
-      findByIdStub = Sinon.stub(userRepository, 'findById').resolves(null);
+      findByIdStub = Sinon.stub(UserRepository.prototype, 'findById');
+      findByIdStub.resolves(null);
     });
 
     after(() => {
       findByIdStub.restore();
     });
 
-    describe('Should throw a CustomError with status and message', () => {
-      it('status should be "NOT_FOUND"', async () => {
-        try {
-          await verifyUserUseCase.execute({ id });
-          expect.fail('Should throw an error');
-        } catch (err) {
-          const tErr = err as HttpError;
-          expect(tErr.statusCode).to.be.equal(NOT_FOUND);
-        }
-      });
+    it('should throw an error with status code and message', async () => {
+      try {
+        await verifyUserUseCase.execute({ id });
+        expect.fail('Should throw an error');
+      } catch (err) {
+        expect(err).to.have.property('statusCode');
+        expect(err).to.have.property('message');
 
-      it('message should be "User does not exist"', async () => {
-        try {
-          await verifyUserUseCase.execute({ id });
-          expect.fail('Should throw an error');
-        } catch (err) {
-          const tErr = err as HttpError;
-          expect(tErr.message).to.be.equal('User does not exist');
-        }
-      });
+        expect(err.statusCode).to.be.equal(404);
+        expect(err.message).to.be.equal('User does not exist');
+      }
     });
   });
 });
