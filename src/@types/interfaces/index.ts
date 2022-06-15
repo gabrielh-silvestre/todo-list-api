@@ -12,7 +12,7 @@ interface IError {
 }
 
 interface ISuccess<T> {
-  statusCode: StatusCodesKeys;
+  statusCode: number;
   data: T;
 }
 
