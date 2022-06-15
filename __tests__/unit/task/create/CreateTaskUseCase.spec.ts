@@ -1,29 +1,25 @@
-import { HttpError } from 'restify-errors';
-
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
 import { TasksRepository } from '../../../../src/modules/tasks/repository/TasksRepository';
-import { CreateTaskUseCase } from '../../../../src/modules/tasks/useCases/createTask/CreateTaskUseCase';
+import { createTaskUseCase } from '../../../../src/modules/tasks/useCases/createTask';
 
 import { newTask, tasks } from '../../../mocks/tasks';
 
-const tasksRepository = new TasksRepository();
-const createTaskUseCase = new CreateTaskUseCase(tasksRepository);
-
 describe('Test CreateTaskUseCase', () => {
-  const { title, description, userId } = newTask;
-
   let createStub: Sinon.SinonStub;
   let findByTitleStub: Sinon.SinonStub;
 
   describe('Success case', () => {
     before(() => {
       findByTitleStub = Sinon.stub(
-        tasksRepository,
+        TasksRepository.prototype,
         'findByExactTitle'
-      ).resolves([]);
-      createStub = Sinon.stub(tasksRepository, 'create').resolves(newTask);
+      );
+      findByTitleStub.resolves([]);
+
+      createStub = Sinon.stub(TasksRepository.prototype, 'create');
+      createStub.resolves(newTask);
     });
 
     after(() => {
@@ -32,97 +28,71 @@ describe('Test CreateTaskUseCase', () => {
     });
 
     describe('Create test with description', () => {
-      describe('Should return a object with an success status and data', () => {
-        it('success status should be "CREATED"', async () => {
-          const response = await createTaskUseCase.execute({
-            title,
-            description,
-            userId,
-          });
+      it('should return a object with an status code and data', async () => {
+        const response = await createTaskUseCase.execute(newTask);
 
-          expect(response.statusCode).to.be.equal('CREATED');
-        });
+        expect(response).to.be.an('object');
+        expect(response).to.have.property('statusCode');
+        expect(response).to.have.property('data');
 
-        it('data should be the created Task', async () => {
-          const response = await createTaskUseCase.execute({
-            title,
-            description,
-            userId,
-          });
+        expect(response.statusCode).to.be.equal(201);
+        expect(response.data).to.be.an('object');
 
-          expect(response.data).to.be.deep.equal(newTask);
-        });
+        expect(response.data).to.have.property('id');
+        expect(response.data).to.have.property('title');
+        expect(response.data).to.have.property('description');
+        expect(response.data).to.have.property('status');
+        expect(response.data).to.have.property('updatedAt');
       });
     });
 
     describe('Create test without description', () => {
-      describe('Should return a object with an success status and data', () => {
-        it('success status should be "CREATED"', async () => {
-          const response = await createTaskUseCase.execute({
-            title,
-            description: null,
-            userId,
-          });
+      it('should return a object with an status code and data', async () => {
+        const response = await createTaskUseCase.execute(newTask);
 
-          expect(response.statusCode).to.be.equal('CREATED');
-        });
+        expect(response).to.be.an('object');
+        expect(response).to.have.property('statusCode');
+        expect(response).to.have.property('data');
 
-        it('data should be the created Task', async () => {
-          const response = await createTaskUseCase.execute({
-            title,
-            description: null,
-            userId,
-          });
+        expect(response.statusCode).to.be.equal(201);
+        expect(response.data).to.be.an('object');
 
-          expect(response.data).to.be.deep.equal(newTask);
-        });
+        expect(response.data).to.have.property('id');
+        expect(response.data).to.have.property('title');
+        expect(response.data).to.have.property('description');
+        expect(response.data).to.have.property('status');
+        expect(response.data).to.have.property('updatedAt');
       });
     });
   });
 
   describe('Error case', () => {
-    describe('Task with this title already exists', () => {
+    describe('Invalid "title" case', () => {
       before(() => {
         findByTitleStub = Sinon.stub(
-          tasksRepository,
+          TasksRepository.prototype,
           'findByExactTitle'
-        ).resolves(tasks);
+        );
+        findByTitleStub.resolves(tasks);
       });
 
       after(() => {
         findByTitleStub.restore();
       });
 
-      describe('Should throw a conflict error with status and message', () => {
-        it('status should be 409', async () => {
-          try {
-            await createTaskUseCase.execute({
-              title,
-              description,
-              userId,
-            });
-            expect.fail('Should throw a conflict error');
-          } catch (error) {
-            const tErr = error as HttpError;
-            expect(tErr.statusCode).to.be.equal(409);
-          }
-        });
+      it('should throw an error with status code and message', async () => {
+        try {
+          await createTaskUseCase.execute(newTask);
+          expect.fail('Should throw a conflict error');
+        } catch (error) {
+          expect(error).to.have.property('statusCode');
+          expect(error).to.have.property('message');
 
-        it('message should be "Task with this title already exists"', async () => {
-          try {
-            await createTaskUseCase.execute({
-              title,
-              description,
-              userId,
-            });
-            expect.fail('Should throw a conflict error');
-          } catch (error) {
-            const tErr = error as HttpError;
-            expect(tErr.message).to.be.equal(
-              'Task with this title already exists'
-            );
-          }
-        });
+          expect(error.statusCode).to.be.equal(409);
+          expect(error.message).to.be.equal(
+            'Task with this title already exists'
+          );
+        }
       });
     });
   });
