@@ -1,7 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
-
-import { ISuccess } from '../../../../@types/interfaces';
 
 import { LoginUserUseCase } from './LoginUserUseCase';
 
@@ -12,12 +9,12 @@ class LoginUserController {
     const { email, password } = req.body;
 
     try {
-      const { statusCode, data } = (await this.loginUserUseCase.execute({
+      const { statusCode, data } = await this.loginUserUseCase.execute({
         email,
         password,
-      })) as ISuccess<string>;
+      });
 
-      return res.status(StatusCodes[statusCode]).json({ token: data });
+      return res.status(statusCode).json(data);
     } catch (err) {
       next(err);
     }

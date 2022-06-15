@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { StatusCodes } from 'http-status-codes';
 
 import { CreateUserUseCase } from './CreateUserUseCase';
 
@@ -20,7 +19,7 @@ class CreateUserController {
         password,
       });
 
-      return res.status(StatusCodes[statusCode]).json({ token: data });
+      return res.status(statusCode).json(data);
     } catch (err) {
       next(err);
     }

@@ -1,4 +1,5 @@
 import { ConflictError } from 'restify-errors';
+import { StatusCodes } from 'http-status-codes';
 
 import { IUsersRepository } from '../../repository/IUsersRepository';
 import {
@@ -7,7 +8,7 @@ import {
   ISuccess,
   IEncryptService,
 } from '../../../../@types/interfaces';
-import { TokenPayload } from '../../../../@types/types';
+import { TokenPayload, TokenReturn } from '../../../../@types/types';
 
 interface IRequest extends IBasicUserData {}
 
@@ -30,7 +31,7 @@ class CreateUserUseCase {
     email,
     username,
     password,
-  }: IRequest): Promise<ISuccess<string> | never> {
+  }: IRequest): Promise<ISuccess<TokenReturn> | never> {
     await this.isUnique(email);
 
     const encryptedPassword = await this.encryptService.encrypt(password);
@@ -44,8 +45,8 @@ class CreateUserUseCase {
     const token = this.authService.createToken(newUserId);
 
     return {
-      statusCode: 'CREATED',
-      data: token,
+      statusCode: StatusCodes.CREATED,
+      data: { token },
     };
   }
 }

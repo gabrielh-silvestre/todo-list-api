@@ -1,10 +1,11 @@
 import { NotFoundError } from 'restify-errors';
+import { StatusCodes } from 'http-status-codes';
 
 import { IUsersRepository } from '../../repository/IUsersRepository';
 
 import { IAuthService, IEncryptService } from '../../../../@types/interfaces';
 import { ISuccess } from '../../../../@types/interfaces';
-import { TokenPayload } from '../../../../@types/types';
+import { TokenPayload, TokenReturn } from '../../../../@types/types';
 
 interface IRequest {
   email: string;
@@ -21,7 +22,7 @@ class LoginUserUseCase {
   async execute({
     email,
     password,
-  }: IRequest): Promise<ISuccess<string> | void> {
+  }: IRequest): Promise<ISuccess<TokenReturn> | never> {
     const user = await this.userRepository.findByEmail({ email });
 
     if (!user) {
@@ -37,9 +38,11 @@ class LoginUserUseCase {
       throw new NotFoundError('Invalid email or password');
     }
 
+    const token = this.authService.createToken(user.id);
+
     return {
-      statusCode: 'OK',
-      data: this.authService.createToken(user.id),
+      statusCode: StatusCodes.OK,
+      data: { token },
     };
   }
 }
