@@ -1,37 +1,34 @@
 import { NextFunction, request, response } from 'express';
-import { NotFoundError } from 'restify-errors';
 
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
-import { EncryptService } from '../../../../src/services/Encrypt';
-import { AuthService } from '../../../../src/services/Auth';
+import { ISuccess } from '../../../../src/@types/interfaces';
+import { TokenReturn } from '../../../../src/@types/types';
 
-import { UserRepository } from '../../../../src/modules/users/repository/UsersRepository';
-import { LoginUserUseCase } from '../../../../src/modules/users/useCases/loginUser/LoginUserUseCase';
-import { LoginUserController } from '../../../../src/modules/users/useCases/loginUser/LoginUserController';
+import {
+  loginUserUseCase,
+  loginUserController,
+} from '../../../../src/modules/users/useCases/loginUser';
 
 import { newUser } from '../../../mocks/users';
 
-const FAKE_TOKEN = 'nASOmifoniv-auns09812jsnipoas-wpnioAa09sjvcawh012';
+const FAKE_TOKEN = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
 
-const userRepository = new UserRepository();
-const loginUserUseCase = new LoginUserUseCase(
-  userRepository,
-  AuthService,
-  EncryptService
-);
-const loginUserController = new LoginUserController(loginUserUseCase);
+const SUCCESS_RESPONSE: ISuccess<TokenReturn> = {
+  statusCode: 200,
+  data: { token: FAKE_TOKEN },
+};
+
+const ERROR_RESPONSE = new Error('Invalid email or password');
 
 describe('Test LoginUserController', () => {
-  const { email, password } = newUser;
-
   let useCaseStub: Sinon.SinonStub;
   let spiedStatus: Sinon.SinonSpy;
   let spiedJson: Sinon.SinonSpy;
   let spiedNext: Sinon.SinonSpy;
   const next = {
-    next: (args) => {},
+    next: () => {},
   } as { next: NextFunction };
 
   before(() => {
@@ -48,64 +45,43 @@ describe('Test LoginUserController', () => {
 
   describe('Success case', () => {
     before(() => {
-      useCaseStub = Sinon.stub(loginUserUseCase, 'execute').resolves({
-        statusCode: 'OK',
-        data: FAKE_TOKEN,
-      });
+      useCaseStub = Sinon.stub(loginUserUseCase, 'execute');
+      useCaseStub.resolves(SUCCESS_RESPONSE);
 
-      request.body = {
-        email,
-        password,
-      };
+      request.body = newUser;
     });
 
     after(() => {
       useCaseStub.restore();
-
-      request.body = {};
     });
 
-    describe('Should return a object with an success status and data', () => {
-      it('success status should be 200', async () => {
-        await loginUserController.handle(request, response, next.next);
+    it('should return a response with status 200 and user token on body', async () => {
+      await loginUserController.handle(request, response, next.next);
 
-        expect(spiedStatus.calledWith(200)).to.be.true;
-      });
+      expect(spiedStatus.calledWith(200)).to.be.true;
 
-      it('data should be a authorization token', async () => {
-        await loginUserController.handle(request, response, next.next);
-
-        expect(spiedJson.calledWith({ token: FAKE_TOKEN })).to.be.true;
-      });
+      expect(spiedJson.args[0][0]).to.be.an('object');
+      expect(spiedJson.args[0][0]).to.have.property('token');
+      expect(spiedJson.args[0][0].token).to.be.an('string');
     });
   });
 
   describe('Error case', () => {
-    const ERROR_RESPONSE = new NotFoundError('Invalid email or password');
-
     before(() => {
-      useCaseStub = Sinon.stub(loginUserUseCase, 'execute').rejects(
-        ERROR_RESPONSE
-      );
+      useCaseStub = Sinon.stub(loginUserUseCase, 'execute');
+      useCaseStub.rejects(ERROR_RESPONSE);
 
-      request.body = {
-        email,
-        password,
-      };
+      request.body = newUser;
     });
 
     after(() => {
       useCaseStub.restore();
-
-      request.body = {};
     });
 
-    describe('Should call "next" error middleware', () => {
-      it('"next" error middleware should be called with CustomError as args', async () => {
-        await loginUserController.handle(request, response, next.next);
+    it('should call "next" error middleware', async () => {
+      await loginUserController.handle(request, response, next.next);
 
-        expect(spiedNext.calledWith(ERROR_RESPONSE)).to.be.true;
-      });
+      expect(spiedNext.called).to.be.true;
     });
   });
 });

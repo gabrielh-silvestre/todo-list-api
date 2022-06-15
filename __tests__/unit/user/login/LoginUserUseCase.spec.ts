@@ -1,48 +1,33 @@
-import { User } from '@prisma/client';
-import { HttpError } from 'restify-errors';
-import { StatusCodes } from 'http-status-codes';
-
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
-import { ISuccess } from '../../../../src/@types/interfaces';
-
 import { EncryptService } from '../../../../src/services/Encrypt';
 import { AuthService } from '../../../../src/services/Auth';
+
 import { UserRepository } from '../../../../src/modules/users/repository/UsersRepository';
-import { LoginUserUseCase } from '../../../../src/modules/users/useCases/loginUser/LoginUserUseCase';
+import { loginUserUseCase } from '../../../../src/modules/users/useCases/loginUser';
 
 import { users, newUser } from '../../../mocks/users';
 
-const { NOT_FOUND } = StatusCodes;
-const FAKE_TOKEN = 'nASOmifoniv-auns09812jsnipoas-wpnioAa09sjvcawh012';
+const [user] = users;
 
-const userRepository = new UserRepository();
-const loginUserUseCase = new LoginUserUseCase(
-  userRepository,
-  AuthService,
-  EncryptService
-);
+const FAKE_TOKEN = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
 
 describe('Test LoginUserUseCase', () => {
-  const [user] = users;
-  const { email, password } = newUser;
-
   let findByEmailStub: Sinon.SinonStub;
   let createTokenStub: Sinon.SinonStub;
   let verifyPasswordStub: Sinon.SinonStub;
 
   describe('Success case', () => {
     before(() => {
-      findByEmailStub = Sinon.stub(userRepository, 'findByEmail').resolves(
-        user
-      );
+      findByEmailStub = Sinon.stub(UserRepository.prototype, 'findByEmail');
+      findByEmailStub.resolves(user);
 
-      createTokenStub = Sinon.stub(AuthService, 'createToken').returns(
-        FAKE_TOKEN
-      );
+      createTokenStub = Sinon.stub(AuthService, 'createToken');
+      createTokenStub.returns(FAKE_TOKEN);
 
-      verifyPasswordStub = Sinon.stub(EncryptService, 'verify').resolves(true);
+      verifyPasswordStub = Sinon.stub(EncryptService, 'verify');
+      verifyPasswordStub.returns(true);
     });
 
     after(() => {
@@ -51,105 +36,66 @@ describe('Test LoginUserUseCase', () => {
       verifyPasswordStub.restore();
     });
 
-    describe('Should return a object with an success status and data', () => {
-      it('success status should be "OK"', async () => {
-        const response = (await loginUserUseCase.execute({
-          email,
-          password,
-        })) as ISuccess<string>;
+    it('Should return a object with an status code and data', async () => {
+      const response = await loginUserUseCase.execute(newUser);
 
-        expect(response.statusCode).to.be.equal('OK');
-      });
+      expect(response).to.be.an('object');
+      expect(response).to.have.property('statusCode');
+      expect(response).to.have.property('data');
 
-      it('data should be a authorization token', async () => {
-        const response = (await loginUserUseCase.execute({
-          email,
-          password,
-        })) as unknown as ISuccess<User>;
-
-        expect(response.data).to.be.equal(FAKE_TOKEN);
-      });
+      expect(response.statusCode).to.be.equal(200);
+      expect(response.data).to.be.an('object');
+      expect(response.data).to.have.property('token');
+      expect(response.data.token).to.be.an('string');
     });
   });
 
   describe('Error cases', () => {
-    describe('Not found user', () => {
+    describe('Invalid "email" case', () => {
       before(() => {
-        findByEmailStub = Sinon.stub(userRepository, 'findByEmail').resolves(
-          null
-        );
+        findByEmailStub = Sinon.stub(UserRepository.prototype, 'findByEmail');
+        findByEmailStub.resolves(null);
       });
 
       after(() => {
         findByEmailStub.restore();
       });
 
-      describe('Should throw a CustomError with status and message', () => {
-        it('status should be "NOT_FOUND"', async () => {
-          try {
-            await loginUserUseCase.execute({
-              email,
-              password,
-            });
-            expect.fail('Should throw an error');
-          } catch (err) {
-            const tErr = err as HttpError;
-            expect(tErr.statusCode).to.be.equal(NOT_FOUND);
-          }
-        });
+      it('should throw an error with status code and message', async () => {
+        try {
+          await loginUserUseCase.execute(newUser);
+          expect.fail('Should throw an error');
+        } catch (err) {
+          expect(err).to.have.property('statusCode');
+          expect(err).to.have.property('message');
 
-        it('message should be "Invalid email or password"', async () => {
-          try {
-            await loginUserUseCase.execute({
-              email,
-              password,
-            });
-            expect.fail('Should throw an error');
-          } catch (err) {
-            const tErr = err as HttpError;
-            expect(tErr.message).to.be.equal('Invalid email or password');
-          }
-        });
+          expect(err.statusCode).to.be.equal(404);
+          expect(err.message).to.be.equal('Invalid email or password');
+        }
       });
     });
 
-    describe('Invalid password', () => {
+    describe('Invalid "password" case', () => {
       before(() => {
-        findByEmailStub = Sinon.stub(userRepository, 'findByEmail').resolves(
-          user
-        );
+        findByEmailStub = Sinon.stub(UserRepository.prototype, 'findByEmail');
+        findByEmailStub.resolves(user);
       });
 
       after(() => {
         findByEmailStub.restore();
       });
 
-      describe('Should throw a CustomError with status and message', () => {
-        it('status should be "NOT_FOUND"', async () => {
-          try {
-            await loginUserUseCase.execute({
-              email,
-              password: 'invalidPassword',
-            });
-            expect.fail('Should throw an error');
-          } catch (err) {
-            const tErr = err as HttpError;
-            expect(tErr.statusCode).to.be.equal(NOT_FOUND);
-          }
-        });
+      it('should throw an error with status code and message', async () => {
+        try {
+          await loginUserUseCase.execute(newUser);
+          expect.fail('Should throw an error');
+        } catch (err) {
+          expect(err).to.have.property('statusCode');
+          expect(err).to.have.property('message');
 
-        it('message should be "Invalid email or password"', async () => {
-          try {
-            await loginUserUseCase.execute({
-              email,
-              password: 'invalid',
-            });
-            expect.fail('Should throw an error');
-          } catch (err) {
-            const tErr = err as HttpError;
-            expect(tErr.message).to.be.equal('Invalid email or password');
-          }
-        });
+          expect(err.statusCode).to.be.equal(404);
+          expect(err.message).to.be.equal('Invalid email or password');
+        }
       });
     });
   });
