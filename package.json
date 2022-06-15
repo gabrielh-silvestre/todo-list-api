@@ -13,6 +13,8 @@
     "dev": "nodemon src/server.ts",
     "pretest": "prisma migrate dev && prisma db seed",
     "test": "mocha -r ts-node/register/transpile-only __tests__/**/*.spec.ts",
+    "test:unit": "mocha -r ts-node/register/transpile-only __tests__/unit/**/*.spec.ts",
+    "test:integration": "mocha -r ts-node/register/transpile-only __tests__/integration/**/*.spec.ts",
     "test:result": "mocha -R json -O output=test-results.json -r ts-node/register/transpile-only __tests__/**/*.spec.ts",
     "test:coverage": "nyc npm test"
   },
