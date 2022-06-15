@@ -3,6 +3,7 @@ import { BadRequestError } from 'restify-errors';
 import Joi from 'joi';
 
 import { ITaskValidator } from '../../@types/interfaces';
+import { errorFormatter } from '../../utils';
 
 class TaskValidator implements ITaskValidator {
   private createTaskSchema: Joi.ObjectSchema;
@@ -27,7 +28,7 @@ class TaskValidator implements ITaskValidator {
     const { error } = this.createTaskSchema.validate(req.body);
 
     if (error) {
-      const err = new BadRequestError(error.details[0].message);
+      const err = errorFormatter(error.details[0].message);
       return next(err);
     }
 
@@ -38,7 +39,7 @@ class TaskValidator implements ITaskValidator {
     const { error } = this.updateTaskSchema.validate(req.body);
 
     if (error) {
-      const err = new BadRequestError(error.details[0].message);
+      const err = errorFormatter(error.details[0].message);
       return next(err);
     }
 

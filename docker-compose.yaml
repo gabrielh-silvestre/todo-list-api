@@ -1,7 +1,25 @@
-version: '3'
+version: '3.9'
 services:
+  backend:
+    image: node:16-alpine
+    container_name: app_backend
+    command: npm run dev
+    restart: on-failure
+    working_dir: /app/backend
+    volumes:
+      - .:/app/backend
+    ports:
+      - 3001:${PORT}
+    tty: true
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - PORT=${PORT}
+      - DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_DATABASE}
   db:
     image: postgres:14.3-alpine
+    container_name: db
     restart: always
     ports:
       - ${DB_PORT}:5432
@@ -9,3 +27,11 @@ services:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_DATABASE}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "db_prod"]
+      interval: 30s
+      timeout: 60s
+      retries: 10
+      start_period: 30s  
+    cap_add:
+      - SYS_NICE # Deve omitir alertas menores
