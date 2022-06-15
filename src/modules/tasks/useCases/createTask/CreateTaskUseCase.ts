@@ -1,9 +1,9 @@
+import { StatusCodes } from 'http-status-codes';
 import { ConflictError } from 'restify-errors';
 
 import { ITasksRepository } from '../../repository/ITasksRepository';
 import { ISuccess } from '../../../../@types/interfaces';
 import { TaskReturn } from '../../../../@types/types';
-
 
 interface IRequest {
   title: string;
@@ -29,7 +29,7 @@ class CreateTaskUseCase {
     title,
     description,
     userId,
-  }: IRequest): Promise<ISuccess<TaskReturn>> {
+  }: IRequest): Promise<ISuccess<TaskReturn> | never> {
     await this.isUnique(userId, title);
 
     const newTask = await this.taskRepository.create({
@@ -38,7 +38,7 @@ class CreateTaskUseCase {
       userId,
     });
 
-    return { statusCode: 'CREATED', data: newTask };
+    return { statusCode: StatusCodes.CREATED, data: newTask };
   }
 }
 
