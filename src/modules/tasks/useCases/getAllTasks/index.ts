@@ -6,4 +6,4 @@ const tasksRepository = new TasksRepository();
 const getAllTasksUseCase = new GetAllTasksUseCase(tasksRepository);
 const getAllTasksController = new GetAllTasksController(getAllTasksUseCase);
 
-export { getAllTasksController };
+export { getAllTasksUseCase, getAllTasksController };

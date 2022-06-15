@@ -1,3 +1,5 @@
+import { StatusCodes } from 'http-status-codes';
+
 import { ITasksRepository } from '../../repository/ITasksRepository';
 import { ISuccess, ITaskUserIdentifier } from '../../../../@types/interfaces';
 import { TaskReturn } from '../../../../@types/types';
@@ -11,7 +13,7 @@ class GetAllTasksUseCase {
     const foundTasks = await this.tasksRepository.findAll({ userId });
 
     return {
-      statusCode: 'OK',
+      statusCode: StatusCodes.OK,
       data: foundTasks,
     };
   }
