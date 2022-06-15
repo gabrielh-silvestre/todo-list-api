@@ -18,7 +18,7 @@ class CreateUserUseCase {
     private encryptService: IEncryptService
   ) {}
 
-  async isUnique(email: string): Promise<void> {
+  async isUnique(email: string): Promise<void | never> {
     const user = await this.userRepository.findByEmail({ email });
 
     if (user) {
@@ -30,7 +30,7 @@ class CreateUserUseCase {
     email,
     username,
     password,
-  }: IRequest): Promise<ISuccess<string> | void> {
+  }: IRequest): Promise<ISuccess<string> | never> {
     await this.isUnique(email);
 
     const encryptedPassword = await this.encryptService.encrypt(password);
