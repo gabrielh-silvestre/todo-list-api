@@ -42,7 +42,9 @@ describe('Test CreateUserCase', () => {
       expect(response).to.have.property('data');
 
       expect(response.statusCode).to.be.equal(201);
-      expect(response.data).to.be.an('string');
+      expect(response.data).to.be.an('object');
+      expect(response.data).to.have.property('token');
+      expect(response.data.token).to.be.an('string');
     });
   });
 

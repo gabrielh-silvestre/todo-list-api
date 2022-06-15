@@ -4,6 +4,7 @@ import { expect } from 'chai';
 import Sinon from 'sinon';
 
 import { ISuccess } from '../../../../src/@types/interfaces';
+import { TokenReturn } from '../../../../src/@types/types';
 
 import {
   createUserUseCase,
@@ -14,9 +15,9 @@ import { newUser } from '../../../mocks/users';
 
 const FAKE_TOKEN = '0n0v19nASV-V0n09Masvmz0-xasvzx';
 
-const SUCCESS_RESPONSE: ISuccess<string> = {
-  statusCode: 'CREATED',
-  data: FAKE_TOKEN,
+const SUCCESS_RESPONSE: ISuccess<TokenReturn> = {
+  statusCode: 201,
+  data: { token: FAKE_TOKEN },
 };
 
 const ERROR_RESPONSE = new Error('User already exists');
