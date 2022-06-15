@@ -32,13 +32,13 @@ jobs:
       - name: Run tests
         run: npm test
         env:
-          DATABASE_URL: 'postgresql://postgres:postgres@postgres:5432/Todo_List_Test'
+          DATABASE_URL: 'postgresql://postgres:postgres@localhost:5432/Todo_List_Test'
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
       - name: Generate Mocha report
         run: npm run test:result
         env:
-          DATABASE_URL: 'postgresql://postgres:postgres@postgres:5432/Todo_List_Test'
+          DATABASE_URL: 'postgresql://postgres:postgres@localhost:5432/Todo_List_Test'
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
       - name: Test Report
