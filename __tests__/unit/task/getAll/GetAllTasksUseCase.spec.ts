@@ -2,38 +2,41 @@ import { expect } from 'chai';
 import Sinon from 'sinon';
 
 import { TasksRepository } from '../../../../src/modules/tasks/repository/TasksRepository';
-import { GetAllTasksUseCase } from '../../../../src/modules/tasks/useCases/getAllTasks/GetAllTasksUseCase';
+import { getAllTasksUseCase } from '../../../../src/modules/tasks/useCases/getAllTasks';
 
 import { tasks } from '../../../mocks/tasks';
 
-const tasksRepository = new TasksRepository();
-const getAllTasksUseCase = new GetAllTasksUseCase(tasksRepository);
+const [{ userId }] = tasks;
 
 describe('Test GetAllTasksUseCase', () => {
-  const [{ userId }] = tasks;
   let getAllStub: Sinon.SinonStub;
 
   describe('Success case', () => {
     before(() => {
-      getAllStub = Sinon.stub(tasksRepository, 'findAll').resolves(tasks);
+      getAllStub = Sinon.stub(TasksRepository.prototype, 'findAll');
+      getAllStub.resolves(tasks);
     });
 
     after(() => {
       getAllStub.restore();
     });
 
-    describe('Should return a object with an success status and data', () => {
-      it('success status should be "OK"', async () => {
-        const response = await getAllTasksUseCase.execute({ userId });
+    it('should return a object with an status code and data', async () => {
+      const response = await getAllTasksUseCase.execute({ userId });
 
-        expect(response.statusCode).to.be.equal('OK');
-      });
+      expect(response).to.be.an('object');
+      expect(response).to.have.property('statusCode');
+      expect(response).to.have.property('data');
 
-      it('data should be the found Tasks', async () => {
-        const response = await getAllTasksUseCase.execute({ userId });
+      expect(response.statusCode).to.be.equal(200);
+      expect(response.data).to.be.an('array');
 
-        expect(response.data).to.be.deep.equal(tasks);
-      });
+      expect(response.data[0]).to.be.an('object');
+      expect(response.data[0]).to.have.property('id');
+      expect(response.data[0]).to.have.property('title');
+      expect(response.data[0]).to.have.property('description');
+      expect(response.data[0]).to.have.property('status');
+      expect(response.data[0]).to.have.property('updatedAt');
     });
   });
 });
