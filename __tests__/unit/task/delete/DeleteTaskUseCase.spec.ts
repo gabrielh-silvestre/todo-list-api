@@ -1,25 +1,25 @@
 import { expect } from 'chai';
-import { HttpError } from 'restify-errors';
 import Sinon from 'sinon';
 
 import { TasksRepository } from '../../../../src/modules/tasks/repository/TasksRepository';
-import { DeleteTaskUseCase } from '../../../../src/modules/tasks/useCases/deleteTask/DeleteTaskUseCase';
+import { deleteTaskUseCase } from '../../../../src/modules/tasks/useCases/deleteTask';
 
 import { newTask, tasks } from '../../../mocks/tasks';
 
-const tasksRepository = new TasksRepository();
-const deleteTaskUseCase = new DeleteTaskUseCase(tasksRepository);
+const [foundTask] = tasks;
+const { id, userId } = newTask;
 
 describe('Test DeleteTaskUseCase', () => {
-  const { id, userId } = newTask;
-
   let findByIdStub: Sinon.SinonStub;
   let deleteStub: Sinon.SinonStub;
 
   describe('Success case', () => {
     before(() => {
-      findByIdStub = Sinon.stub(tasksRepository, 'findById').resolves(tasks[0]);
-      deleteStub = Sinon.stub(tasksRepository, 'delete').resolves();
+      findByIdStub = Sinon.stub(TasksRepository.prototype, 'findById');
+      findByIdStub.resolves(foundTask);
+
+      deleteStub = Sinon.stub(TasksRepository.prototype, 'delete');
+      deleteStub.resolves();
     });
 
     after(() => {
@@ -27,51 +27,41 @@ describe('Test DeleteTaskUseCase', () => {
       deleteStub.restore();
     });
 
-    describe('Should return a object with an success status and data', () => {
-      it('success status should be "NO_CONTENT"', async () => {
-        const response = await deleteTaskUseCase.execute({ userId, id });
+    it('should return a object with an status code and data', async () => {
+      const response = await deleteTaskUseCase.execute({ userId, id });
 
-        expect(response.statusCode).to.be.equal('NO_CONTENT');
-      });
+      expect(response).to.be.an('object');
+      expect(response).to.have.property('statusCode');
+      expect(response).to.have.property('data');
 
-      it('data should be null', async () => {
-        const response = await deleteTaskUseCase.execute({ userId, id });
-
-        expect(response.data).to.be.deep.equal(null);
-      });
+      expect(response.statusCode).to.be.equal(204);
+      expect(response.data).to.be.null;
     });
   });
 
   describe('Error case', () => {
-    describe('Task does not exist', () => {
+    describe('Invalid "task id" case', () => {
       before(() => {
-        findByIdStub = Sinon.stub(tasksRepository, 'findById').resolves(null);
+        findByIdStub = Sinon.stub(TasksRepository.prototype, 'findById');
+        findByIdStub.resolves(null);
       });
 
       after(() => {
         findByIdStub.restore();
       });
 
-      describe('Should throw a not found error with status and message', () => {
-        it('status should be 404', async () => {
-          try {
-            await deleteTaskUseCase.execute({ userId, id });
-            expect.fail('Should throw a not found error');
-          } catch (error) {
-            const tErr = error as HttpError;
-            expect(tErr.statusCode).to.be.equal(404);
-          }
-        });
+      it('should throw an error with status code and message', async () => {
+        try {
+          await deleteTaskUseCase.execute({ userId, id });
+          expect.fail('Should throw a not found error');
+        } catch (error) {
+          expect(error).to.be.an('object');
+          expect(error).to.have.property('statusCode');
+          expect(error).to.have.property('message');
 
-        it('message should be "Task not found"', async () => {
-          try {
-            await deleteTaskUseCase.execute({ userId, id });
-            expect.fail('Should throw a not found error');
-          } catch (error) {
-            const tErr = error as HttpError;
-            expect(tErr.message).to.be.equal('Task not found');
-          }
-        });
+          expect(error.statusCode).to.be.equal(404);
+          expect(error.message).to.be.equal('Task not found');
+        }
       });
     });
   });
