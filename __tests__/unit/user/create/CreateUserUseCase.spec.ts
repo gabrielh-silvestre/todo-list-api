@@ -1,44 +1,31 @@
-import { HttpError } from 'restify-errors';
-
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
-import { ISuccess } from '../../../../src/@types/interfaces';
-
 import { AuthService } from '../../../../src/services/Auth';
-import { EncryptService } from '../../../../src/services/Encrypt';
 import { UserRepository } from '../../../../src/modules/users/repository/UsersRepository';
-import { CreateUserUseCase } from '../../../../src/modules/users/useCases/createUser/CreateUserUseCase';
+import { createUserUseCase } from '../../../../src/modules/users/useCases/createUser';
 
 import { users, newUser } from '../../../mocks/users';
 
 const FAKE_TOKEN = '0n0v19nASV-V0n09Masvmz0-xasvzx';
 
-const userRepository = new UserRepository();
-const createUserUseCase = new CreateUserUseCase(
-  userRepository,
-  AuthService,
-  EncryptService
-);
+const [user] = users;
 
 describe('Test CreateUserCase', () => {
-  const { email, username, password } = newUser;
-
   let findByEmailStub: Sinon.SinonStub;
   let createStub: Sinon.SinonStub;
   let createTokenStub: Sinon.SinonStub;
 
   describe('Success case', () => {
     before(() => {
-      findByEmailStub = Sinon.stub(userRepository, 'findByEmail').resolves(
-        null
-      );
+      findByEmailStub = Sinon.stub(UserRepository.prototype, 'findByEmail');
+      findByEmailStub.resolves(null);
 
-      createStub = Sinon.stub(userRepository, 'create').resolves(FAKE_TOKEN);
+      createStub = Sinon.stub(UserRepository.prototype, 'create');
+      createStub.resolves(FAKE_TOKEN);
 
-      createTokenStub = Sinon.stub(AuthService, 'createToken').returns(
-        FAKE_TOKEN
-      );
+      createTokenStub = Sinon.stub(AuthService, 'createToken');
+      createTokenStub.returns(FAKE_TOKEN);
     });
 
     after(() => {
@@ -47,61 +34,42 @@ describe('Test CreateUserCase', () => {
       createTokenStub.restore();
     });
 
-    describe('Should return a object with an success status and data', () => {
-      it('success status should be "CREATED"', async () => {
-        const response = (await createUserUseCase.execute({
-          email,
-          username,
-          password,
-        })) as ISuccess<string>;
+    it('should return a object with an status code and data', async () => {
+      const response = await createUserUseCase.execute(newUser);
 
-        expect(response.statusCode).to.be.equal('CREATED');
-      });
+      expect(response).to.be.an('object');
+      expect(response).to.have.property('statusCode');
+      expect(response).to.have.property('data');
 
-      it('data should be the created token', async () => {
-        const response = (await createUserUseCase.execute({
-          email,
-          username,
-          password,
-        })) as ISuccess<string>;
-
-        expect(response.data).to.be.deep.equal(FAKE_TOKEN);
-      });
+      expect(response.statusCode).to.be.equal(201);
+      expect(response.data).to.be.an('object');
+      expect(response.data).to.have.property('token');
+      expect(response.data.token).to.be.an('string');
     });
   });
 
   describe('Error case', () => {
-    describe('Email already in use', () => {
+    describe('Invalid "email" case', () => {
       before(() => {
-        findByEmailStub = Sinon.stub(userRepository, 'findByEmail').resolves(
-          users[0]
-        );
+        findByEmailStub = Sinon.stub(UserRepository.prototype, 'findByEmail');
+        findByEmailStub.resolves(user);
       });
 
       after(() => {
         findByEmailStub.restore();
       });
 
-      describe('Should throw a conflict error with status and message', () => {
-        it('status should be 409', async () => {
-          try {
-            await createUserUseCase.execute(newUser);
-            expect.fail();
-          } catch (err) {
-            const tErr = err as HttpError;
-            expect(tErr.statusCode).to.be.equal(409);
-          }
-        });
+      it('should throw an error with status code and message', async () => {
+        try {
+          await createUserUseCase.execute(newUser);
+          expect.fail();
+        } catch (err) {
+          expect(err).to.have.property('statusCode');
+          expect(err).to.have.property('message');
 
-        it('message should be "User already exists"', async () => {
-          try {
-            await createUserUseCase.execute(newUser);
-            expect.fail();
-          } catch (err) {
-            const tErr = err as HttpError;
-            expect(tErr.message).to.be.equal('User already exists');
-          }
-        });
+          expect(err.statusCode).to.be.equal(409);
+          expect(err.message).to.be.equal('User already exists');
+        }
       });
     });
   });

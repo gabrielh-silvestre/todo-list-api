@@ -1,21 +1,26 @@
 import { NextFunction, request, response } from 'express';
 import { Task } from '@prisma/client';
-import { InternalError } from 'restify-errors';
 
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
 import { ISuccess } from '../../../../src/@types/interfaces';
 
-import { TasksRepository } from '../../../../src/modules/tasks/repository/TasksRepository';
-import { CreateTaskUseCase } from '../../../../src/modules/tasks/useCases/createTask/CreateTaskUseCase';
-import { CreateTaskController } from '../../../../src/modules/tasks/useCases/createTask/CreateTaskController';
+import {
+  createTaskUseCase,
+  createTaskController,
+} from '../../../../src/modules/tasks/useCases/createTask';
 
 import { newTask } from '../../../mocks/tasks';
 
-const tasksRepository = new TasksRepository();
-const createTaskUseCase = new CreateTaskUseCase(tasksRepository);
-const createTaskController = new CreateTaskController(createTaskUseCase);
+const { title, description, userId } = newTask;
+
+const SUCCESS_RESPONSE: ISuccess<Task> = {
+  statusCode: 201,
+  data: newTask,
+};
+
+const ERROR_RESPONSE = new Error('Test error');
 
 describe('Test CreateTaskController', () => {
   let useCaseStub: Sinon.SinonStub;
@@ -23,7 +28,7 @@ describe('Test CreateTaskController', () => {
   let spiedJson: Sinon.SinonSpy;
   let spiedNext: Sinon.SinonSpy;
   const next = {
-    next: (args) => {},
+    next: () => {},
   } as { next: NextFunction };
 
   before(() => {
@@ -39,75 +44,47 @@ describe('Test CreateTaskController', () => {
   });
 
   describe('Success case', () => {
-    const { title, description, userId } = newTask;
-
-    const SUCCES_RESPONSE: ISuccess<Task> = {
-      statusCode: 'CREATED',
-      data: newTask,
-    };
-
     before(() => {
-      useCaseStub = Sinon.stub(createTaskUseCase, 'execute').resolves(
-        SUCCES_RESPONSE
-      );
+      useCaseStub = Sinon.stub(createTaskUseCase, 'execute');
+      useCaseStub.resolves(SUCCESS_RESPONSE);
 
-      request.body = {
-        title,
-        description,
-        userId,
-      };
+      request.body = { title, description, userId };
     });
 
     after(() => {
       useCaseStub.restore();
-      request.body = {};
     });
 
-    describe('Should return a object with an success status and data', () => {
-      it('success status should be 201', async () => {
-        await createTaskController.handle(request, response, next.next);
+    it('should return an response with status 201 and new task on body', async () => {
+      await createTaskController.handle(request, response, next.next);
 
-        expect(spiedStatus.calledWith(201)).to.be.true;
-      });
+      expect(spiedStatus.calledWith(201)).to.be.true;
 
-      it('data should be the created Task', async () => {
-        await createTaskController.handle(request, response, next.next);
-
-        expect(spiedJson.calledWith(newTask)).to.be.true;
-      });
+      expect(spiedJson.args[0][0]).to.be.an('object');
+      expect(spiedJson.args[0][0]).to.have.property('id');
+      expect(spiedJson.args[0][0]).to.have.property('title');
+      expect(spiedJson.args[0][0]).to.have.property('description');
+      expect(spiedJson.args[0][0]).to.have.property('status');
+      expect(spiedJson.args[0][0]).to.have.property('updatedAt');
     });
   });
 
   describe('Error case', () => {
-    const { title, description, userId } = newTask;
-    const ERROR_RESPONSE = new InternalError(
-      'Unexpected error while creating task',
-      'test env'
-    );
-
     before(() => {
-      useCaseStub = Sinon.stub(createTaskUseCase, 'execute').rejects(
-        ERROR_RESPONSE
-      );
+      useCaseStub = Sinon.stub(createTaskUseCase, 'execute');
+      useCaseStub.rejects(ERROR_RESPONSE);
 
-      request.body = {
-        title,
-        description,
-        userId,
-      };
+      request.body = { title, description, userId };
     });
 
     after(() => {
       useCaseStub.restore();
-      request.body = {};
     });
 
-    describe('Should call "next" error middleware', () => {
-      it('"next" should be called with CustomError as args', async () => {
-        await createTaskController.handle(request, response, next.next);
+    it('should call "next" error middleware', async () => {
+      await createTaskController.handle(request, response, next.next);
 
-        expect(spiedNext.calledWith(ERROR_RESPONSE)).to.be.true;
-      });
+      expect(spiedNext.calledWith(ERROR_RESPONSE)).to.be.true;
     });
   });
 });

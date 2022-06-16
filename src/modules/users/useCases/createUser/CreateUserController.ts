@@ -1,7 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { StatusCodes } from 'http-status-codes';
-
-import { ISuccess } from '../../../../@types/interfaces';
 
 import { CreateUserUseCase } from './CreateUserUseCase';
 
@@ -16,13 +13,13 @@ class CreateUserController {
     const { email, username, password } = req.body;
 
     try {
-      const { statusCode, data } = (await this.createUserUseCase.execute({
+      const { statusCode, data } = await this.createUserUseCase.execute({
         email,
         username,
         password,
-      })) as ISuccess<string>;
+      });
 
-      return res.status(StatusCodes[statusCode]).json({ token: data });
+      return res.status(statusCode).json(data);
     } catch (err) {
       next(err);
     }

@@ -1,28 +1,32 @@
 import { NextFunction, request, response } from 'express';
-import { InternalError } from 'restify-errors';
 
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
-import { TasksRepository } from '../../../../src/modules/tasks/repository/TasksRepository';
-import { DeleteTaskUseCase } from '../../../../src/modules/tasks/useCases/deleteTask/DeleteTaskUseCase';
-import { DeleteTaskController } from '../../../../src/modules/tasks/useCases/deleteTask/DeleteTaskController';
+import {
+  deleteTaskUseCase,
+  deleteTaskController,
+} from '../../../../src/modules/tasks/useCases/deleteTask';
 
 import { newTask } from '../../../mocks/tasks';
+import { ISuccess } from '../../../../src/@types/interfaces';
 
-const tasksRepository = new TasksRepository();
-const deleteTaskUseCase = new DeleteTaskUseCase(tasksRepository);
-const deleteTaskController = new DeleteTaskController(deleteTaskUseCase);
+const { id, userId } = newTask;
+
+const SUCCESS_RESPONSE: ISuccess<null> = {
+  statusCode: 204,
+  data: null,
+};
+
+const ERROR_RESPONSE = new Error('Test error');
 
 describe('Test DeleteTaskController', () => {
-  const { id, userId } = newTask;
-
   let useCaseStub: Sinon.SinonStub;
   let spiedStatus: Sinon.SinonSpy;
   let spiedEnd: Sinon.SinonSpy;
   let spiedNext: Sinon.SinonSpy;
   const next = {
-    next: (args) => {},
+    next: () => {},
   } as { next: NextFunction };
 
   before(() => {
@@ -39,73 +43,42 @@ describe('Test DeleteTaskController', () => {
 
   describe('Success case', () => {
     before(() => {
-      useCaseStub = Sinon.stub(deleteTaskUseCase, 'execute').resolves({
-        statusCode: 'NO_CONTENT',
-        data: null,
-      });
+      useCaseStub = Sinon.stub(deleteTaskUseCase, 'execute');
+      useCaseStub.resolves(SUCCESS_RESPONSE);
 
-      request.params = {
-        id,
-      };
-
-      request.body = {
-        userId,
-      };
+      request.params = { id };
+      request.body = { userId };
     });
 
     after(() => {
       useCaseStub.restore();
-      request.params = {};
-      request.body = {};
     });
 
-    describe('Should return a response with an success status', () => {
-      it('success status should be 204', async () => {
-        await deleteTaskController.handle(request, response, next.next);
+    it('should return an response with status 204 and no body', async () => {
+      await deleteTaskController.handle(request, response, next.next);
 
-        expect(spiedStatus.calledWith(204)).to.be.true;
-      });
-
-      it('response should end', async () => {
-        await deleteTaskController.handle(request, response, next.next);
-
-        expect(spiedEnd.calledWith()).to.be.true;
-      });
+      expect(spiedStatus.calledWith(204)).to.be.true;
+      expect(spiedEnd.called).to.be.true;
     });
   });
 
   describe('Error case', () => {
-    const ERROR_RESPONSE = new InternalError(
-      'Unexpected error while deleting task',
-      'test env'
-    );
-
     before(() => {
-      useCaseStub = Sinon.stub(deleteTaskUseCase, 'execute').rejects(
-        ERROR_RESPONSE
-      );
+      useCaseStub = Sinon.stub(deleteTaskUseCase, 'execute');
+      useCaseStub.rejects(ERROR_RESPONSE);
 
-      request.params = {
-        id,
-      };
-
-      request.body = {
-        userId,
-      };
+      request.params = { id };
+      request.body = { userId };
     });
 
     after(() => {
       useCaseStub.restore();
-      request.params = {};
-      request.body = {};
     });
 
-    describe('Should call "next" error middleware', () => {
-      it('"next" should be called with CustomError as args', async () => {
-        await deleteTaskController.handle(request, response, next.next);
+    it('should call "next" error middleware', async () => {
+      await deleteTaskController.handle(request, response, next.next);
 
-        expect(spiedNext.calledWith(ERROR_RESPONSE)).to.be.true;
-      });
+      expect(spiedNext.calledWith(ERROR_RESPONSE)).to.be.true;
     });
   });
 });

@@ -4,9 +4,13 @@ type TokenPayload = {
   data: string;
 };
 
+type TokenReturn = {
+  token: string;
+};
+
 type TaskReturn = Pick<
   Task,
   'id' | 'title' | 'description' | 'status' | 'updatedAt'
 >;
 
-export { TokenPayload, TaskReturn };
+export { TokenPayload, TokenReturn, TaskReturn };

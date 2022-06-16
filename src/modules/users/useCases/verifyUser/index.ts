@@ -6,4 +6,4 @@ const userRepository = new UserRepository();
 const verifyUserUseCase = new VerifyUserUseCase(userRepository);
 const verifyUserController = new VerifyUserController(verifyUserUseCase);
 
-export { verifyUserController };
+export { verifyUserUseCase, verifyUserController };

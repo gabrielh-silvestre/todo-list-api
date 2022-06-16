@@ -1,26 +1,25 @@
-import { HttpError } from 'restify-errors';
-
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
 import { TasksRepository } from '../../../../src/modules/tasks/repository/TasksRepository';
-import { UpdateTaskUseCase } from '../../../../src/modules/tasks/useCases/updateTask/UpdateTaskUseCase';
+import { updateTaskUseCase } from '../../../../src/modules/tasks/useCases/updateTask';
 
 import { newTask, tasks } from '../../../mocks/tasks';
 
-const tasksRepository = new TasksRepository();
-const updateTaskUseCase = new UpdateTaskUseCase(tasksRepository);
+const [foundTask] = tasks;
+const { id, title, description, status, userId } = newTask;
 
 describe('Test UpdateTaskUseCase', () => {
-  const { id, title, description, status, userId } = newTask;
-
   let findByIdStub: Sinon.SinonStub;
   let updateStub: Sinon.SinonStub;
 
   describe('Success case', () => {
     before(() => {
-      findByIdStub = Sinon.stub(tasksRepository, 'findById').resolves(tasks[0]);
-      updateStub = Sinon.stub(tasksRepository, 'update').resolves(newTask);
+      findByIdStub = Sinon.stub(TasksRepository.prototype, 'findById');
+      findByIdStub.resolves(foundTask);
+
+      updateStub = Sinon.stub(TasksRepository.prototype, 'update');
+      updateStub.resolves(newTask);
     });
 
     after(() => {
@@ -28,79 +27,60 @@ describe('Test UpdateTaskUseCase', () => {
       updateStub.restore();
     });
 
-    describe('Should return a object with an success status and data', () => {
-      it('success status should be "OK"', async () => {
-        const response = await updateTaskUseCase.execute(
-          { userId, id },
-          {
-            title,
-            description,
-            status,
-          }
-        );
+    describe('should return a object with status code and data', async () => {
+      const response = await updateTaskUseCase.execute(
+        { userId, id },
+        {
+          title,
+          description,
+          status,
+        }
+      );
 
-        expect(response.statusCode).to.be.equal('OK');
-      });
+      expect(response).to.be.an('object');
+      expect(response).to.have.property('statusCode');
+      expect(response).to.have.property('data');
 
-      it('data should be the updated Task', async () => {
-        const response = await updateTaskUseCase.execute(
-          { userId, id },
-          {
-            title,
-            description,
-            status,
-          }
-        );
+      expect(response.statusCode).to.be.equal(200);
+      expect(response.data).to.be.an('object');
 
-        expect(response.data).to.be.deep.equal(newTask);
-      });
+      expect(response.data).to.have.property('id');
+      expect(response.data).to.have.property('title');
+      expect(response.data).to.have.property('description');
+      expect(response.data).to.have.property('status');
+      expect(response.data).to.have.property('updatedAt');
     });
   });
 
   describe('Error case', () => {
-    describe('Task does not exist', () => {
+    describe('Invalid "task id" case', () => {
       before(() => {
-        findByIdStub = Sinon.stub(tasksRepository, 'findById').resolves(null);
+        findByIdStub = Sinon.stub(TasksRepository.prototype, 'findById');
+        findByIdStub.resolves(null);
       });
 
       after(() => {
         findByIdStub.restore();
       });
 
-      describe('Should throw a not found error with status and message', () => {
-        it('status should be 404', async () => {
-          try {
-            await updateTaskUseCase.execute(
-              { userId, id },
-              {
-                title,
-                description,
-                status,
-              }
-            );
-            expect.fail('Should throw a not found error');
-          } catch (error) {
-            const tErr = error as HttpError;
-            expect(tErr.statusCode).to.be.equal(404);
-          }
-        });
+      it('should throw an error with status code and message', async () => {
+        try {
+          await updateTaskUseCase.execute(
+            { userId, id },
+            {
+              title,
+              description,
+              status,
+            }
+          );
+          expect.fail('Should throw a error');
+        } catch (error) {
+          expect(error).to.have.property('statusCode');
+          expect(error).to.have.property('message');
 
-        it('message should be "Task not found"', async () => {
-          try {
-            await updateTaskUseCase.execute(
-              { userId, id },
-              {
-                title,
-                description,
-                status,
-              }
-            );
-            expect.fail('Should throw a not found error');
-          } catch (error) {
-            const tErr = error as HttpError;
-            expect(tErr.message).to.be.equal('Task not found');
-          }
-        });
+          expect(error.statusCode).to.be.equal(404);
+          expect(error.message).to.be.equal('Task not found');
+        }
       });
     });
   });

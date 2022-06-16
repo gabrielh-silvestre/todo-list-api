@@ -1,14 +1,15 @@
+import { NotFoundError } from 'restify-errors';
+import { StatusCodes } from 'http-status-codes';
+
 import { IUsersRepository } from '../../repository/IUsersRepository';
 import { ISuccess, IUserIdentifier } from '../../../../@types/interfaces';
-
-import { NotFoundError } from 'restify-errors';
 
 interface IRequest extends IUserIdentifier {}
 
 class VerifyUserUseCase {
   constructor(private userRepository: IUsersRepository) {}
 
-  async execute({ id }: IRequest): Promise<ISuccess<null>> {
+  async execute({ id }: IRequest): Promise<ISuccess<null> | never> {
     const foundUser = await this.userRepository.findById({ id });
 
     if (!foundUser) {
@@ -16,7 +17,7 @@ class VerifyUserUseCase {
     }
 
     return {
-      statusCode: 'OK',
+      statusCode: StatusCodes.OK,
       data: null,
     };
   }

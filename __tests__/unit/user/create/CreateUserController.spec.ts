@@ -1,38 +1,34 @@
 import { NextFunction, request, response } from 'express';
-import { ConflictError } from 'restify-errors';
 
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
 import { ISuccess } from '../../../../src/@types/interfaces';
+import { TokenReturn } from '../../../../src/@types/types';
 
-import { EncryptService } from '../../../../src/services/Encrypt';
-import { UserRepository } from '../../../../src/modules/users/repository/UsersRepository';
-import { CreateUserUseCase } from '../../../../src/modules/users/useCases/createUser/CreateUserUseCase';
-import { CreateUserController } from '../../../../src/modules/users/useCases/createUser/CreateUserController';
-import { AuthService } from '../../../../src/services/Auth';
+import {
+  createUserUseCase,
+  createUserController,
+} from '../../../../src/modules/users/useCases/createUser/';
 
 import { newUser } from '../../../mocks/users';
 
 const FAKE_TOKEN = '0n0v19nASV-V0n09Masvmz0-xasvzx';
 
-const userRepository = new UserRepository();
-const createUserUseCase = new CreateUserUseCase(
-  userRepository,
-  AuthService,
-  EncryptService
-);
-const createUserController = new CreateUserController(createUserUseCase);
+const SUCCESS_RESPONSE: ISuccess<TokenReturn> = {
+  statusCode: 201,
+  data: { token: FAKE_TOKEN },
+};
+
+const ERROR_RESPONSE = new Error('User already exists');
 
 describe('Test CreateUserController', () => {
-  const { email, username, password } = newUser;
-
   let useCaseStub: Sinon.SinonStub;
   let spiedResponse: Sinon.SinonSpy;
   let spiedJson: Sinon.SinonSpy;
   let spiedNext: Sinon.SinonSpy;
   const next = {
-    next: (args) => {},
+    next: () => {},
   } as { next: NextFunction };
 
   before(() => {
@@ -48,68 +44,44 @@ describe('Test CreateUserController', () => {
   });
 
   describe('Success case', () => {
-    const SUCCES_RESPONSE: ISuccess<string> = {
-      statusCode: 'CREATED',
-      data: FAKE_TOKEN,
-    };
-
     before(() => {
-      useCaseStub = Sinon.stub(createUserUseCase, 'execute').resolves(
-        SUCCES_RESPONSE
-      );
+      useCaseStub = Sinon.stub(createUserUseCase, 'execute');
+      useCaseStub.resolves(SUCCESS_RESPONSE);
 
-      request.body = {
-        email,
-        username,
-        password,
-      };
+      request.body = newUser;
     });
 
     after(() => {
       useCaseStub.restore();
-      request.body = {};
     });
 
-    it('should return a response with status 201', async () => {
+    it('should return a response with status 201 and user token on body', async () => {
       await createUserController.handle(request, response, next.next);
 
       expect(spiedResponse.calledWith(201)).to.be.true;
-    });
 
-    it('should return a response with the user created', async () => {
-      const { data } = SUCCES_RESPONSE;
-      await createUserController.handle(request, response, next.next);
-
-      expect(spiedJson.calledWith({ token: data })).to.be.true;
+      expect(spiedJson.args[0][0]).to.be.an('object');
+      expect(spiedJson.args[0][0]).to.have.property('token');
+      expect(spiedJson.args[0][0].token).to.be.an('string');
     });
   });
 
   describe('Error case', () => {
-    const ERROR_RESPONSE = new ConflictError('User already exists');
-
     before(() => {
-      useCaseStub = Sinon.stub(createUserUseCase, 'execute').rejects(
-        ERROR_RESPONSE
-      );
+      useCaseStub = Sinon.stub(createUserUseCase, 'execute');
+      useCaseStub.rejects(ERROR_RESPONSE);
 
-      request.body = {
-        email,
-        username,
-        password,
-      };
+      request.body = newUser;
     });
 
     after(() => {
       useCaseStub.restore();
-      request.body = {};
     });
 
-    describe('Should call "next" error middleware', () => {
-      it('"next" error middleware should be called with CustomError as args', async () => {
-        await createUserController.handle(request, response, next.next);
+    it('should call "next" error middleware', async () => {
+      await createUserController.handle(request, response, next.next);
 
-        expect(spiedNext.calledWith(ERROR_RESPONSE)).to.be.true;
-      });
+      expect(spiedNext.called).to.be.true;
     });
   });
 });
