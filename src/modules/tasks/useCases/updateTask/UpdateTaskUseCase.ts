@@ -1,4 +1,5 @@
 import { TaskStatus } from '@prisma/client';
+import { StatusCodes } from 'http-status-codes';
 import { NotFoundError } from 'restify-errors';
 
 import { ITasksRepository } from '../../repository/ITasksRepository';
@@ -37,7 +38,7 @@ class UpdateTaskUseCase {
     });
 
     return {
-      statusCode: 'OK',
+      statusCode: StatusCodes.OK,
       data: updatedTask,
     };
   }

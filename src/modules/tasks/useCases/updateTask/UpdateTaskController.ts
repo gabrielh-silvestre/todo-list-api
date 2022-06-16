@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
 
 import { UpdateTaskUseCase } from './UpdateTaskUseCase';
 
@@ -20,7 +19,7 @@ class UpdateTaskController {
         }
       );
 
-      return res.status(StatusCodes[statusCode]).json(data);
+      return res.status(statusCode).json(data);
     } catch (err) {
       next(err);
     }

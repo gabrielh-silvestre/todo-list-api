@@ -6,4 +6,4 @@ const tasksRepository = new TasksRepository();
 const updateTaskUseCase = new UpdateTaskUseCase(tasksRepository);
 const updateTaskController = new UpdateTaskController(updateTaskUseCase);
 
-export { updateTaskController };
+export { updateTaskUseCase, updateTaskController };
