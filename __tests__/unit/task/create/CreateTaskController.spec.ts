@@ -22,7 +22,7 @@ const SUCCESS_RESPONSE: ISuccess<Task> = {
 
 const ERROR_RESPONSE = new Error('Test error');
 
-describe.only('Test CreateTaskController', () => {
+describe('Test CreateTaskController', () => {
   let useCaseStub: Sinon.SinonStub;
   let spiedStatus: Sinon.SinonSpy;
   let spiedJson: Sinon.SinonSpy;

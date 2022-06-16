@@ -48,7 +48,7 @@ describe('Test CreateTaskUseCase', () => {
 
     describe('Create test without description', () => {
       it('should return a object with an status code and data', async () => {
-        const response = await createTaskUseCase.execute(newTask);
+        const response = await createTaskUseCase.execute({ ...newTask, description: null });
 
         expect(response).to.be.an('object');
         expect(response).to.have.property('statusCode');
