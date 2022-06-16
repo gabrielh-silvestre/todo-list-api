@@ -1,5 +1,4 @@
 import { NextFunction, request, response } from 'express';
-import { InternalError } from 'restify-errors';
 
 import { expect } from 'chai';
 import Sinon from 'sinon';
@@ -7,25 +6,35 @@ import Sinon from 'sinon';
 import { ISuccess } from '../../../../src/@types/interfaces';
 import { TaskReturn } from '../../../../src/@types/types';
 
-import { TasksRepository } from '../../../../src/modules/tasks/repository/TasksRepository';
-import { UpdateTaskUseCase } from '../../../../src/modules/tasks/useCases/updateTask/UpdateTaskUseCase';
-import { UpdateTaskController } from '../../../../src/modules/tasks/useCases/updateTask/UpdateTaskController';
+import {
+  updateTaskUseCase,
+  updateTaskController,
+} from '../../../../src/modules/tasks/useCases/updateTask';
 
 import { newTask } from '../../../mocks/tasks';
 
-const tasksRepository = new TasksRepository();
-const updateTaskUseCase = new UpdateTaskUseCase(tasksRepository);
-const updateTaskController = new UpdateTaskController(updateTaskUseCase);
+const { id, title, description, status, updatedAt } = newTask;
+
+const SUCCESS_RESPONSE: ISuccess<TaskReturn> = {
+  statusCode: 200,
+  data: {
+    id,
+    title,
+    description,
+    status,
+    updatedAt,
+  },
+};
+
+const ERROR_RESPONSE = new Error('Test error');
 
 describe('Test UpdateTaskController', () => {
-  const { id, title, description, status, userId, updatedAt } = newTask;
-
   let useCaseStub: Sinon.SinonStub;
   let spiedStatus: Sinon.SinonSpy;
   let spiedJson: Sinon.SinonSpy;
   let spiedNext: Sinon.SinonSpy;
   const next = {
-    next: (args) => {},
+    next: () => {},
   } as { next: NextFunction };
 
   before(() => {
@@ -41,82 +50,49 @@ describe('Test UpdateTaskController', () => {
   });
 
   describe('Success case', () => {
-    const SUCCES_RESPONSE: ISuccess<TaskReturn> = {
-      statusCode: 'OK',
-      data: {
-        id,
-        title,
-        description,
-        status,
-        updatedAt,
-      },
-    };
-
     before(() => {
-      useCaseStub = Sinon.stub(updateTaskUseCase, 'execute').resolves(
-        SUCCES_RESPONSE
-      );
+      useCaseStub = Sinon.stub(updateTaskUseCase, 'execute');
+      useCaseStub.resolves(SUCCESS_RESPONSE);
 
       request.params = { id };
-      request.body = {
-        title,
-        description,
-        status,
-        userId,
-      };
+      request.body = { newTask };
     });
 
     after(() => {
       useCaseStub.restore();
-      request.body = {};
     });
 
-    describe('Should return a response with success status and data', () => {
-      it('Should call response.status with 200', async () => {
-        await updateTaskController.handle(request, response, next.next);
+    it('should return an response with status code and the updated task on body', async () => {
+      await updateTaskController.handle(request, response, next.next);
 
-        expect(spiedStatus.calledWith(200)).to.be.true;
-      });
+      expect(spiedStatus.calledWith(200)).to.be.true;
 
-      it('Should call response.json with SUCCES_RESPONSE', async () => {
-        await updateTaskController.handle(request, response, next.next);
-
-        expect(spiedJson.calledWith(SUCCES_RESPONSE.data)).to.be.true;
-      });
+      expect(spiedJson.args[0][0]).to.be.an('object');
+      expect(spiedJson.args[0][0]).to.have.property('id');
+      expect(spiedJson.args[0][0]).to.have.property('title');
+      expect(spiedJson.args[0][0]).to.have.property('description');
+      expect(spiedJson.args[0][0]).to.have.property('status');
+      expect(spiedJson.args[0][0]).to.have.property('updatedAt');
     });
   });
 
   describe('Error case', () => {
-    const ERROR_RESPONSE = new InternalError(
-      'Unexpected error while updating task',
-      'test env'
-    );
-
     before(() => {
-      useCaseStub = Sinon.stub(updateTaskUseCase, 'execute').rejects(
-        ERROR_RESPONSE
-      );
+      useCaseStub = Sinon.stub(updateTaskUseCase, 'execute');
+      useCaseStub.rejects(ERROR_RESPONSE);
 
       request.params = { id };
-      request.body = {
-        title,
-        description,
-        status,
-        userId,
-      };
+      request.body = { newTask };
     });
 
     after(() => {
       useCaseStub.restore();
-      request.body = {};
     });
 
-    describe('Should call "next" error middleware', () => {
-      it('Should call next with CustomError', async () => {
-        await updateTaskController.handle(request, response, next.next);
+    it('should call "next" error middleware', async () => {
+      await updateTaskController.handle(request, response, next.next);
 
-        expect(spiedNext.calledWith(ERROR_RESPONSE)).to.be.true;
-      });
+      expect(spiedNext.calledWith(ERROR_RESPONSE)).to.be.true;
     });
   });
 });
