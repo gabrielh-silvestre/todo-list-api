@@ -6,4 +6,4 @@ const taskRepository = new TasksRepository();
 const deleteTaskUseCase = new DeleteTaskUseCase(taskRepository);
 const deleteTaskController = new DeleteTaskController(deleteTaskUseCase);
 
-export { deleteTaskController };
+export { deleteTaskUseCase, deleteTaskController };

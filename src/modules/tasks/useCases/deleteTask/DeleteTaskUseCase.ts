@@ -1,3 +1,4 @@
+import { StatusCodes } from 'http-status-codes';
 import { NotFoundError } from 'restify-errors';
 
 import { ITasksRepository } from '../../repository/ITasksRepository';
@@ -16,13 +17,13 @@ class DeleteTaskUseCase {
     }
   }
 
-  async execute({ userId, id }: IRequest): Promise<ISuccess<null>> {
+  async execute({ userId, id }: IRequest): Promise<ISuccess<null> | never> {
     await this.taskExists(userId, id);
 
     await this.tasksRepository.delete({ userId, id });
 
     return {
-      statusCode: 'NO_CONTENT',
+      statusCode: StatusCodes.NO_CONTENT,
       data: null,
     };
   }
