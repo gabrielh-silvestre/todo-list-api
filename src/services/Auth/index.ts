@@ -1,29 +1,73 @@
-import jwt from 'jsonwebtoken';
+import { User } from '@supabase/supabase-js';
+import { HttpError } from 'restify-errors';
 
-import { TokenPayload } from '../../@types/types';
-import { jwtConfig } from '../../config/jwtConfig';
+import { IAuthService } from '../../@types/interfaces';
 
-class AuthService {
-  public static createToken(userId: string) {
-    const { secret, expiresIn, algorithm } = jwtConfig;
+import { supabase } from '../../modules/auth';
 
-    const token = `Bearer ${jwt.sign({ data: userId }, secret, {
-      expiresIn,
-      algorithm,
-    })}`;
+interface IRequest {
+  username: string;
+  email: string;
+  password: string;
+}
 
-    return token;
+interface IResponse {
+  token: string;
+  user: User | null;
+}
+
+class AuthService implements IAuthService {
+  private readonly authService = supabase.auth;
+
+  public async signUp({
+    username,
+    email,
+    password,
+  }: IRequest): Promise<IResponse> {
+    const { user, session, error } = await this.authService.signUp(
+      { email, password },
+      { data: { username } }
+    );
+
+    if (error) {
+      throw new HttpError({ statusCode: error.status }, error.message);
+    }
+
+    return {
+      token: `Bearer ${session!.access_token}`,
+      user,
+    };
   }
 
-  public static verifyToken(token: string) {
-    const { secret } = jwtConfig;
+  public async signIn({
+    email,
+    password,
+  }: Omit<IRequest, 'username'>): Promise<IResponse> {
+    const { user, session, error } = await this.authService.signIn({
+      email,
+      password,
+    });
 
-    try {
-      return jwt.verify(token, secret) as TokenPayload;
-    } catch (err) {
-      return null;
+    if (error) {
+      throw new HttpError({ statusCode: error.status }, error.message);
     }
+
+    return {
+      token: `Bearer ${session!.access_token}`,
+      user,
+    };
+  }
+
+  public async getUser(token: string): Promise<User | null> {
+    const { user, error } = await this.authService.api.getUser(token);
+
+    if (error) {
+      throw new HttpError({ statusCode: error.status }, error.message);
+    }
+
+    return user;
   }
 }
 
 export { AuthService };
+export const authService = new AuthService();

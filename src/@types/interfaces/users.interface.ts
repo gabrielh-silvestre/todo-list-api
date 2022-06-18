@@ -6,9 +6,9 @@ interface IUserValidator {
 }
 
 interface IBasicUserData {
+  id: string;
   email: string;
   username: string;
-  password: string;
 }
 
 interface IUserIdentifier {
