@@ -6,7 +6,7 @@ import {
 } from '../../../@types/interfaces';
 
 interface IUsersRepository {
-  create({ email, username, password }: IBasicUserData): Promise<string>;
+  create(newUserCredentials: IBasicUserData): Promise<void>;
   findById(id: IUserIdentifier): Promise<User | null>;
   findByEmail(email: IUserIdentifierByEmail): Promise<User | null>;
 }
