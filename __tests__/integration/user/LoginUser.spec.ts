@@ -1,7 +1,13 @@
+import { HttpError } from 'restify-errors';
 import shell from 'shelljs';
 
+import Sinon from 'sinon';
 import chai, { expect } from 'chai';
 import chaiHTTP from 'chai-http';
+
+import { ISignResponse } from '../../../src/@types/interfaces';
+
+import { AuthService } from '../../../src/services/Auth';
 
 import { users, newUser } from '../../mocks/users';
 import { app } from '../../../src/app';
@@ -11,21 +17,47 @@ chai.use(chaiHTTP);
 const LOGIN_USERS_ENDPOINT = '/v1/api/users/login';
 const PRISMA_SEED_RESET = 'npx prisma db seed';
 
-const [{ email, password }] = users;
+const [{ email }] = users;
+const { id, username } = newUser;
+const loginUserCredentials = { email, password: '123a45' };
 
-describe('Test POST endpoint "/users/login"', function () {
+const FAKE_TOKEN = '0n0v19nASV-V0n09Masvmz0-xasvzx';
+
+const SUCCESS_RESPONSE: ISignResponse = {
+  token: FAKE_TOKEN,
+  user: {
+    id: id,
+    user_metadata: { username: username },
+    aud: '',
+    app_metadata: {},
+    created_at: '',
+  },
+};
+
+describe.only('Test POST endpoint "/users/login"', function () {
   this.timeout(5000);
+
+  let authStub: Sinon.SinonStub;
 
   before(() => {
     shell.exec(PRISMA_SEED_RESET, { silent: true });
   });
 
   describe('Success case', () => {
+    before(() => {
+      authStub = Sinon.stub(AuthService.prototype, 'signIn');
+      authStub.resolves(SUCCESS_RESPONSE);
+    });
+
+    after(() => {
+      authStub.restore();
+    });
+
     it('should return a success status with a new token', async () => {
       const response = await chai
         .request(app)
         .post(LOGIN_USERS_ENDPOINT)
-        .send({ email, password });
+        .send(loginUserCredentials);
 
       expect(response).to.have.status(200);
       expect(response.body).to.have.property('token');
@@ -34,11 +66,22 @@ describe('Test POST endpoint "/users/login"', function () {
 
   describe('Error cases', () => {
     describe('Invalid "email" cases', () => {
+      before(() => {
+        authStub = Sinon.stub(AuthService.prototype, 'signIn');
+        authStub.rejects(
+          new HttpError({ statusCode: 404 }, 'Invalid email or password')
+        );
+      });
+
+      after(() => {
+        authStub.restore();
+      });
+
       it('should not login user without email', async () => {
         const response = await chai
           .request(app)
           .post(LOGIN_USERS_ENDPOINT)
-          .send({ password });
+          .send({ ...loginUserCredentials, email: undefined });
 
         expect(response).to.have.status(400);
         expect(response.body).to.have.property('message');
@@ -49,7 +92,7 @@ describe('Test POST endpoint "/users/login"', function () {
         const response = await chai
           .request(app)
           .post(LOGIN_USERS_ENDPOINT)
-          .send({ email: 'invalid-email', password });
+          .send({ ...loginUserCredentials, email: 'invalid-email' });
 
         expect(response).to.have.status(422);
         expect(response.body).to.have.property('message');
@@ -62,7 +105,7 @@ describe('Test POST endpoint "/users/login"', function () {
         const response = await chai
           .request(app)
           .post(LOGIN_USERS_ENDPOINT)
-          .send({ email: newUser.email, password });
+          .send(loginUserCredentials);
 
         expect(response).to.have.status(404);
         expect(response.body).to.have.property('message');
@@ -71,6 +114,17 @@ describe('Test POST endpoint "/users/login"', function () {
     });
 
     describe('Invalid "password" cases', () => {
+      before(() => {
+        authStub = Sinon.stub(AuthService.prototype, 'signIn');
+        authStub.rejects(
+          new HttpError({ statusCode: 404 }, 'Invalid email or password')
+        );
+      });
+
+      after(() => {
+        authStub.restore();
+      });
+
       it('should not login user without password', async () => {
         const response = await chai
           .request(app)

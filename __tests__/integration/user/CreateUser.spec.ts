@@ -176,6 +176,10 @@ describe('Test POST endpoint "/users/create"', function () {
         );
       });
 
+      after(() => {
+        authStub.restore();
+      });
+
       it('should not create user with an already registered email', async () => {
         const response = await chai
           .request(app)
