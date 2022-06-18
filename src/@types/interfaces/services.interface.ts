@@ -22,4 +22,4 @@ interface IEncryptService {
   verify(value: string, hash: string): Promise<boolean>;
 }
 
-export { IAuthService, IEncryptService };
+export { IAuthService, IEncryptService, ISignUpRequest, ISignResponse };
