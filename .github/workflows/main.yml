@@ -32,6 +32,8 @@ jobs:
       - name: Run tests
         run: npm test
         env:
+          SUPABASE_KEY: 'fake-key'
+          SUPABASE_URL: 'fake-url'
           DATABASE_URL: 'postgresql://postgres:postgres@localhost:5432/Todo_List_Test'
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
