@@ -1,16 +1,17 @@
+import { HttpError } from 'restify-errors';
 import shell from 'shelljs';
 
 import Sinon from 'sinon';
 import chai, { expect } from 'chai';
 import chaiHTTP from 'chai-http';
 
+import { ISignResponse } from '../../../src/@types/interfaces';
+
 import { AuthService } from '../../../src/services/Auth';
 
 import { users } from '../../mocks/users';
 import { tasks, newTask } from '../../mocks/tasks';
 import { app } from '../../../src/app';
-import { ISignResponse } from '../../../src/@types/interfaces';
-import { HttpError } from 'restify-errors';
 
 chai.use(chaiHTTP);
 
@@ -22,6 +23,7 @@ const loginUserCredentials = { email, password: '123a45' };
 const LOGIN_USERS_ENDPOINT = '/v1/api/users/login';
 const UPDATE_TASKS_ENDPOINT = `/v1/api/tasks/${taskId}`;
 const PRISMA_SEED_RESET = 'npx prisma db seed';
+
 const FAKE_TOKEN = '0n0v19nASV-V0n09Masvmz0-xasvzx';
 
 const FAIL_SIGN_IN = new HttpError(
