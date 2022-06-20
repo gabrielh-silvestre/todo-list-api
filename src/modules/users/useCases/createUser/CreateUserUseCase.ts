@@ -1,4 +1,3 @@
-import { ConflictError } from 'restify-errors';
 import { StatusCodes } from 'http-status-codes';
 
 import { IUsersRepository } from '../../repository/IUsersRepository';
@@ -6,24 +5,28 @@ import {
   IAuthService,
   IBasicUserData,
   ISuccess,
-  IEncryptService,
 } from '../../../../@types/interfaces';
-import { TokenPayload, TokenReturn } from '../../../../@types/types';
+import { TokenReturn } from '../../../../@types/types';
 
-interface IRequest extends IBasicUserData {}
+interface IRequest extends Omit<IBasicUserData, 'id'> {
+  password: string;
+}
 
 class CreateUserUseCase {
   constructor(
     private userRepository: IUsersRepository,
-    private authService: IAuthService<TokenPayload>,
-    private encryptService: IEncryptService
+    private authService: IAuthService
   ) {}
 
-  async isUnique(email: string): Promise<void | never> {
-    const user = await this.userRepository.findByEmail({ email });
+  private async createLocalUser(
+    id: string,
+    username: string,
+    email: string
+  ): Promise<void | never> {
+    const localUser = await this.userRepository.findByEmail({ email });
 
-    if (user) {
-      throw new ConflictError('User already exists');
+    if (!localUser) {
+      await this.userRepository.create({ id, username, email });
     }
   }
 
@@ -32,17 +35,13 @@ class CreateUserUseCase {
     username,
     password,
   }: IRequest): Promise<ISuccess<TokenReturn> | never> {
-    await this.isUnique(email);
-
-    const encryptedPassword = await this.encryptService.encrypt(password);
-
-    const newUserId = await this.userRepository.create({
-      email,
+    const { token, user } = await this.authService.signUp({
       username,
-      password: encryptedPassword,
+      email,
+      password,
     });
 
-    const token = this.authService.createToken(newUserId);
+    await this.createLocalUser(user!.id, username, email);
 
     return {
       statusCode: StatusCodes.CREATED,

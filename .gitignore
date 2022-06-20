@@ -5,3 +5,10 @@ requirements.md
 .nyc_output
 test-results.json
 dist
+
+notes*
+
+# Supabase
+supabase
+**/supabase/.branches
+**/supabase/.temp

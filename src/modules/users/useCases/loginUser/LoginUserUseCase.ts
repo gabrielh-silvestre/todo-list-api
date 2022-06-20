@@ -1,11 +1,10 @@
-import { NotFoundError } from 'restify-errors';
 import { StatusCodes } from 'http-status-codes';
 
 import { IUsersRepository } from '../../repository/IUsersRepository';
 
-import { IAuthService, IEncryptService } from '../../../../@types/interfaces';
+import { IAuthService } from '../../../../@types/interfaces';
 import { ISuccess } from '../../../../@types/interfaces';
-import { TokenPayload, TokenReturn } from '../../../../@types/types';
+import { TokenReturn } from '../../../../@types/types';
 
 interface IRequest {
   email: string;
@@ -15,30 +14,28 @@ interface IRequest {
 class LoginUserUseCase {
   constructor(
     private userRepository: IUsersRepository,
-    private authService: IAuthService<TokenPayload>,
-    private encryptService: IEncryptService
+    private authService: IAuthService
   ) {}
+
+  private async syncLocalUser(
+    id: string,
+    username: string,
+    email: string
+  ): Promise<void | never> {
+    const localUser = await this.userRepository.findByEmail({ email });
+
+    if (!localUser) {
+      await this.userRepository.create({ id, username, email });
+    }
+  }
 
   async execute({
     email,
     password,
   }: IRequest): Promise<ISuccess<TokenReturn> | never> {
-    const user = await this.userRepository.findByEmail({ email });
+    const { token, user } = await this.authService.signIn({ email, password });
 
-    if (!user) {
-      throw new NotFoundError('Invalid email or password');
-    }
-
-    const isPasswordValid = await this.encryptService.verify(
-      password,
-      user.password
-    );
-
-    if (!isPasswordValid) {
-      throw new NotFoundError('Invalid email or password');
-    }
-
-    const token = this.authService.createToken(user.id);
+    await this.syncLocalUser(user!.id, user!.user_metadata.username, email);
 
     return {
       statusCode: StatusCodes.OK,

@@ -1,9 +1,15 @@
+import { HttpError } from 'restify-errors';
 import shell from 'shelljs';
 
+import Sinon from 'sinon';
 import chai, { expect } from 'chai';
 import chaiHTTP from 'chai-http';
 
-import { users, newUser } from '../../mocks/users';
+import { ISignResponse } from '../../../src/@types/interfaces';
+
+import { AuthService } from '../../../src/services/Auth';
+
+import { newUser } from '../../mocks/users';
 import { app } from '../../../src/app';
 
 chai.use(chaiHTTP);
@@ -11,22 +17,46 @@ chai.use(chaiHTTP);
 const CREATE_USERS_ENDPOINT = '/v1/api/users/create';
 const PRISMA_SEED_RESET = 'npx prisma db seed';
 
-const { email, username, password } = newUser;
-const [existingUser] = users;
+const { id, email, username } = newUser;
+const createUserCredentials = { username, email, password: '123a45' };
+
+const FAKE_TOKEN = '0n0v19nASV-V0n09Masvmz0-xasvzx';
+
+const SUCCESS_RESPONSE: ISignResponse = {
+  token: FAKE_TOKEN,
+  user: {
+    id: id,
+    user_metadata: { username: username },
+    aud: '',
+    app_metadata: {},
+    created_at: '',
+  },
+};
 
 describe('Test POST endpoint "/users/create"', function () {
   this.timeout(5000);
+
+  let authStub: Sinon.SinonStub;
 
   before(() => {
     shell.exec(PRISMA_SEED_RESET, { silent: true });
   });
 
   describe('Success case', () => {
+    before(() => {
+      authStub = Sinon.stub(AuthService.prototype, 'signUp');
+      authStub.resolves(SUCCESS_RESPONSE);
+    });
+
+    after(() => {
+      authStub.restore();
+    });
+
     it('should return a success status with a new token', async () => {
       const response = await chai
         .request(app)
         .post(CREATE_USERS_ENDPOINT)
-        .send({ email, username, password });
+        .send(createUserCredentials);
 
       expect(response.status).to.be.equal(201);
       expect(response.body).to.have.property('token');
@@ -39,7 +69,7 @@ describe('Test POST endpoint "/users/create"', function () {
         const response = await chai
           .request(app)
           .post(CREATE_USERS_ENDPOINT)
-          .send({ username, password });
+          .send({ ...createUserCredentials, email: undefined });
 
         expect(response.status).to.be.equal(400);
         expect(response.body).to.have.property('message');
@@ -50,7 +80,7 @@ describe('Test POST endpoint "/users/create"', function () {
         const response = await chai
           .request(app)
           .post(CREATE_USERS_ENDPOINT)
-          .send({ email: 'invalid', username, password });
+          .send({ ...createUserCredentials, email: 'invalid-email' });
 
         expect(response.status).to.be.equal(422);
         expect(response.body).to.have.property('message');
@@ -65,7 +95,7 @@ describe('Test POST endpoint "/users/create"', function () {
         const response = await chai
           .request(app)
           .post(CREATE_USERS_ENDPOINT)
-          .send({ email, password });
+          .send({ ...createUserCredentials, username: undefined });
 
         expect(response.status).to.be.equal(400);
         expect(response.body).to.have.property('message');
@@ -76,7 +106,7 @@ describe('Test POST endpoint "/users/create"', function () {
         const response = await chai
           .request(app)
           .post(CREATE_USERS_ENDPOINT)
-          .send({ email, username: 'in', password });
+          .send({ ...createUserCredentials, username: 'ab' });
 
         expect(response.status).to.be.equal(422);
         expect(response.body).to.have.property('message');
@@ -89,7 +119,7 @@ describe('Test POST endpoint "/users/create"', function () {
         const response = await chai
           .request(app)
           .post(CREATE_USERS_ENDPOINT)
-          .send({ email, username: 'invalidusername', password });
+          .send({ ...createUserCredentials, username: 'abcdefghijkl' });
 
         expect(response.status).to.be.equal(422);
         expect(response.body).to.have.property('message');
@@ -104,7 +134,7 @@ describe('Test POST endpoint "/users/create"', function () {
         const response = await chai
           .request(app)
           .post(CREATE_USERS_ENDPOINT)
-          .send({ email, username });
+          .send({ ...createUserCredentials, password: undefined });
 
         expect(response.status).to.be.equal(400);
         expect(response.body).to.have.property('message');
@@ -115,7 +145,7 @@ describe('Test POST endpoint "/users/create"', function () {
         const response = await chai
           .request(app)
           .post(CREATE_USERS_ENDPOINT)
-          .send({ email, username, password: 'in' });
+          .send({ ...createUserCredentials, password: '12345' });
 
         expect(response.status).to.be.equal(422);
         expect(response.body).to.have.property('message');
@@ -128,7 +158,7 @@ describe('Test POST endpoint "/users/create"', function () {
         const response = await chai
           .request(app)
           .post(CREATE_USERS_ENDPOINT)
-          .send({ email, username, password: 'invalidpassword123456' });
+          .send({ ...createUserCredentials, password: '12345678901234567' });
 
         expect(response.status).to.be.equal(422);
         expect(response.body).to.have.property('message');
@@ -139,15 +169,22 @@ describe('Test POST endpoint "/users/create"', function () {
     });
 
     describe('Duplicate "email" cases', () => {
+      before(() => {
+        authStub = Sinon.stub(AuthService.prototype, 'signUp');
+        authStub.rejects(
+          new HttpError({ statusCode: 409 }, 'User already exists')
+        );
+      });
+
+      after(() => {
+        authStub.restore();
+      });
+
       it('should not create user with an already registered email', async () => {
         const response = await chai
           .request(app)
           .post(CREATE_USERS_ENDPOINT)
-          .send({
-            email: existingUser.email,
-            username: existingUser.username,
-            password: existingUser.password,
-          });
+          .send(createUserCredentials);
 
         expect(response.status).to.be.equal(409);
         expect(response.body).to.have.property('message');

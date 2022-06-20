@@ -2,12 +2,11 @@ import { NextFunction, Request, Response } from 'express';
 import { UnauthorizedError } from 'restify-errors';
 
 import { IAuthService } from '../../@types/interfaces';
-import { TokenPayload } from '../../@types/types';
 
-import { AuthService } from '../../services/Auth';
+import { authService } from '../../services/Auth';
 
 class AuthMiddleware {
-  constructor(private authService: IAuthService<TokenPayload>) {}
+  constructor(private authService: IAuthService) {}
 
   handle = async (req: Request, _res: Response, next: NextFunction) => {
     const { authorization } = req.headers;
@@ -19,19 +18,16 @@ class AuthMiddleware {
 
     const [_, token] = authorization.split(' ');
 
-    const isValid = this.authService.verifyToken(token);
+    const user = await this.authService.getUser(token);
 
-    if (!isValid) {
+    if (!user) {
       const err = new UnauthorizedError('Expired or invalid token');
       return next(err);
     }
 
-    req.body = {
-      ...req.body,
-      userId: isValid.data,
-    };
+    req.body = { ...req.body, userId: user.id };
     next();
   };
 }
 
-export const authMiddleware = new AuthMiddleware(AuthService);
+export const authMiddleware = new AuthMiddleware(authService);

@@ -10,16 +10,10 @@ import {
 import { prisma } from '../../prisma';
 
 class UserRepository implements IUsersRepository {
-  async create({ email, username, password }: IBasicUserData): Promise<string> {
-    const { id } = await prisma.user.create({
-      data: {
-        email,
-        username,
-        password,
-      },
+  async create({ id, email, username }: IBasicUserData): Promise<void> {
+    await prisma.user.create({
+      data: { id, email, username },
     });
-
-    return id;
   }
 
   async findByEmail({ email }: IUserIdentifierByEmail): Promise<User | null> {
@@ -34,9 +28,7 @@ class UserRepository implements IUsersRepository {
 
   async findById({ id }: IUserIdentifier): Promise<User | null> {
     const foundUser = await prisma.user.findUnique({
-      where: {
-        id,
-      },
+      where: { id },
     });
 
     return foundUser;

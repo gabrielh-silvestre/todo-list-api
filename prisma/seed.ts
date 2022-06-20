@@ -1,4 +1,3 @@
-import bcrypt from 'bcrypt';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -6,6 +5,7 @@ const prisma = new PrismaClient();
 async function main() {
   const firstUserId = '56fbbb34-5c6b-4237-b8ed-22412ca935b7';
   const secondUserId = '1d457863-4c42-4d3e-a43f-82e376380070';
+  const thirdUserId = '1d457863-4c42-3d3e-a43f-82e376380070';
 
   await prisma.task.deleteMany({});
   await prisma.user.deleteMany({});
@@ -16,18 +16,16 @@ async function main() {
         id: firstUserId,
         email: 'firstPerson@gmail.com',
         username: 'person1',
-        password: bcrypt.hashSync('123a456', 10),
       },
       {
         id: secondUserId,
         email: 'secondPerson@gmail.com',
         username: 'person2',
-        password: bcrypt.hashSync('123b456', 10),
       },
       {
+        id: thirdUserId,
         email: 'thirdPerson@gmail.com',
         username: 'person3',
-        password: bcrypt.hashSync('123c456', 10),
       },
     ],
   });
