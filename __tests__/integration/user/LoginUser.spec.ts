@@ -17,8 +17,7 @@ chai.use(chaiHTTP);
 const LOGIN_USERS_ENDPOINT = '/v1/api/users/login';
 const PRISMA_SEED_RESET = 'npx prisma db seed';
 
-const [{ email }] = users;
-const { id, username } = newUser;
+const [{ id, email, username }] = users;
 const loginUserCredentials = { email, password: '123a45' };
 
 const FAKE_TOKEN = '0n0v19nASV-V0n09Masvmz0-xasvzx';
@@ -34,7 +33,7 @@ const SUCCESS_RESPONSE: ISignResponse = {
   },
 };
 
-describe.only('Test POST endpoint "/users/login"', function () {
+describe('Test POST endpoint "/users/login"', function () {
   this.timeout(5000);
 
   let authStub: Sinon.SinonStub;
