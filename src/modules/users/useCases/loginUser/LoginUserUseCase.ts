@@ -1,8 +1,9 @@
 import { StatusCodes } from 'http-status-codes';
 
-import type { IUsersRepository } from '../../repository/IUsersRepository';
-
-import type { IAuthService } from '../../../../@types/interfaces';
+import type {
+  IUsersRepository,
+  IAuthService,
+} from '../../../../@types/interfaces';
 import type {
   LoginUserUseCaseDTO,
   SuccessCase,

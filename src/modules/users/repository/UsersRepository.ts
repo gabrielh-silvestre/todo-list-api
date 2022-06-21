@@ -1,5 +1,8 @@
-import type { IUsersRepository } from './IUsersRepository';
-import type { UserAttributes, UserCreateAttributes } from '../../../@types/types';
+import type { IUsersRepository } from '../../../@types/interfaces';
+import type {
+  UserAttributes,
+  UserCreateAttributes,
+} from '../../../@types/types';
 
 import { prisma } from '../../prisma';
 

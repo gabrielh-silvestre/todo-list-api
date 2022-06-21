@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes';
 import { ConflictError } from 'restify-errors';
 
-import type { ITasksRepository } from '../../repository/ITasksRepository';
+import type { ITasksRepository } from '../../../../@types/interfaces';
 import type {
   SuccessCase,
   TaskCreateAttributes,

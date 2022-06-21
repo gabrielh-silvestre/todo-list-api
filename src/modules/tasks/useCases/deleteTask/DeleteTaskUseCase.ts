@@ -1,7 +1,7 @@
 import { StatusCodes } from 'http-status-codes';
 import { NotFoundError } from 'restify-errors';
 
-import type { ITasksRepository } from '../../repository/ITasksRepository';
+import type { ITasksRepository } from '../../../../@types/interfaces';
 import type { TaskIdentifierById, SuccessCase } from '../../../../@types/types';
 
 class DeleteTaskUseCase {

@@ -1,4 +1,4 @@
-import type { ITasksRepository } from './ITasksRepository';
+import type { ITasksRepository } from '../../../@types/interfaces';
 import type {
   TaskCreateAttributes,
   TaskIdentifierById,

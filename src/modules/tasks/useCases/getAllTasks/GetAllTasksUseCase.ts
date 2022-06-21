@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes';
 
-import type { ITasksRepository } from '../../repository/ITasksRepository';
+import type { ITasksRepository } from '../../../../@types/interfaces';
 import type {
   TaskReturn,
   SuccessCase,

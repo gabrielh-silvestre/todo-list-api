@@ -1,7 +1,7 @@
 import { NotFoundError } from 'restify-errors';
 import { StatusCodes } from 'http-status-codes';
 
-import type { IUsersRepository } from '../../repository/IUsersRepository';
+import type { IUsersRepository } from '../../../../@types/interfaces';
 import type { SuccessCase, UserAttributes } from '../../../../@types/types';
 
 class VerifyUserUseCase {
