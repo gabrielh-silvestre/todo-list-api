@@ -1,20 +1,14 @@
-import { User } from '@supabase/supabase-js';
 import { HttpError } from 'restify-errors';
 
-import { IAuthService } from '../../@types/interfaces';
+import type { IAuthService } from '../../@types/interfaces';
+import type {
+  SignInData,
+  SignReturn,
+  SignUpData,
+  AuthUser,
+} from '../../@types/types';
 
 import { supabase } from '../../modules/auth';
-
-interface IRequest {
-  username: string;
-  email: string;
-  password: string;
-}
-
-interface IResponse {
-  token: string;
-  user: User | null;
-}
 
 class AuthService implements IAuthService {
   private readonly authService = supabase.auth;
@@ -23,7 +17,7 @@ class AuthService implements IAuthService {
     username,
     email,
     password,
-  }: IRequest): Promise<IResponse> {
+  }: SignUpData): Promise<SignReturn | never> {
     const { user, session, error } = await this.authService.signUp(
       { email, password },
       { data: { username } }
@@ -42,7 +36,7 @@ class AuthService implements IAuthService {
   public async signIn({
     email,
     password,
-  }: Omit<IRequest, 'username'>): Promise<IResponse> {
+  }: SignInData): Promise<SignReturn | never> {
     const { user, session, error } = await this.authService.signIn({
       email,
       password,
@@ -58,7 +52,7 @@ class AuthService implements IAuthService {
     };
   }
 
-  public async getUser(token: string): Promise<User | null> {
+  public async getUser(token: string): Promise<AuthUser | null | never> {
     const { user, error } = await this.authService.api.getUser(token);
 
     if (error) {
