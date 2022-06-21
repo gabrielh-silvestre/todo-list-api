@@ -2,7 +2,7 @@ import { HttpError } from 'restify-errors';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
-import { ISignResponse } from '../../../../src/@types/interfaces';
+import { SignReturn } from '../../../../src/@types/types';
 
 import { AuthService } from '../../../../src/services/Auth';
 import { UserRepository } from '../../../../src/modules/users/repository/UsersRepository';
@@ -14,7 +14,7 @@ const [user] = users;
 
 const FAKE_TOKEN = '0n0v19nASV-V0n09Masvmz0-xasvzx';
 
-const SUCCESS_RESPONSE: ISignResponse = {
+const SUCCESS_RESPONSE: SignReturn = {
   token: FAKE_TOKEN,
   user: {
     id: user.id,

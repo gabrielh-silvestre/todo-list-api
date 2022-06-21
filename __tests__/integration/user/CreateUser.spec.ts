@@ -5,7 +5,7 @@ import Sinon from 'sinon';
 import chai, { expect } from 'chai';
 import chaiHTTP from 'chai-http';
 
-import { ISignResponse } from '../../../src/@types/interfaces';
+import { SignReturn } from '../../../src/@types/types';
 
 import { AuthService } from '../../../src/services/Auth';
 
@@ -22,7 +22,7 @@ const createUserCredentials = { username, email, password: '123a45' };
 
 const FAKE_TOKEN = '0n0v19nASV-V0n09Masvmz0-xasvzx';
 
-const SUCCESS_RESPONSE: ISignResponse = {
+const SUCCESS_RESPONSE: SignReturn = {
   token: FAKE_TOKEN,
   user: {
     id: id,

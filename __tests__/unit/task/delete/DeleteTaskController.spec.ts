@@ -9,11 +9,11 @@ import {
 } from '../../../../src/modules/tasks/useCases/deleteTask';
 
 import { newTask } from '../../../mocks/tasks';
-import { ISuccess } from '../../../../src/@types/interfaces';
+import { SuccessCase } from '../../../../src/@types/types';
 
 const { id, userId } = newTask;
 
-const SUCCESS_RESPONSE: ISuccess<null> = {
+const SUCCESS_RESPONSE: SuccessCase<null> = {
   statusCode: 204,
   data: null,
 };

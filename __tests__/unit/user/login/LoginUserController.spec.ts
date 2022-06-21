@@ -3,7 +3,7 @@ import { NextFunction, request, response } from 'express';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
-import { ISuccess } from '../../../../src/@types/interfaces';
+import { SuccessCase } from '../../../../src/@types/types';
 import { TokenReturn } from '../../../../src/@types/types';
 
 import {
@@ -15,7 +15,7 @@ import { newUser } from '../../../mocks/users';
 
 const FAKE_TOKEN = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
 
-const SUCCESS_RESPONSE: ISuccess<TokenReturn> = {
+const SUCCESS_RESPONSE: SuccessCase<TokenReturn> = {
   statusCode: 200,
   data: { token: FAKE_TOKEN },
 };

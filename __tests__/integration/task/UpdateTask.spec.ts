@@ -5,7 +5,7 @@ import Sinon from 'sinon';
 import chai, { expect } from 'chai';
 import chaiHTTP from 'chai-http';
 
-import { ISignResponse } from '../../../src/@types/interfaces';
+import { SignReturn } from '../../../src/@types/types';
 
 import { AuthService } from '../../../src/services/Auth';
 
@@ -31,7 +31,7 @@ const FAIL_SIGN_IN = new HttpError(
   'Expired or invalid token'
 );
 
-const SUCCESS_SIGN_IN: ISignResponse = {
+const SUCCESS_SIGN_IN: SignReturn = {
   token: FAKE_TOKEN,
   user: {
     id: id,
