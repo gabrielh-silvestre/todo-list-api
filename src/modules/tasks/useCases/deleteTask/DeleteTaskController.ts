@@ -1,11 +1,11 @@
-import { NextFunction, Request, Response } from 'express';
+import type { Handler, NextFunction, Request, Response } from 'express';
 
-import { DeleteTaskUseCase } from './DeleteTaskUseCase';
+import type { DeleteTaskUseCase } from './DeleteTaskUseCase';
 
 class DeleteTaskController {
   constructor(private deleteTaskUseCase: DeleteTaskUseCase) {}
 
-  handle = async (req: Request, res: Response, next: NextFunction) => {
+  handle: Handler = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
     const { userId } = req.body;
 

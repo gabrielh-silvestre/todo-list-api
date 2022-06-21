@@ -1,22 +1,17 @@
-import { NextFunction, Request, Response } from 'express';
+import type { Handler, NextFunction, Request, Response } from 'express';
 
-import { UpdateTaskUseCase } from './UpdateTaskUseCase';
+import type { UpdateTaskUseCase } from './UpdateTaskUseCase';
 
 class UpdateTaskController {
   constructor(private updateTaskUseCase: UpdateTaskUseCase) {}
 
-  handle = async (req: Request, res: Response, next: NextFunction) => {
+  handle: Handler = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    const { title, description, status, userId } = req.body;
+    const taskData = { ...req.body, id };
 
     try {
       const { statusCode, data } = await this.updateTaskUseCase.execute(
-        { userId, id },
-        {
-          title,
-          description,
-          status,
-        }
+        taskData
       );
 
       return res.status(statusCode).json(data);

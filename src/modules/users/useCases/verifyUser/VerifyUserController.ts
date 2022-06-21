@@ -1,15 +1,19 @@
-import { NextFunction, Request, Response } from 'express';
+import type { Handler, NextFunction, Request, Response } from 'express';
 
-import { VerifyUserUseCase } from './VerifyUserUseUseCase';
+import type { VerifyUserUseCase } from './VerifyUserUseUseCase';
 
 class VerifyUserController {
   constructor(private verifyUserUseCase: VerifyUserUseCase) {}
 
-  handle = async (req: Request, _res: Response, next: NextFunction) => {
-    const { userId } = req.body;
+  handle: Handler = async (
+    req: Request,
+    _res: Response,
+    next: NextFunction
+  ) => {
+    const { userId: id } = req.body;
 
     try {
-      await this.verifyUserUseCase.execute({ id: userId });
+      await this.verifyUserUseCase.execute({ id });
 
       return next();
     } catch (err) {

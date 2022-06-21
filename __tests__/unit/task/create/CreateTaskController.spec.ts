@@ -4,7 +4,7 @@ import { Task } from '@prisma/client';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
-import { ISuccess } from '../../../../src/@types/interfaces';
+import { SuccessCase } from '../../../../src/@types/types';
 
 import {
   createTaskUseCase,
@@ -15,7 +15,7 @@ import { newTask } from '../../../mocks/tasks';
 
 const { title, description, userId } = newTask;
 
-const SUCCESS_RESPONSE: ISuccess<Task> = {
+const SUCCESS_RESPONSE: SuccessCase<Task> = {
   statusCode: 201,
   data: newTask,
 };

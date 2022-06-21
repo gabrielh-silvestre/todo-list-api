@@ -1,16 +1,16 @@
 import { NotFoundError } from 'restify-errors';
 import { StatusCodes } from 'http-status-codes';
 
-import { IUsersRepository } from '../../repository/IUsersRepository';
-import { ISuccess, IUserIdentifier } from '../../../../@types/interfaces';
-
-interface IRequest extends IUserIdentifier {}
+import type { IUsersRepository } from '../../../../@types/interfaces';
+import type { SuccessCase, UserAttributes } from '../../../../@types/types';
 
 class VerifyUserUseCase {
   constructor(private userRepository: IUsersRepository) {}
 
-  async execute({ id }: IRequest): Promise<ISuccess<null> | never> {
-    const foundUser = await this.userRepository.findById({ id });
+  async execute({
+    id,
+  }: Pick<UserAttributes, 'id'>): Promise<SuccessCase<null> | never> {
+    const foundUser = await this.userRepository.findById(id);
 
     if (!foundUser) {
       throw new NotFoundError('User does not exist');

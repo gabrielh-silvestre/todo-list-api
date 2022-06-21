@@ -1,27 +1,17 @@
 import { Handler } from 'express';
 
-interface IUserValidator {
+import { UserAttributes, UserCreateAttributes } from '../types';
+
+interface UsersRepository {
+  create(newUserCredentials: UserCreateAttributes): Promise<void>;
+  findById(id: string): Promise<UserAttributes | null>;
+  findByEmail(email: string): Promise<UserAttributes | null>;
+}
+
+interface UserValidator {
   createValidation: Handler;
   loginValidation: Handler;
 }
 
-interface IBasicUserData {
-  id: string;
-  email: string;
-  username: string;
-}
-
-interface IUserIdentifier {
-  id: string;
-}
-
-interface IUserIdentifierByEmail {
-  email: string;
-}
-
-export type {
-  IUserValidator,
-  IBasicUserData,
-  IUserIdentifier,
-  IUserIdentifierByEmail,
-};
+export type IUsersRepository = UsersRepository;
+export type IUserValidator = UserValidator;

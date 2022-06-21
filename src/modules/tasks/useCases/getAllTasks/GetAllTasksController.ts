@@ -1,11 +1,11 @@
-import { NextFunction, Request, Response } from 'express';
+import type { Handler, NextFunction, Request, Response } from 'express';
 
-import { GetAllTasksUseCase } from './GetAllTasksUseCase';
+import type { GetAllTasksUseCase } from './GetAllTasksUseCase';
 
 class GetAllTasksController {
   constructor(private getAllTasksUseCase: GetAllTasksUseCase) {}
 
-  handle = async (req: Request, res: Response, next: NextFunction) => {
+  handle: Handler = async (req: Request, res: Response, next: NextFunction) => {
     const { userId } = req.body;
 
     try {

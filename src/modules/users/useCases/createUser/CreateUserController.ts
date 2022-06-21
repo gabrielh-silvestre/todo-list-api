@@ -1,15 +1,11 @@
-import { Request, Response, NextFunction } from 'express';
+import type { Request, Response, NextFunction, Handler } from 'express';
 
-import { CreateUserUseCase } from './CreateUserUseCase';
+import type { CreateUserUseCase } from './CreateUserUseCase';
 
 class CreateUserController {
   constructor(private createUserUseCase: CreateUserUseCase) {}
 
-  handle = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<Response | void> => {
+  handle: Handler = async (req: Request, res: Response, next: NextFunction) => {
     const { email, username, password } = req.body;
 
     try {

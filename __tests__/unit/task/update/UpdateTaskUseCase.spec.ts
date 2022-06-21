@@ -28,14 +28,13 @@ describe('Test UpdateTaskUseCase', () => {
     });
 
     describe('should return a object with status code and data', async () => {
-      const response = await updateTaskUseCase.execute(
-        { userId, id },
-        {
-          title,
-          description,
-          status,
-        }
-      );
+      const response = await updateTaskUseCase.execute({
+        userId,
+        id,
+        title,
+        description,
+        status,
+      });
 
       expect(response).to.be.an('object');
       expect(response).to.have.property('statusCode');
@@ -65,14 +64,13 @@ describe('Test UpdateTaskUseCase', () => {
 
       it('should throw an error with status code and message', async () => {
         try {
-          await updateTaskUseCase.execute(
-            { userId, id },
-            {
-              title,
-              description,
-              status,
-            }
-          );
+          await updateTaskUseCase.execute({
+            userId,
+            id,
+            title,
+            description,
+            status,
+          });
           expect.fail('Should throw a error');
         } catch (error) {
           expect(error).to.have.property('statusCode');

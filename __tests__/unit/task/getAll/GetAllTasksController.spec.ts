@@ -3,7 +3,7 @@ import { NextFunction, request, response } from 'express';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
-import { ISuccess } from '../../../../src/@types/interfaces';
+import { SuccessCase } from '../../../../src/@types/types';
 import { TaskReturn } from '../../../../src/@types/types';
 
 import {
@@ -15,7 +15,7 @@ import { tasks } from '../../../mocks/tasks';
 
 const [{ userId }] = tasks;
 
-const SUCCESS_RESPONSE: ISuccess<TaskReturn[]> = {
+const SUCCESS_RESPONSE: SuccessCase<TaskReturn[]> = {
   statusCode: 200,
   data: tasks,
 };

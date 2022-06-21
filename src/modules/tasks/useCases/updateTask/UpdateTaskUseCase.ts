@@ -1,21 +1,17 @@
-import { TaskStatus } from '@prisma/client';
 import { StatusCodes } from 'http-status-codes';
 import { NotFoundError } from 'restify-errors';
 
-import { ITasksRepository } from '../../repository/ITasksRepository';
-import { ISuccess, ITaskIdentifierByUser } from '../../../../@types/interfaces';
-import { TaskReturn } from '../../../../@types/types';
-
-interface IRequest {
-  title: string;
-  description: string | null;
-  status: TaskStatus;
-}
+import type { ITasksRepository } from '../../../../@types/interfaces';
+import type {
+  TaskUpdateAttributes,
+  TaskReturn,
+  SuccessCase,
+} from '../../../../@types/types';
 
 class UpdateTaskUseCase {
   constructor(private tasksRepository: ITasksRepository) {}
 
-  async taskExists(userId: string, id: string): Promise<void> {
+  private async taskExists(userId: string, id: string): Promise<void | never> {
     const foundTask = await this.tasksRepository.findById({ userId, id });
 
     if (!foundTask) {
@@ -24,18 +20,13 @@ class UpdateTaskUseCase {
   }
 
   async execute(
-    { userId, id }: ITaskIdentifierByUser,
-    { title, description, status }: IRequest
-  ): Promise<ISuccess<TaskReturn>> {
+    taskData: TaskUpdateAttributes
+  ): Promise<SuccessCase<TaskReturn> | never> {
+    const { id, userId } = taskData;
+
     await this.taskExists(userId, id);
 
-    const taskData = { title, description, status };
-
-    const updatedTask = await this.tasksRepository.update({
-      userId,
-      id,
-      taskData,
-    });
+    const updatedTask = await this.tasksRepository.update(taskData);
 
     return {
       statusCode: StatusCodes.OK,

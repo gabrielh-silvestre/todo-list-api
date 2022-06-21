@@ -3,7 +3,7 @@ import { NextFunction, request, response } from 'express';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
-import { ISuccess } from '../../../../src/@types/interfaces';
+import { SuccessCase } from '../../../../src/@types/types';
 
 import {
   verifyUserUseCase,
@@ -14,7 +14,7 @@ import { users } from '../../../mocks/users';
 
 const [{ id: userId }] = users;
 
-const SUCCESS_RESPONSE: ISuccess<null> = {
+const SUCCESS_RESPONSE: SuccessCase<null> = {
   statusCode: 200,
   data: null,
 };
