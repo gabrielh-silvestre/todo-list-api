@@ -1,15 +1,12 @@
-import {
-  ITaskIdentifierByUser,
-  ITaskUserIdentifier,
-} from '../../../@types/interfaces';
-import { TaskReturn } from '../../../@types/types';
-
-import {
-  ITasksRepository,
-  ITasksRepositoryDTO,
-  ITasksRepositoryFindByEmailDTO,
-  ITasksRepositoryUpdateDTO,
-} from './ITasksRepository';
+import type { ITasksRepository } from './ITasksRepository';
+import type {
+  TaskCreateAttributes,
+  TaskIdentifierById,
+  TaskIdentifierByTitle,
+  TaskIdentifierByUser,
+  TaskReturn,
+  TaskUpdateAttributes,
+} from '../../../@types/types';
 
 import { prisma } from '../../prisma';
 
@@ -18,16 +15,12 @@ class TasksRepository implements ITasksRepository {
     title,
     description,
     userId,
-  }: ITasksRepositoryDTO): Promise<TaskReturn> {
+  }: TaskCreateAttributes): Promise<TaskReturn> {
     const newTask = await prisma.task.create({
       data: {
         title,
         description,
-        user: {
-          connect: {
-            id: userId,
-          },
-        },
+        user: { connect: { id: userId } },
       },
       select: {
         id: true,
@@ -41,21 +34,12 @@ class TasksRepository implements ITasksRepository {
     return newTask as TaskReturn;
   }
 
-  async update({
-    userId,
-    id,
-    taskData,
-  }: ITasksRepositoryUpdateDTO): Promise<TaskReturn> {
+  async update(taskData: TaskUpdateAttributes): Promise<TaskReturn> {
+    const { id, userId, title, description, status } = taskData;
+
     const updatedTask = await prisma.task.update({
-      where: {
-        id_userId: {
-          id,
-          userId,
-        },
-      },
-      data: {
-        ...taskData,
-      },
+      where: { id_userId: { id, userId } },
+      data: { title, description, status },
       select: {
         id: true,
         title: true,
@@ -68,11 +52,9 @@ class TasksRepository implements ITasksRepository {
     return updatedTask;
   }
 
-  async findAll({ userId }: ITaskUserIdentifier): Promise<TaskReturn[]> {
+  async findAll({ userId }: TaskIdentifierByUser): Promise<TaskReturn[]> {
     const foundTasks = await prisma.task.findMany({
-      where: {
-        userId,
-      },
+      where: { userId },
       select: {
         id: true,
         title: true,
@@ -88,14 +70,9 @@ class TasksRepository implements ITasksRepository {
   async findById({
     id,
     userId,
-  }: ITaskIdentifierByUser): Promise<TaskReturn | null> {
+  }: TaskIdentifierById): Promise<TaskReturn | null> {
     const foundTask = await prisma.task.findUnique({
-      where: {
-        id_userId: {
-          id,
-          userId,
-        },
-      },
+      where: { id_userId: { id, userId } },
       select: {
         id: true,
         title: true,
@@ -111,12 +88,9 @@ class TasksRepository implements ITasksRepository {
   async findByExactTitle({
     title,
     userId,
-  }: ITasksRepositoryFindByEmailDTO): Promise<TaskReturn[]> {
+  }: TaskIdentifierByTitle): Promise<TaskReturn[]> {
     const foundTask = await prisma.task.findMany({
-      where: {
-        title,
-        userId,
-      },
+      where: { title, userId },
       select: {
         id: true,
         title: true,
@@ -129,14 +103,9 @@ class TasksRepository implements ITasksRepository {
     return foundTask;
   }
 
-  async delete({ id, userId }: ITaskIdentifierByUser): Promise<void> {
+  async delete({ id, userId }: TaskIdentifierById): Promise<void> {
     await prisma.task.delete({
-      where: {
-        id_userId: {
-          id,
-          userId,
-        },
-      },
+      where: { id_userId: { id, userId } },
     });
   }
 }

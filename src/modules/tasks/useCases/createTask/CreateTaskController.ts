@@ -1,17 +1,13 @@
-import { NextFunction, Request, Response } from 'express';
+import type { Handler, NextFunction, Request, Response } from 'express';
 
-import { CreateTaskUseCase } from './CreateTaskUseCase';
+import type { CreateTaskUseCase } from './CreateTaskUseCase';
 
 class CreateTaskController {
   constructor(private createTaskUseCase: CreateTaskUseCase) {}
 
-  handle = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<Response | void> => {
+  handle: Handler = async (req: Request, res: Response, next: NextFunction) => {
     const { title, description, userId } = req.body;
-    const newTask = { title, description, userId };
+    const newTask = { title, description: description || null, userId };
 
     try {
       const { statusCode, data } = await this.createTaskUseCase.execute(

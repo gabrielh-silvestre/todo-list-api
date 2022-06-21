@@ -1,20 +1,17 @@
 import { StatusCodes } from 'http-status-codes';
 import { ConflictError } from 'restify-errors';
 
-import { ITasksRepository } from '../../repository/ITasksRepository';
-import { ISuccess } from '../../../../@types/interfaces';
-import { TaskReturn } from '../../../../@types/types';
-
-interface IRequest {
-  title: string;
-  description: string | null;
-  userId: string;
-}
+import type { ITasksRepository } from '../../repository/ITasksRepository';
+import type {
+  SuccessCase,
+  TaskCreateAttributes,
+  TaskReturn,
+} from '../../../../@types/types';
 
 class CreateTaskUseCase {
   constructor(private taskRepository: ITasksRepository) {}
 
-  async isUnique(userId: string, title: string): Promise<void> {
+  private async isUnique(userId: string, title: string): Promise<void | never> {
     const foundTasks = await this.taskRepository.findByExactTitle({
       userId,
       title,
@@ -29,16 +26,19 @@ class CreateTaskUseCase {
     title,
     description,
     userId,
-  }: IRequest): Promise<ISuccess<TaskReturn> | never> {
+  }: TaskCreateAttributes): Promise<SuccessCase<TaskReturn> | never> {
     await this.isUnique(userId, title);
 
     const newTask = await this.taskRepository.create({
       title,
-      description: description || null,
+      description,
       userId,
     });
 
-    return { statusCode: StatusCodes.CREATED, data: newTask };
+    return {
+      statusCode: StatusCodes.CREATED,
+      data: newTask,
+    };
   }
 }
 
