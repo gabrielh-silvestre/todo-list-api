@@ -1,22 +1,16 @@
-import { User } from '@prisma/client';
-
-import { IUsersRepository } from './IUsersRepository';
-import {
-  IBasicUserData,
-  IUserIdentifier,
-  IUserIdentifierByEmail,
-} from '../../../@types/interfaces';
+import type { IUsersRepository } from './IUsersRepository';
+import type { UserAttributes, UserCreateAttributes } from '../../../@types/types';
 
 import { prisma } from '../../prisma';
 
 class UserRepository implements IUsersRepository {
-  async create({ id, email, username }: IBasicUserData): Promise<void> {
+  async create({ id, email, username }: UserCreateAttributes): Promise<void> {
     await prisma.user.create({
       data: { id, email, username },
     });
   }
 
-  async findByEmail({ email }: IUserIdentifierByEmail): Promise<User | null> {
+  async findByEmail(email: string): Promise<UserAttributes | null> {
     const foundUser = await prisma.user.findUnique({
       where: {
         email,
@@ -26,7 +20,7 @@ class UserRepository implements IUsersRepository {
     return foundUser;
   }
 
-  async findById({ id }: IUserIdentifier): Promise<User | null> {
+  async findById(id: string): Promise<UserAttributes | null> {
     const foundUser = await prisma.user.findUnique({
       where: { id },
     });

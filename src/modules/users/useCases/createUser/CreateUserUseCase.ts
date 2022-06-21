@@ -1,16 +1,12 @@
 import { StatusCodes } from 'http-status-codes';
 
-import { IUsersRepository } from '../../repository/IUsersRepository';
-import {
-  IAuthService,
-  IBasicUserData,
-  ISuccess,
-} from '../../../../@types/interfaces';
-import { TokenReturn } from '../../../../@types/types';
-
-interface IRequest extends Omit<IBasicUserData, 'id'> {
-  password: string;
-}
+import type { IUsersRepository } from '../../repository/IUsersRepository';
+import type { IAuthService } from '../../../../@types/interfaces';
+import type {
+  TokenReturn,
+  CreateUserUseCaseDTO,
+  SuccessCase,
+} from '../../../../@types/types';
 
 class CreateUserUseCase {
   constructor(
@@ -23,7 +19,7 @@ class CreateUserUseCase {
     username: string,
     email: string
   ): Promise<void | never> {
-    const localUser = await this.userRepository.findByEmail({ email });
+    const localUser = await this.userRepository.findByEmail(email);
 
     if (!localUser) {
       await this.userRepository.create({ id, username, email });
@@ -34,7 +30,7 @@ class CreateUserUseCase {
     email,
     username,
     password,
-  }: IRequest): Promise<ISuccess<TokenReturn> | never> {
+  }: CreateUserUseCaseDTO): Promise<SuccessCase<TokenReturn> | never> {
     const { token, user } = await this.authService.signUp({
       username,
       email,

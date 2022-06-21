@@ -1,15 +1,13 @@
 import { StatusCodes } from 'http-status-codes';
 
-import { IUsersRepository } from '../../repository/IUsersRepository';
+import type { IUsersRepository } from '../../repository/IUsersRepository';
 
-import { IAuthService } from '../../../../@types/interfaces';
-import { ISuccess } from '../../../../@types/interfaces';
-import { TokenReturn } from '../../../../@types/types';
-
-interface IRequest {
-  email: string;
-  password: string;
-}
+import type { IAuthService } from '../../../../@types/interfaces';
+import type {
+  LoginUserUseCaseDTO,
+  SuccessCase,
+  TokenReturn,
+} from '../../../../@types/types';
 
 class LoginUserUseCase {
   constructor(
@@ -22,7 +20,7 @@ class LoginUserUseCase {
     username: string,
     email: string
   ): Promise<void | never> {
-    const localUser = await this.userRepository.findByEmail({ email });
+    const localUser = await this.userRepository.findByEmail(email);
 
     if (!localUser) {
       await this.userRepository.create({ id, username, email });
@@ -32,7 +30,7 @@ class LoginUserUseCase {
   async execute({
     email,
     password,
-  }: IRequest): Promise<ISuccess<TokenReturn> | never> {
+  }: LoginUserUseCaseDTO): Promise<SuccessCase<TokenReturn> | never> {
     const { token, user } = await this.authService.signIn({ email, password });
 
     await this.syncLocalUser(user!.id, user!.user_metadata.username, email);

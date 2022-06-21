@@ -1,14 +1,9 @@
-import { User } from '@prisma/client';
-import {
-  IBasicUserData,
-  IUserIdentifier,
-  IUserIdentifierByEmail,
-} from '../../../@types/interfaces';
+import { UserAttributes, UserCreateAttributes } from '../../../@types/types';
 
 interface IUsersRepository {
-  create(newUserCredentials: IBasicUserData): Promise<void>;
-  findById(id: IUserIdentifier): Promise<User | null>;
-  findByEmail(email: IUserIdentifierByEmail): Promise<User | null>;
+  create(newUserCredentials: UserCreateAttributes): Promise<void>;
+  findById(id: string): Promise<UserAttributes | null>;
+  findByEmail(email: string): Promise<UserAttributes | null>;
 }
 
 export { IUsersRepository };
