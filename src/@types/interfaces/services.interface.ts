@@ -1,20 +1,9 @@
-import { User } from "@supabase/supabase-js";
-
-interface ISignUpRequest {
-  username: string;
-  email: string;
-  password: string;
-}
-
-interface ISignResponse {
-  token: string;
-  user: User | null;
-}
+import type { AuthUser, SignInData, SignReturn, SignUpData } from '../types';
 
 interface IAuthService {
-  signUp(data: ISignUpRequest): Promise<ISignResponse | never>;
-  signIn(data: Omit<ISignUpRequest, 'username'>): Promise<ISignResponse | never>;
-  getUser(token: string): Promise<User | null>;
+  signUp(data: SignUpData): Promise<SignReturn | never>;
+  signIn(data: SignInData): Promise<SignReturn | never>;
+  getUser(token: string): Promise<AuthUser | null>;
 }
 
 interface IEncryptService {
@@ -22,4 +11,4 @@ interface IEncryptService {
   verify(value: string, hash: string): Promise<boolean>;
 }
 
-export { IAuthService, IEncryptService, ISignUpRequest, ISignResponse };
+export { IAuthService, IEncryptService };
