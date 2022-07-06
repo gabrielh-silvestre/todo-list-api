@@ -6,13 +6,12 @@ import type {
   TaskCreateAttributes,
   TaskReturn,
 } from "../../../../@types/types";
-
-import { IsTaskTitleUnique } from "../../decorators/UniqueTaskTitle.decorator";
+import { IsTaskValid, IsTaskTitleUnique } from "../../decorators";
 
 class CreateTaskUseCase {
   constructor(private taskRepository: ITasksRepository) {}
 
-  @IsTaskTitleUnique()
+  @IsTaskValid(IsTaskTitleUnique)
   async execute({
     title,
     description,

@@ -3,12 +3,12 @@ import { StatusCodes } from "http-status-codes";
 import type { ITasksRepository } from "../../../../@types/interfaces";
 import type { TaskIdentifierById, SuccessCase } from "../../../../@types/types";
 
-import { IsTaskExists } from "../../decorators/TaskExists.decorator";
+import { IsTaskValid, IsTaskExists } from "../../decorators";
 
 class DeleteTaskUseCase {
   constructor(private tasksRepository: ITasksRepository) {}
 
-  @IsTaskExists()
+  @IsTaskValid(IsTaskExists)
   async execute({
     userId,
     id,

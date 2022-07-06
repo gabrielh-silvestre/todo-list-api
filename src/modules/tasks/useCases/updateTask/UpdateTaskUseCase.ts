@@ -6,12 +6,13 @@ import type {
   TaskReturn,
   SuccessCase,
 } from "../../../../@types/types";
-import { IsTaskExists } from "../../decorators/TaskExists.decorator";
+
+import { IsTaskValid, IsTaskExists } from "../../decorators";
 
 class UpdateTaskUseCase {
   constructor(private tasksRepository: ITasksRepository) {}
 
-  @IsTaskExists()
+  @IsTaskValid(IsTaskExists)
   async execute(
     taskData: TaskUpdateAttributes
   ): Promise<SuccessCase<TaskReturn> | never> {
