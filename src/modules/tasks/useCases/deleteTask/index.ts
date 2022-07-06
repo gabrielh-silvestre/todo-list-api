@@ -1,6 +1,6 @@
-import { TasksRepository } from '../../repository/TasksRepository';
-import { DeleteTaskUseCase } from './DeleteTaskUseCase';
-import { DeleteTaskController } from './DeleteTaskController';
+import { TasksRepository } from "../../repository/TasksRepository";
+import { DeleteTaskController } from "./DeleteTaskController";
+import { DeleteTaskUseCase } from "./DeleteTaskUseCase";
 
 const taskRepository = new TasksRepository();
 const deleteTaskUseCase = new DeleteTaskUseCase(taskRepository);

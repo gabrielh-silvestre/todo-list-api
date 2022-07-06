@@ -1,6 +1,6 @@
-import type { Request, Response, NextFunction, Handler } from 'express';
+import type { Request, Response, NextFunction, Handler } from "express";
 
-import type { CreateUserUseCase } from './CreateUserUseCase';
+import type { CreateUserUseCase } from "./CreateUserUseCase";
 
 class CreateUserController {
   constructor(private createUserUseCase: CreateUserUseCase) {}
@@ -15,7 +15,7 @@ class CreateUserController {
         password,
       });
 
-      return res.status(statusCode).json(data);
+      res.status(statusCode).json(data);
     } catch (err) {
       next(err);
     }

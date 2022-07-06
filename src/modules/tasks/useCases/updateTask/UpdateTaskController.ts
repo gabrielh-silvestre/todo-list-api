@@ -1,6 +1,6 @@
-import type { Handler, NextFunction, Request, Response } from 'express';
+import type { Handler, NextFunction, Request, Response } from "express";
 
-import type { UpdateTaskUseCase } from './UpdateTaskUseCase';
+import type { UpdateTaskUseCase } from "./UpdateTaskUseCase";
 
 class UpdateTaskController {
   constructor(private updateTaskUseCase: UpdateTaskUseCase) {}
@@ -14,7 +14,7 @@ class UpdateTaskController {
         taskData
       );
 
-      return res.status(statusCode).json(data);
+      res.status(statusCode).json(data);
     } catch (err) {
       next(err);
     }

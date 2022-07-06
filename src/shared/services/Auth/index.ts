@@ -1,5 +1,3 @@
-import { HttpError } from "restify-errors";
-
 import type { IAuthService } from "@projectTypes/interfaces";
 import type {
   SignInData,
@@ -7,6 +5,7 @@ import type {
   SignUpData,
   AuthUser,
 } from "@projectTypes/types";
+import { HttpError } from "restify-errors";
 
 import { supabase } from "./connection";
 

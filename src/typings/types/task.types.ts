@@ -1,33 +1,25 @@
-type Status = 'TODO' | 'IN_PROGRESS' | 'DONE';
+export type TaskStatus = "TODO" | "IN_PROGRESS" | "DONE";
 
-type Attributes = {
+export type TaskAttributes = {
   id: string;
   title: string;
   description: string | null;
-  status: Status;
+  status: TaskStatus;
   userId: string;
   updatedAt: Date;
 };
 
-type CreateAttributes = Omit<Attributes, 'id' | 'status' | 'updatedAt'>;
+export type TaskCreateAttributes = Omit<
+  TaskAttributes,
+  "id" | "status" | "updatedAt"
+>;
 
-type UpdateAttributes = Omit<Attributes, 'updatedAt'>;
+export type TaskUpdateAttributes = Omit<TaskAttributes, "updatedAt">;
 
-type UserIdentifier = { userId: string };
+export type TaskIdentifierByUser = { userId: string };
 
-type Identifier = UserIdentifier & { id: string };
+export type TaskIdentifierById = TaskIdentifierByUser & { id: string };
 
-type TitleIdentifier = UserIdentifier & { title: string };
+export type TaskIdentifierByTitle = TaskIdentifierByUser & { title: string };
 
-type Return = Omit<Attributes, 'userId'>;
-
-export type TaskAttributes = Attributes;
-export type TaskCreateAttributes = CreateAttributes;
-export type TaskUpdateAttributes = UpdateAttributes;
-
-export type TaskIdentifierByUser = UserIdentifier;
-export type TaskIdentifierById = Identifier;
-export type TaskIdentifierByTitle = TitleIdentifier;
-
-export type TaskStatus = Status;
-export type TaskReturn = Return;
+export type TaskReturn = Omit<TaskAttributes, "userId">;

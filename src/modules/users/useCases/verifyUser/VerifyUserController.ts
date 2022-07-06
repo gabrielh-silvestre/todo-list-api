@@ -1,6 +1,6 @@
-import type { Handler, NextFunction, Request, Response } from 'express';
+import type { Handler, NextFunction, Request, Response } from "express";
 
-import type { VerifyUserUseCase } from './VerifyUserUseUseCase';
+import type { VerifyUserUseCase } from "./VerifyUserUseUseCase";
 
 class VerifyUserController {
   constructor(private verifyUserUseCase: VerifyUserUseCase) {}
@@ -15,7 +15,7 @@ class VerifyUserController {
     try {
       await this.verifyUserUseCase.execute({ id });
 
-      return next();
+      next();
     } catch (err) {
       next(err);
     }

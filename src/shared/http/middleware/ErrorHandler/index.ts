@@ -37,6 +37,7 @@ class ErrorHandler {
     return new InternalServerError(err, "Internal Server Error");
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   static handler: ErrorRequestHandler = (err, _req, res, _next) => {
     const error = ErrorHandler.normalize(err);
 

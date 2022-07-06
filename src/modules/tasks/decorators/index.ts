@@ -1,9 +1,7 @@
-import type {
-  IDecoratorConstraint,
-  ITasksRepository,
-} from "@projectTypes/interfaces";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { IDecoratorConstraint } from "@projectTypes/interfaces";
 
-function IsTaskValid<T>(constraint: IDecoratorConstraint<ITasksRepository, T>) {
+function IsTaskValid<T>(constraint: IDecoratorConstraint<T>) {
   return function (_target: any, _key: string, descriptor: PropertyDescriptor) {
     const original = descriptor.value;
 

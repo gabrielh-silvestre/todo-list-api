@@ -1,18 +1,14 @@
 import { AuthUser } from "./user.types";
 
-type SignUp = {
+export type SignUpData = {
   username: string;
   email: string;
   password: string;
-}
+};
 
-type SignIn = Omit<SignUp, 'username'>;
+export type SignInData = Omit<SignUpData, "username">;
 
-type AuthReturn = {
+export type SignReturn = {
   token: string;
   user: AuthUser | null;
-}
-
-export type SignReturn = AuthReturn;
-export type SignUpData = SignUp;
-export type SignInData = SignIn;
+};

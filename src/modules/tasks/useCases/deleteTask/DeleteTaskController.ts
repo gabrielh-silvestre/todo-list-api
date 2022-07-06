@@ -1,6 +1,6 @@
-import type { Handler, NextFunction, Request, Response } from 'express';
+import type { Handler, NextFunction, Request, Response } from "express";
 
-import type { DeleteTaskUseCase } from './DeleteTaskUseCase';
+import type { DeleteTaskUseCase } from "./DeleteTaskUseCase";
 
 class DeleteTaskController {
   constructor(private deleteTaskUseCase: DeleteTaskUseCase) {}
@@ -15,7 +15,7 @@ class DeleteTaskController {
         id,
       });
 
-      return res.status(statusCode).end();
+      res.status(statusCode).end();
     } catch (err) {
       next(err);
     }

@@ -1,6 +1,4 @@
-type Success<T> = {
+export type SuccessCase<T> = {
   statusCode: number;
   data: T;
-}
-
-export type SuccessCase<T> = Success<T>;
+};
