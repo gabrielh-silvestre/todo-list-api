@@ -3,11 +3,11 @@ import express from "express";
 import { authMiddleware } from "../middleware/auth";
 import { TaskValidator } from "../middleware/Validators/TaskValidator";
 
-import { createTaskController } from "../modules/tasks/useCases/createTask";
-import { deleteTaskController } from "../modules/tasks/useCases/deleteTask";
-import { updateTaskController } from "../modules/tasks/useCases/updateTask";
-import { getAllTasksController } from "../modules/tasks/useCases/getAllTasks";
-import { verifyUserController } from "../modules/users/useCases/verifyUser";
+import { createTaskController } from "../../../modules/tasks/useCases/createTask";
+import { deleteTaskController } from "../../../modules/tasks/useCases/deleteTask";
+import { updateTaskController } from "../../../modules/tasks/useCases/updateTask";
+import { getAllTasksController } from "../../../modules/tasks/useCases/getAllTasks";
+import { verifyUserController } from "../../../modules/users/useCases/verifyUser";
 
 const taskRouter = express.Router();
 

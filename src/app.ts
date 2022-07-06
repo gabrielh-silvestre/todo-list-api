@@ -3,10 +3,10 @@ import express from "express";
 import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 
-import { userRouter } from "./routes/userRoute";
-import { taskRouter } from "./routes/taskRoute";
+import { userRouter } from "./shared/http/routes/userRoute";
+import { taskRouter } from "./shared/http/routes/taskRoute";
 
-import { ErrorHandler } from "./middleware/ErrorHandler";
+import { ErrorHandler } from "./shared/http/middleware/ErrorHandler";
 
 import swaggerFile from "./swagger.json";
 

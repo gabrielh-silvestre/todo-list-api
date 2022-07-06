@@ -8,7 +8,7 @@ import type {
   TaskUpdateAttributes,
 } from '../../../@types/types';
 
-import { prisma } from '../../prisma';
+import { prisma } from '../../../shared/prisma';
 
 class TasksRepository implements ITasksRepository {
   async create({

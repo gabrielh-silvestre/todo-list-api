@@ -1,14 +1,14 @@
-import { HttpError } from 'restify-errors';
+import { HttpError } from "restify-errors";
 
-import type { IAuthService } from '../../@types/interfaces';
+import type { IAuthService } from "../../../@types/interfaces";
 import type {
   SignInData,
   SignReturn,
   SignUpData,
   AuthUser,
-} from '../../@types/types';
+} from "../../../@types/types";
 
-import { supabase } from '../../modules/auth';
+import { supabase } from "../../auth";
 
 class AuthService implements IAuthService {
   private readonly authService = supabase.auth;

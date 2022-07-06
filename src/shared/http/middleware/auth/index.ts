@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import { UnauthorizedError } from 'restify-errors';
 
-import { IAuthService } from '../../@types/interfaces';
+import { IAuthService } from '../../../../@types/interfaces';
 
-import { authService } from '../../services/Auth';
+import { authService } from '../../../services/Auth';
 
 class AuthMiddleware {
   constructor(private authService: IAuthService) {}
