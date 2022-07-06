@@ -8,7 +8,7 @@ import type {
   AuthUser,
 } from "../../../@types/types";
 
-import { supabase } from "../../auth";
+import { supabase } from "./connection";
 
 class AuthService implements IAuthService {
   private readonly authService = supabase.auth;
