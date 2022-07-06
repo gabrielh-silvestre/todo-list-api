@@ -10,7 +10,7 @@
     "build": "tsc && prisma migrate deploy",
     "start": "node dist/src/server.js",
     "predev": "prisma migrate dev && prisma db seed",
-    "dev": "nodemon src/server.ts",
+    "dev": "nodemon -r tsconfig-paths/register src/server.ts",
     "pretest": "prisma migrate dev && prisma db seed",
     "test": "mocha -r ts-node/register/transpile-only -r tsconfig-paths/register __tests__/**/*.spec.ts",
     "test:unit": "mocha -r ts-node/register/transpile-only -r tsconfig-paths/register __tests__/unit/**/*.spec.ts",
