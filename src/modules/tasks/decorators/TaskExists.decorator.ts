@@ -1,10 +1,10 @@
 import { NotFoundError } from "restify-errors";
 
-import type { ITasksRepository } from "../../../@types/interfaces";
-import type { TaskIdentifierById } from "../../../@types/types";
+import type { ITasksRepository } from "@projectTypes/interfaces";
+import type { TaskIdentifierById } from "@projectTypes/types";
 
 import { TasksRepository } from "../repository/TasksRepository";
-import { Constraint } from "../../../shared/utils/Decorators/Constraint";
+import { Constraint } from "@shared/utils/Decorators/Constraint";
 
 class IsTaskExistsConstraint extends Constraint<
   ITasksRepository,

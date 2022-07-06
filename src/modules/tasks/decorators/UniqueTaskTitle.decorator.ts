@@ -1,10 +1,10 @@
 import { ConflictError } from "restify-errors";
 
-import type { ITasksRepository } from "../../../@types/interfaces";
-import type { TaskIdentifierByTitle } from "../../../@types/types";
+import type { ITasksRepository } from "@projectTypes/interfaces";
+import type { TaskIdentifierByTitle } from "@projectTypes/types";
 
 import { TasksRepository } from "../repository/TasksRepository";
-import { Constraint } from "../../../shared/utils/Decorators/Constraint";
+import { Constraint } from "@shared/utils/Decorators/Constraint";
 
 class IsTaskUniqueConstraint extends Constraint<
   ITasksRepository,

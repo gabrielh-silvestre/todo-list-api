@@ -3,12 +3,12 @@ import { StatusCodes } from 'http-status-codes';
 import type {
   IUsersRepository,
   IAuthService,
-} from '../../../../@types/interfaces';
+} from '@projectTypes/interfaces';
 import type {
   TokenReturn,
   CreateUserUseCaseDTO,
   SuccessCase,
-} from '../../../../@types/types';
+} from '@projectTypes/types';
 
 class CreateUserUseCase {
   constructor(

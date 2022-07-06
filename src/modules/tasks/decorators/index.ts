@@ -1,7 +1,7 @@
 import type {
   IDecoratorConstraint,
   ITasksRepository,
-} from "../../../@types/interfaces";
+} from "@projectTypes/interfaces";
 
 function IsTaskValid<T>(constraint: IDecoratorConstraint<ITasksRepository, T>) {
   return function (_target: any, _key: string, descriptor: PropertyDescriptor) {

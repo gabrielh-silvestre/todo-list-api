@@ -1,4 +1,4 @@
-import { IDecoratorConstraint } from "../../../@types/interfaces";
+import { IDecoratorConstraint } from "@projectTypes/interfaces";
 
 abstract class Constraint<R, T> implements IDecoratorConstraint<R, T> {
   constructor(protected readonly repository: R) {}

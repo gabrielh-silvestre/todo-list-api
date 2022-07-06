@@ -1,11 +1,11 @@
 import { StatusCodes } from "http-status-codes";
 
-import type { ITasksRepository } from "../../../../@types/interfaces";
+import type { ITasksRepository } from "@projectTypes/interfaces";
 import type {
   SuccessCase,
   TaskCreateAttributes,
   TaskReturn,
-} from "../../../../@types/types";
+} from "@projectTypes/types";
 import { IsTaskValid, IsTaskTitleUnique } from "../../decorators";
 
 class CreateTaskUseCase {

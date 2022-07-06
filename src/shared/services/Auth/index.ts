@@ -1,12 +1,12 @@
 import { HttpError } from "restify-errors";
 
-import type { IAuthService } from "../../../@types/interfaces";
+import type { IAuthService } from "@projectTypes/interfaces";
 import type {
   SignInData,
   SignReturn,
   SignUpData,
   AuthUser,
-} from "../../../@types/types";
+} from "@projectTypes/types";
 
 import { supabase } from "./connection";
 

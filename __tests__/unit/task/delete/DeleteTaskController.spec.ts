@@ -9,7 +9,7 @@ import {
 } from '../../../../src/modules/tasks/useCases/deleteTask';
 
 import { newTask } from '../../../mocks/tasks';
-import { SuccessCase } from '../../../../src/@types/types';
+import { SuccessCase } from '../../../../src/typings/types';
 
 const { id, userId } = newTask;
 

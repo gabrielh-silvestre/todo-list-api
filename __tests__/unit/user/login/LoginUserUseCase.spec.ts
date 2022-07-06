@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
-import { SignReturn } from '../../../../src/@types/types';
+import { SignReturn } from '../../../../src/typings/types';
 
 import { AuthService } from '../../../../src/shared/services/Auth';
 

@@ -1,10 +1,7 @@
-import type { IUsersRepository } from '../../../@types/interfaces';
-import type {
-  UserAttributes,
-  UserCreateAttributes,
-} from '../../../@types/types';
+import type { IUsersRepository } from "@projectTypes/interfaces";
+import type { UserAttributes, UserCreateAttributes } from "@projectTypes/types";
 
-import { prisma } from '../../../shared/prisma';
+import { prisma } from "@shared/prisma";
 
 class UserRepository implements IUsersRepository {
   async create({ id, email, username }: UserCreateAttributes): Promise<void> {
