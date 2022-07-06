@@ -1,34 +1,31 @@
-import express from 'express';
+import express from "express";
 
-import { authMiddleware } from '../middleware/auth';
-import { taskValidator } from '../middleware/validate/TaskValidator';
+import { authMiddleware } from "../middleware/auth";
+import { TaskValidator } from "../middleware/validate/TaskValidator";
 
-import { createTaskController } from '../modules/tasks/useCases/createTask';
-import { deleteTaskController } from '../modules/tasks/useCases/deleteTask';
-import { updateTaskController } from '../modules/tasks/useCases/updateTask';
-import { getAllTasksController } from '../modules/tasks/useCases/getAllTasks';
-import { verifyUserController } from '../modules/users/useCases/verifyUser';
+import { createTaskController } from "../modules/tasks/useCases/createTask";
+import { deleteTaskController } from "../modules/tasks/useCases/deleteTask";
+import { updateTaskController } from "../modules/tasks/useCases/updateTask";
+import { getAllTasksController } from "../modules/tasks/useCases/getAllTasks";
+import { verifyUserController } from "../modules/users/useCases/verifyUser";
 
 const taskRouter = express.Router();
 
 taskRouter.use(authMiddleware.handle, verifyUserController.handle);
 
-taskRouter.get('/', getAllTasksController.handle);
+taskRouter.get("/", getAllTasksController.handle);
 
 taskRouter.post(
-  '/',
-  taskValidator.createValidation,
+  "/",
+  TaskValidator.createValidation,
   createTaskController.handle
 );
 
-taskRouter.delete(
-  '/:id',
-  deleteTaskController.handle
-);
+taskRouter.delete("/:id", deleteTaskController.handle);
 
 taskRouter.put(
-  '/:id',
-  taskValidator.updateValidation,
+  "/:id",
+  TaskValidator.updateValidation,
   updateTaskController.handle
 );
 

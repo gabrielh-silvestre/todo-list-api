@@ -1,20 +1,20 @@
-import express from 'express';
+import express from "express";
 
-import { createUserController } from '../modules/users/useCases/createUser';
-import { userValidator } from '../middleware/validate/UserValidator';
-import { loginUserController } from '../modules/users/useCases/loginUser';
+import { createUserController } from "../modules/users/useCases/createUser";
+import { UserValidator } from "../middleware/validate/UserValidator";
+import { loginUserController } from "../modules/users/useCases/loginUser";
 
 const userRouter = express.Router();
 
 userRouter.post(
-  '/create',
-  userValidator.createValidation,
+  "/create",
+  UserValidator.createValidation,
   createUserController.handle
 );
 
 userRouter.post(
-  '/login',
-  userValidator.loginValidation,
+  "/login",
+  UserValidator.loginValidation,
   loginUserController.handle
 );
 

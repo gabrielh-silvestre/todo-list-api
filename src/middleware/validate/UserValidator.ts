@@ -1,47 +1,27 @@
-import type { Request, Response, NextFunction } from 'express';
-import Joi from 'joi';
+import { celebrate, Joi, Segments } from "celebrate";
 
-import type { IUserValidator } from '../../@types/interfaces';
-import { errorFormatter } from '../../utils';
-
-class UserValidator implements IUserValidator {
-  private createUserSchema: Joi.ObjectSchema;
-  private loginUserSchema: Joi.ObjectSchema;
-
-  constructor() {
-    this.createUserSchema = Joi.object({
+class UserValidator {
+  private static readonly CREATE_VALIDATOR = celebrate({
+    [Segments.BODY]: Joi.object({
       email: Joi.string().email().required(),
       username: Joi.string().min(3).max(10).required(),
       password: Joi.string().min(6).max(16).alphanum().required(),
-    });
-
-    this.loginUserSchema = Joi.object({
+    }),
+  });
+  private static readonly LOGIN_VALIDATOR = celebrate({
+    [Segments.BODY]: Joi.object({
       email: Joi.string().email().required(),
       password: Joi.string().required(),
-    });
+    }),
+  });
+
+  static get createValidation() {
+    return UserValidator.CREATE_VALIDATOR;
   }
 
-  createValidation = (req: Request, _res: Response, next: NextFunction) => {
-    const { error } = this.createUserSchema.validate(req.body);
-
-    if (error) {
-      const err = errorFormatter(error.details[0].message);
-      return next(err);
-    }
-
-    next();
-  };
-
-  loginValidation = (req: Request, _res: Response, next: NextFunction) => {
-    const { error } = this.loginUserSchema.validate(req.body);
-
-    if (error) {
-      const err = errorFormatter(error.details[0].message);
-      return next(err);
-    }
-
-    next();
-  };
+  static get loginValidation() {
+    return UserValidator.LOGIN_VALIDATOR;
+  }
 }
 
-export const userValidator = new UserValidator();
+export { UserValidator };
