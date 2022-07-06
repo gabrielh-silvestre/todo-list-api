@@ -7,7 +7,7 @@ import chaiHTTP from 'chai-http';
 
 import { SignReturn } from '../../../src/@types/types';
 
-import { AuthService } from '../../../src/services/Auth';
+import { AuthService } from '../../../src/shared/services/Auth';
 
 import { newUser } from '../../mocks/users';
 import { app } from '../../../src/app';
