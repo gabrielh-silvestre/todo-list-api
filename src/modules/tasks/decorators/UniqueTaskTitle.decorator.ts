@@ -4,12 +4,21 @@ import type { ITasksRepository } from "../../../@types/interfaces";
 import type { TaskIdentifierByTitle } from "../../../@types/types";
 
 import { TasksRepository } from "../repository/TasksRepository";
+import { Constraint } from "../../../shared/utils/Decorators/Constraint";
 
-class IsTaskUniqueConstraint {
-  constructor(private readonly tasksRepository: ITasksRepository) {}
+class IsTaskUniqueConstraint extends Constraint<
+  ITasksRepository,
+  TaskIdentifierByTitle
+> {
+  constructor() {
+    super(new TasksRepository());
+  }
 
-  async validate(userId: string, title: string) {
-    const tasks = await this.tasksRepository.findByExactTitle({
+  async validate({
+    title,
+    userId,
+  }: TaskIdentifierByTitle): Promise<void | never> {
+    const tasks = await this.repository.findByExactTitle({
       userId,
       title,
     });
@@ -20,18 +29,4 @@ class IsTaskUniqueConstraint {
   }
 }
 
-function IsTaskTitleUnique() {
-  const constraint = new IsTaskUniqueConstraint(new TasksRepository());
-
-  return function (_target: any, _key: string, descriptor: PropertyDescriptor) {
-    const original = descriptor.value;
-
-    descriptor.value = async function (args: TaskIdentifierByTitle) {
-      await constraint.validate(args.userId, args.title);
-
-      return original.apply(this, [args]);
-    };
-  };
-}
-
-export { IsTaskTitleUnique };
+export const IsTaskTitleUnique = new IsTaskUniqueConstraint();

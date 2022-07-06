@@ -4,12 +4,18 @@ import type { ITasksRepository } from "../../../@types/interfaces";
 import type { TaskIdentifierById } from "../../../@types/types";
 
 import { TasksRepository } from "../repository/TasksRepository";
+import { Constraint } from "../../../shared/utils/Decorators/Constraint";
 
-class IsTaskExistsConstraint {
-  constructor(private readonly tasksRepository: ITasksRepository) {}
+class IsTaskExistsConstraint extends Constraint<
+  ITasksRepository,
+  TaskIdentifierById
+> {
+  constructor() {
+    super(new TasksRepository());
+  }
 
-  async validate(userId: string, id: string) {
-    const task = await this.tasksRepository.findById({
+  async validate({ id, userId }: TaskIdentifierById): Promise<void | never> {
+    const task = await this.repository.findById({
       userId,
       id,
     });
@@ -20,18 +26,4 @@ class IsTaskExistsConstraint {
   }
 }
 
-function IsTaskExists() {
-  const constraint = new IsTaskExistsConstraint(new TasksRepository());
-
-  return function (_target: any, _key: string, descriptor: PropertyDescriptor) {
-    const original = descriptor.value;
-
-    descriptor.value = async function (args: TaskIdentifierById) {
-      await constraint.validate(args.userId, args.id);
-
-      return original.apply(this, [args]);
-    };
-  };
-}
-
-export { IsTaskExists };
+export const IsTaskExists = new IsTaskExistsConstraint();
