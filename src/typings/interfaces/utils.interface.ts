@@ -1,5 +1,3 @@
-interface DecoratorConstraint<R, T> {
+export interface IDecoratorConstraint<T> {
   validate(data: T): Promise<void | never>;
 }
-
-export type IDecoratorConstraint<R, T> = DecoratorConstraint<R, T>;

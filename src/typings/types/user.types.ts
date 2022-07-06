@@ -1,26 +1,21 @@
-import { User } from '@supabase/supabase-js';
+import { User } from "@supabase/supabase-js";
 
-type Attributes = {
+export type UserAttributes = {
   id: string;
   username: string;
   email: string;
 };
 
-type CreateAttributes = Attributes;
+export type UserCreateAttributes = UserAttributes;
 
-type Token = {
+export type TokenReturn = {
   token: string;
-}
+};
 
-type CreateUseCase = Omit<Attributes, 'id'> & {
+export type CreateUserUseCaseDTO = Omit<UserAttributes, "id"> & {
   password: string;
 };
 
-type LoginUseCase = Omit<CreateUseCase, 'username'>;
+export type LoginUserUseCaseDTO = Omit<CreateUserUseCaseDTO, "username">;
 
-export type UserAttributes = Attributes;
-export type UserCreateAttributes = CreateAttributes;
 export type AuthUser = User;
-export type TokenReturn = Token;
-export type LoginUserUseCaseDTO = LoginUseCase;
-export type CreateUserUseCaseDTO = CreateUseCase;

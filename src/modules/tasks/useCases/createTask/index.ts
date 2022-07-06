@@ -1,6 +1,6 @@
-import { TasksRepository } from '../../repository/TasksRepository';
-import { CreateTaskUseCase } from './CreateTaskUseCase';
-import { CreateTaskController } from './CreateTaskController';
+import { TasksRepository } from "../../repository/TasksRepository";
+import { CreateTaskController } from "./CreateTaskController";
+import { CreateTaskUseCase } from "./CreateTaskUseCase";
 
 const taskRepository = new TasksRepository();
 const createTaskUseCase = new CreateTaskUseCase(taskRepository);

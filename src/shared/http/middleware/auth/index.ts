@@ -1,7 +1,6 @@
+import { IAuthService } from "@projectTypes/interfaces";
 import { NextFunction, Request, Response } from "express";
 import { UnauthorizedError } from "restify-errors";
-
-import { IAuthService } from "@projectTypes/interfaces";
 
 import { authService } from "../../../services/Auth";
 
@@ -16,7 +15,7 @@ class AuthMiddleware {
       return next(err);
     }
 
-    const [_, token] = authorization.split(" ");
+    const [, token] = authorization.split(" ");
 
     const user = await this.authService.getUser(token);
 

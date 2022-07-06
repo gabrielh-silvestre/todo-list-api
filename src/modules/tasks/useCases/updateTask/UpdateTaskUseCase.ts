@@ -1,11 +1,10 @@
-import { StatusCodes } from "http-status-codes";
-
 import type { ITasksRepository } from "@projectTypes/interfaces";
 import type {
   TaskUpdateAttributes,
   TaskReturn,
   SuccessCase,
 } from "@projectTypes/types";
+import { StatusCodes } from "http-status-codes";
 
 import { IsTaskValid, IsTaskExists } from "../../decorators";
 

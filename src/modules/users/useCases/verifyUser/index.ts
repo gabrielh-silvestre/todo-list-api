@@ -1,6 +1,6 @@
-import { UserRepository } from '../../repository/UsersRepository';
-import { VerifyUserUseCase } from './VerifyUserUseUseCase';
-import { VerifyUserController } from './VerifyUserController';
+import { UserRepository } from "../../repository/UsersRepository";
+import { VerifyUserController } from "./VerifyUserController";
+import { VerifyUserUseCase } from "./VerifyUserUseUseCase";
 
 const userRepository = new UserRepository();
 const verifyUserUseCase = new VerifyUserUseCase(userRepository);
