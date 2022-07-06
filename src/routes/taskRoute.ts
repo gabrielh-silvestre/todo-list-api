@@ -1,7 +1,7 @@
 import express from "express";
 
 import { authMiddleware } from "../middleware/auth";
-import { TaskValidator } from "../middleware/validate/TaskValidator";
+import { TaskValidator } from "../middleware/Validators/TaskValidator";
 
 import { createTaskController } from "../modules/tasks/useCases/createTask";
 import { deleteTaskController } from "../modules/tasks/useCases/deleteTask";
