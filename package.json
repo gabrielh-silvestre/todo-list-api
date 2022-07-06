@@ -12,10 +12,10 @@
     "predev": "prisma migrate dev && prisma db seed",
     "dev": "nodemon src/server.ts",
     "pretest": "prisma migrate dev && prisma db seed",
-    "test": "mocha -r ts-node/register/transpile-only __tests__/**/*.spec.ts",
-    "test:unit": "mocha -r ts-node/register/transpile-only __tests__/unit/**/*.spec.ts",
-    "test:integration": "mocha -r ts-node/register/transpile-only __tests__/integration/**/*.spec.ts",
-    "test:result": "mocha -R json -O output=test-results.json -r ts-node/register/transpile-only __tests__/**/*.spec.ts",
+    "test": "mocha -r ts-node/register/transpile-only -r tsconfig-paths/register __tests__/**/*.spec.ts",
+    "test:unit": "mocha -r ts-node/register/transpile-only -r tsconfig-paths/register __tests__/unit/**/*.spec.ts",
+    "test:integration": "mocha -r ts-node/register/transpile-only -r tsconfig-paths/register __tests__/integration/**/*.spec.ts",
+    "test:result": "mocha -R json -O output=test-results.json -r ts-node/register/transpile-only -r tsconfig-paths/register __tests__/**/*.spec.ts",
     "test:coverage": "nyc npm test"
   },
   "keywords": [],
@@ -63,6 +63,7 @@
     "shelljs": "^0.8.5",
     "sinon": "^13.0.1",
     "ts-node": "^10.7.0",
+    "tsconfig-paths": "^4.0.0",
     "typescript": "^4.6.3"
   }
 }
