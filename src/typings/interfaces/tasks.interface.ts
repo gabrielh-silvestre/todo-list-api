@@ -1,4 +1,4 @@
-import { Handler } from 'express';
+import { Handler } from "express";
 
 import type {
   TaskCreateAttributes,
@@ -7,9 +7,9 @@ import type {
   TaskIdentifierByUser,
   TaskReturn,
   TaskUpdateAttributes,
-} from '../types';
+} from "../types";
 
-interface TasksRepository {
+export interface ITasksRepository {
   create(newTaskAttributes: TaskCreateAttributes): Promise<TaskReturn>;
   update(taskToUpdate: TaskUpdateAttributes): Promise<TaskReturn>;
   findAll(userIdentifier: TaskIdentifierByUser): Promise<TaskReturn[]>;
@@ -20,9 +20,6 @@ interface TasksRepository {
   delete(taskIdentifier: TaskIdentifierById): Promise<void>;
 }
 
-interface TaskValidator {
+export interface ITaskValidator {
   createValidation: Handler;
 }
-
-export type ITasksRepository = TasksRepository;
-export type ITaskValidator = TaskValidator;

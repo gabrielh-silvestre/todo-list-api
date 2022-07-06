@@ -3,8 +3,8 @@ import { NextFunction, request, response } from 'express';
 import { expect } from 'chai';
 import Sinon from 'sinon';
 
-import { SuccessCase } from '../../../../src/@types/types';
-import { TaskReturn } from '../../../../src/@types/types';
+import { SuccessCase } from '../../../../src/typings/types';
+import { TaskReturn } from '../../../../src/typings/types';
 
 import {
   updateTaskUseCase,

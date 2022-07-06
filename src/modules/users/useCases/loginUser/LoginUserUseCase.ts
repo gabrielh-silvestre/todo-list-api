@@ -1,14 +1,10 @@
-import { StatusCodes } from 'http-status-codes';
-
-import type {
-  IUsersRepository,
-  IAuthService,
-} from '../../../../@types/interfaces';
+import type { IUsersRepository, IAuthService } from "@projectTypes/interfaces";
 import type {
   LoginUserUseCaseDTO,
   SuccessCase,
   TokenReturn,
-} from '../../../../@types/types';
+} from "@projectTypes/types";
+import { StatusCodes } from "http-status-codes";
 
 class LoginUserUseCase {
   constructor(

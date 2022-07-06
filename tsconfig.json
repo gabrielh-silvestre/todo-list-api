@@ -4,13 +4,21 @@
     "target": "ES2016",
     "rootDir": ".",
     "outDir": "./dist",
+    "baseUrl": ".",
     "esModuleInterop": true,
     "strict": true,
     "strictPropertyInitialization": false,
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
     "experimentalDecorators": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "@shared/*": ["src/shared/*"],
+      "@modules/*": ["src/modules/*"],
+      "@config/*": ["src/config/*"],
+      "@projectTypes/*": ["src/typings/*"],
+    }
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "__tests__"],
 }

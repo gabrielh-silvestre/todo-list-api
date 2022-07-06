@@ -1,6 +1,6 @@
-import type { Handler, NextFunction, Request, Response } from 'express';
+import type { Handler, NextFunction, Request, Response } from "express";
 
-import type { GetAllTasksUseCase } from './GetAllTasksUseCase';
+import type { GetAllTasksUseCase } from "./GetAllTasksUseCase";
 
 class GetAllTasksController {
   constructor(private getAllTasksUseCase: GetAllTasksUseCase) {}
@@ -13,7 +13,7 @@ class GetAllTasksController {
         userId,
       });
 
-      return res.status(statusCode).json(data);
+      res.status(statusCode).json(data);
     } catch (err) {
       next(err);
     }

@@ -1,11 +1,10 @@
-import { StatusCodes } from 'http-status-codes';
-
-import type { ITasksRepository } from '../../../../@types/interfaces';
+import type { ITasksRepository } from "@projectTypes/interfaces";
 import type {
   TaskReturn,
   SuccessCase,
   TaskIdentifierByUser,
-} from '../../../../@types/types';
+} from "@projectTypes/types";
+import { StatusCodes } from "http-status-codes";
 
 class GetAllTasksUseCase {
   constructor(private tasksRepository: ITasksRepository) {}

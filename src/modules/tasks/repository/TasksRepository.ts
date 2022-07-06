@@ -1,4 +1,4 @@
-import type { ITasksRepository } from '../../../@types/interfaces';
+import type { ITasksRepository } from "@projectTypes/interfaces";
 import type {
   TaskCreateAttributes,
   TaskIdentifierById,
@@ -6,9 +6,9 @@ import type {
   TaskIdentifierByUser,
   TaskReturn,
   TaskUpdateAttributes,
-} from '../../../@types/types';
+} from "@projectTypes/types";
 
-import { prisma } from '../../../shared/prisma';
+import { prisma } from "@shared/prisma";
 
 class TasksRepository implements ITasksRepository {
   async create({

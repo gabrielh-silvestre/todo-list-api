@@ -1,7 +1,6 @@
+import type { ITasksRepository } from "@projectTypes/interfaces";
+import type { TaskIdentifierById, SuccessCase } from "@projectTypes/types";
 import { StatusCodes } from "http-status-codes";
-
-import type { ITasksRepository } from "../../../../@types/interfaces";
-import type { TaskIdentifierById, SuccessCase } from "../../../../@types/types";
 
 import { IsTaskValid, IsTaskExists } from "../../decorators";
 

@@ -1,8 +1,8 @@
 import express from "express";
 
 import { createUserController } from "../../../modules/users/useCases/createUser";
-import { UserValidator } from "../middleware/Validators/UserValidator";
 import { loginUserController } from "../../../modules/users/useCases/loginUser";
+import { UserValidator } from "../middleware/Validators/UserValidator";
 
 const userRouter = express.Router();
 
