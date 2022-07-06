@@ -1,27 +1,47 @@
-import type { NextFunction, Request, Response } from "express";
-
-import { HttpError, InternalServerError } from "restify-errors";
+import { CelebrateError } from "celebrate";
+import type { ErrorRequestHandler } from "express";
+import {
+  BadRequestError,
+  HttpError,
+  InternalServerError,
+  UnprocessableEntityError,
+} from "restify-errors";
 
 class ErrorHandler {
-  private static readonly normalize = (err: HttpError | Error): HttpError => {
+  private static readonly normalizeJoiError = (
+    errorMessage: string
+  ): HttpError => {
+    return errorMessage.includes("required")
+      ? new BadRequestError(errorMessage)
+      : new UnprocessableEntityError(errorMessage);
+  };
+
+  private static readonly normalize = (
+    err: HttpError | CelebrateError | Error
+  ): HttpError => {
     if (err instanceof HttpError) {
       return err;
+    }
+
+    if (err instanceof CelebrateError) {
+      let error: HttpError = new BadRequestError(err, "Validation Error");
+
+      err.details.forEach((detail) => {
+        error = ErrorHandler.normalizeJoiError(detail.message);
+      });
+
+      return error;
     }
 
     console.error(err);
     return new InternalServerError(err, "Internal Server Error");
   };
 
-  static handler(
-    err: Error | HttpError,
-    _req: Request,
-    res: Response,
-    _next: NextFunction
-  ) {
+  static handler: ErrorRequestHandler = (err, _req, res, _next) => {
     const error = ErrorHandler.normalize(err);
 
     res.status(error.statusCode).json({ message: error.message });
-  }
+  };
 }
 
 export { ErrorHandler };
