@@ -3,7 +3,7 @@ import Sinon from 'sinon';
 
 import { SignReturn } from '../../../../src/@types/types';
 
-import { AuthService } from '../../../../src/services/Auth';
+import { AuthService } from '../../../../src/shared/services/Auth';
 
 import { UserRepository } from '../../../../src/modules/users/repository/UsersRepository';
 import { loginUserUseCase } from '../../../../src/modules/users/useCases/loginUser';

@@ -1,8 +1,8 @@
-import { authService } from '../../../../services/Auth';
+import { authService } from "../../../../shared/services/Auth";
 
-import { UserRepository } from '../../repository/UsersRepository';
-import { CreateUserUseCase } from './CreateUserUseCase';
-import { CreateUserController } from './CreateUserController';
+import { UserRepository } from "../../repository/UsersRepository";
+import { CreateUserUseCase } from "./CreateUserUseCase";
+import { CreateUserController } from "./CreateUserController";
 
 const userRepository = new UserRepository();
 const createUserUseCase = new CreateUserUseCase(userRepository, authService);
