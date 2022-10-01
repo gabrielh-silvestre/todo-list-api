@@ -5,18 +5,29 @@ import type {
   TaskReturn,
 } from "@projectTypes/types";
 import { StatusCodes } from "http-status-codes";
-
-import { IsTaskValid, IsTaskTitleUnique } from "../../decorators";
+import { ConflictError } from "restify-errors";
 
 class CreateTaskUseCase {
   constructor(private taskRepository: ITasksRepository) {}
 
-  @IsTaskValid(IsTaskTitleUnique)
+  private async isTaskUnique(
+    userId: string,
+    title: string
+  ): Promise<void | never> {
+    const task = await this.taskRepository.findByExactTitle({ title, userId });
+
+    if (task.length > 0) {
+      throw new ConflictError("Task with this title already exists");
+    }
+  }
+
   async execute({
     title,
     description,
     userId,
   }: TaskCreateAttributes): Promise<SuccessCase<TaskReturn> | never> {
+    await this.isTaskUnique(userId, title);
+
     const newTask = await this.taskRepository.create({
       title,
       description,
