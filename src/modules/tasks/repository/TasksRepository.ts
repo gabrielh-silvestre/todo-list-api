@@ -20,7 +20,7 @@ class TasksRepository implements ITasksRepository {
       data: {
         title,
         description,
-        user: { connect: { id: userId } },
+        userId,
       },
       select: {
         id: true,
