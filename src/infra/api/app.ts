@@ -3,9 +3,9 @@ import cors from "cors";
 import express from "express";
 import swaggerUi from "swagger-ui-express";
 
-import { ErrorHandler } from "./shared/http/middleware/ErrorHandler";
-import { taskRouter } from "./shared/http/routes/taskRoute";
-import swaggerFile from "./swagger.json";
+import { ErrorHandler } from "./http/middleware/ErrorHandler";
+import { taskRouter } from "./http/routes/taskRoute";
+import swaggerFile from "../../swagger.json";
 
 const app = express();
 

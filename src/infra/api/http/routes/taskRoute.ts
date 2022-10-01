@@ -1,9 +1,9 @@
 import express from "express";
 
-import { createTaskController } from "../../../modules/tasks/useCases/createTask";
-import { deleteTaskController } from "../../../modules/tasks/useCases/deleteTask";
-import { getAllTasksController } from "../../../modules/tasks/useCases/getAllTasks";
-import { updateTaskController } from "../../../modules/tasks/useCases/updateTask";
+import { createTaskController } from "@useCases/task/create";
+import { deleteTaskController } from "@useCases/task/delete";
+import { getAllTasksController } from "@useCases/task/findAll";
+import { updateTaskController } from "@useCases/task/update";
 import { authMiddleware } from "../middleware/auth";
 import { TaskValidator } from "../middleware/Validators/TaskValidator";
 

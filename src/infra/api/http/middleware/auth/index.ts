@@ -2,7 +2,7 @@ import { IAuthService } from "@projectTypes/interfaces";
 import { NextFunction, Request, Response } from "express";
 import { UnauthorizedError } from "restify-errors";
 
-import { authService } from "../../../services/Auth";
+import { authService } from "../../../../../shared/services/Auth";
 
 class AuthMiddleware {
   constructor(private authService: IAuthService) {}

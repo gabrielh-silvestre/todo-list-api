@@ -2,7 +2,7 @@ import { expect } from "chai";
 import Sinon from "sinon";
 
 import { TasksRepositoryInMemory } from "../../../../src/infra/task/repository/memory/Task.repository";
-import { GetAllTasksUseCase } from "../../../../src/modules/tasks/useCases/getAllTasks/GetAllTasksUseCase";
+import { GetAllTasksUseCase } from "../../../../src/useCases/task/findAll/GetAllTasksUseCase";
 
 import { tasks } from "../../../mocks/tasks";
 

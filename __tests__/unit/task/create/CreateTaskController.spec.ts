@@ -1,17 +1,17 @@
-import { NextFunction, request, response } from 'express';
-import { Task } from '@prisma/client';
+import { NextFunction, request, response } from "express";
+import { Task } from "@prisma/client";
 
-import { expect } from 'chai';
-import Sinon from 'sinon';
+import { expect } from "chai";
+import Sinon from "sinon";
 
-import { SuccessCase } from '../../../../src/typings/types';
+import { SuccessCase } from "../../../../src/typings/types";
 
 import {
   createTaskUseCase,
   createTaskController,
-} from '../../../../src/modules/tasks/useCases/createTask';
+} from "../../../../src/useCases/task/create";
 
-import { newTask } from '../../../mocks/tasks';
+import { newTask } from "../../../mocks/tasks";
 
 const { title, description, userId } = newTask;
 
@@ -20,9 +20,9 @@ const SUCCESS_RESPONSE: SuccessCase<Task> = {
   data: newTask,
 };
 
-const ERROR_RESPONSE = new Error('Test error');
+const ERROR_RESPONSE = new Error("Test error");
 
-describe('Test CreateTaskController', () => {
+describe("Test CreateTaskController", () => {
   let useCaseStub: Sinon.SinonStub;
   let spiedStatus: Sinon.SinonSpy;
   let spiedJson: Sinon.SinonSpy;
@@ -32,9 +32,9 @@ describe('Test CreateTaskController', () => {
   } as { next: NextFunction };
 
   before(() => {
-    spiedStatus = Sinon.spy(response, 'status');
-    spiedJson = Sinon.spy(response, 'json');
-    spiedNext = Sinon.spy(next, 'next');
+    spiedStatus = Sinon.spy(response, "status");
+    spiedJson = Sinon.spy(response, "json");
+    spiedNext = Sinon.spy(next, "next");
   });
 
   after(() => {
@@ -43,9 +43,9 @@ describe('Test CreateTaskController', () => {
     spiedNext.restore();
   });
 
-  describe('Success case', () => {
+  describe("Success case", () => {
     before(() => {
-      useCaseStub = Sinon.stub(createTaskUseCase, 'execute');
+      useCaseStub = Sinon.stub(createTaskUseCase, "execute");
       useCaseStub.resolves(SUCCESS_RESPONSE);
 
       request.body = { title, description, userId };
@@ -55,23 +55,23 @@ describe('Test CreateTaskController', () => {
       useCaseStub.restore();
     });
 
-    it('should return an response with status 201 and new task on body', async () => {
+    it("should return an response with status 201 and new task on body", async () => {
       await createTaskController.handle(request, response, next.next);
 
       expect(spiedStatus.calledWith(201)).to.be.true;
 
-      expect(spiedJson.args[0][0]).to.be.an('object');
-      expect(spiedJson.args[0][0]).to.have.property('id');
-      expect(spiedJson.args[0][0]).to.have.property('title');
-      expect(spiedJson.args[0][0]).to.have.property('description');
-      expect(spiedJson.args[0][0]).to.have.property('status');
-      expect(spiedJson.args[0][0]).to.have.property('updatedAt');
+      expect(spiedJson.args[0][0]).to.be.an("object");
+      expect(spiedJson.args[0][0]).to.have.property("id");
+      expect(spiedJson.args[0][0]).to.have.property("title");
+      expect(spiedJson.args[0][0]).to.have.property("description");
+      expect(spiedJson.args[0][0]).to.have.property("status");
+      expect(spiedJson.args[0][0]).to.have.property("updatedAt");
     });
   });
 
-  describe('Error case', () => {
+  describe("Error case", () => {
     before(() => {
-      useCaseStub = Sinon.stub(createTaskUseCase, 'execute');
+      useCaseStub = Sinon.stub(createTaskUseCase, "execute");
       useCaseStub.rejects(ERROR_RESPONSE);
 
       request.body = { title, description, userId };

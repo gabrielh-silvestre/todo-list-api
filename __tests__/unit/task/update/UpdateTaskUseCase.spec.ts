@@ -1,7 +1,7 @@
 import { expect } from "chai";
 
 import { TasksRepositoryInMemory } from "../../../../src/infra/task/repository/memory/Task.repository";
-import { UpdateTaskUseCase } from "../../../../src/modules/tasks/useCases/updateTask/UpdateTaskUseCase";
+import { UpdateTaskUseCase } from "../../../../src/useCases/task/update/UpdateTaskUseCase";
 
 import { newTask, tasks } from "../../../mocks/tasks";
 

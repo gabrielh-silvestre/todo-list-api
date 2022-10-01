@@ -1,17 +1,17 @@
-import { NextFunction, request, response } from 'express';
+import { NextFunction, request, response } from "express";
 
-import { expect } from 'chai';
-import Sinon from 'sinon';
+import { expect } from "chai";
+import Sinon from "sinon";
 
-import { SuccessCase } from '../../../../src/typings/types';
-import { TaskReturn } from '../../../../src/typings/types';
+import { SuccessCase } from "../../../../src/typings/types";
+import { TaskReturn } from "../../../../src/typings/types";
 
 import {
   getAllTasksUseCase,
   getAllTasksController,
-} from '../../../../src/modules/tasks/useCases/getAllTasks';
+} from "../../../../src/useCases/task/findAll";
 
-import { tasks } from '../../../mocks/tasks';
+import { tasks } from "../../../mocks/tasks";
 
 const [{ userId }] = tasks;
 
@@ -20,9 +20,9 @@ const SUCCESS_RESPONSE: SuccessCase<TaskReturn[]> = {
   data: tasks,
 };
 
-const ERROR_RESPONSE = new Error('Test error');
+const ERROR_RESPONSE = new Error("Test error");
 
-describe('Test GetAllTasksController', () => {
+describe("Test GetAllTasksController", () => {
   let useCaseStub: Sinon.SinonStub;
   let spiedStatus: Sinon.SinonSpy;
   let spiedJson: Sinon.SinonSpy;
@@ -32,9 +32,9 @@ describe('Test GetAllTasksController', () => {
   } as { next: NextFunction };
 
   before(() => {
-    spiedStatus = Sinon.spy(response, 'status');
-    spiedJson = Sinon.spy(response, 'json');
-    spiedNext = Sinon.spy(next, 'next');
+    spiedStatus = Sinon.spy(response, "status");
+    spiedJson = Sinon.spy(response, "json");
+    spiedNext = Sinon.spy(next, "next");
   });
 
   after(() => {
@@ -43,9 +43,9 @@ describe('Test GetAllTasksController', () => {
     spiedNext.restore();
   });
 
-  describe('Success case', () => {
+  describe("Success case", () => {
     before(() => {
-      useCaseStub = Sinon.stub(getAllTasksUseCase, 'execute');
+      useCaseStub = Sinon.stub(getAllTasksUseCase, "execute");
       useCaseStub.resolves(SUCCESS_RESPONSE);
 
       request.body = { userId };
@@ -55,24 +55,24 @@ describe('Test GetAllTasksController', () => {
       useCaseStub.restore();
     });
 
-    it('should return an response with status 200 and tasks on body', async () => {
+    it("should return an response with status 200 and tasks on body", async () => {
       await getAllTasksController.handle(request, response, next.next);
 
       expect(spiedStatus.calledWith(200)).to.be.true;
-      expect(spiedJson.args[0][0]).to.be.an('array');
-      expect(spiedJson.args[0][0][0]).to.be.an('object');
+      expect(spiedJson.args[0][0]).to.be.an("array");
+      expect(spiedJson.args[0][0][0]).to.be.an("object");
 
-      expect(spiedJson.args[0][0][0]).to.have.property('id');
-      expect(spiedJson.args[0][0][0]).to.have.property('title');
-      expect(spiedJson.args[0][0][0]).to.have.property('description');
-      expect(spiedJson.args[0][0][0]).to.have.property('status');
-      expect(spiedJson.args[0][0][0]).to.have.property('updatedAt');
+      expect(spiedJson.args[0][0][0]).to.have.property("id");
+      expect(spiedJson.args[0][0][0]).to.have.property("title");
+      expect(spiedJson.args[0][0][0]).to.have.property("description");
+      expect(spiedJson.args[0][0][0]).to.have.property("status");
+      expect(spiedJson.args[0][0][0]).to.have.property("updatedAt");
     });
   });
 
-  describe('Error case', () => {
+  describe("Error case", () => {
     before(() => {
-      useCaseStub = Sinon.stub(getAllTasksUseCase, 'execute');
+      useCaseStub = Sinon.stub(getAllTasksUseCase, "execute");
       useCaseStub.rejects(ERROR_RESPONSE);
 
       request.body = { userId };

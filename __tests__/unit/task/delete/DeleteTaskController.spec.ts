@@ -1,15 +1,15 @@
-import { NextFunction, request, response } from 'express';
+import { NextFunction, request, response } from "express";
 
-import { expect } from 'chai';
-import Sinon from 'sinon';
+import { expect } from "chai";
+import Sinon from "sinon";
 
 import {
   deleteTaskUseCase,
   deleteTaskController,
-} from '../../../../src/modules/tasks/useCases/deleteTask';
+} from "../../../../src/useCases/task/delete";
 
-import { newTask } from '../../../mocks/tasks';
-import { SuccessCase } from '../../../../src/typings/types';
+import { newTask } from "../../../mocks/tasks";
+import { SuccessCase } from "../../../../src/typings/types";
 
 const { id, userId } = newTask;
 
@@ -18,9 +18,9 @@ const SUCCESS_RESPONSE: SuccessCase<null> = {
   data: null,
 };
 
-const ERROR_RESPONSE = new Error('Test error');
+const ERROR_RESPONSE = new Error("Test error");
 
-describe('Test DeleteTaskController', () => {
+describe("Test DeleteTaskController", () => {
   let useCaseStub: Sinon.SinonStub;
   let spiedStatus: Sinon.SinonSpy;
   let spiedEnd: Sinon.SinonSpy;
@@ -30,9 +30,9 @@ describe('Test DeleteTaskController', () => {
   } as { next: NextFunction };
 
   before(() => {
-    spiedStatus = Sinon.spy(response, 'status');
-    spiedEnd = Sinon.spy(response, 'end');
-    spiedNext = Sinon.spy(next, 'next');
+    spiedStatus = Sinon.spy(response, "status");
+    spiedEnd = Sinon.spy(response, "end");
+    spiedNext = Sinon.spy(next, "next");
   });
 
   after(() => {
@@ -41,9 +41,9 @@ describe('Test DeleteTaskController', () => {
     spiedNext.restore();
   });
 
-  describe('Success case', () => {
+  describe("Success case", () => {
     before(() => {
-      useCaseStub = Sinon.stub(deleteTaskUseCase, 'execute');
+      useCaseStub = Sinon.stub(deleteTaskUseCase, "execute");
       useCaseStub.resolves(SUCCESS_RESPONSE);
 
       request.params = { id };
@@ -54,7 +54,7 @@ describe('Test DeleteTaskController', () => {
       useCaseStub.restore();
     });
 
-    it('should return an response with status 204 and no body', async () => {
+    it("should return an response with status 204 and no body", async () => {
       await deleteTaskController.handle(request, response, next.next);
 
       expect(spiedStatus.calledWith(204)).to.be.true;
@@ -62,9 +62,9 @@ describe('Test DeleteTaskController', () => {
     });
   });
 
-  describe('Error case', () => {
+  describe("Error case", () => {
     before(() => {
-      useCaseStub = Sinon.stub(deleteTaskUseCase, 'execute');
+      useCaseStub = Sinon.stub(deleteTaskUseCase, "execute");
       useCaseStub.rejects(ERROR_RESPONSE);
 
       request.params = { id };

@@ -9,7 +9,7 @@ import { AuthService } from "../../../src/shared/services/Auth";
 
 import { newTask } from "../../mocks/tasks";
 import { users } from "../../mocks/users";
-import { app } from "../../../src/app";
+import { app } from "../../../src/infra/api/app";
 
 chai.use(chaiHTTP);
 
