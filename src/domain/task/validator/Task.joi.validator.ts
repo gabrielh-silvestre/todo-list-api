@@ -1,5 +1,5 @@
 import Joi from "joi";
-import type { IValidator } from "src/domain/shared/validator/validator.interface";
+import type { IValidator } from "@domain/shared/validator/validator.interface";
 import type { ITask } from "../entity/Task.interface";
 
 export class TaskJoiValidator implements IValidator<ITask> {

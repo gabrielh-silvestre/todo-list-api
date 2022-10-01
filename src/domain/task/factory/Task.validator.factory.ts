@@ -1,4 +1,4 @@
-import type { IValidator } from "src/domain/shared/validator/validator.interface";
+import type { IValidator } from "@domain/shared/validator/validator.interface";
 import type { ITask } from "../entity/Task.interface";
 
 import { TaskJoiValidator } from "../validator/Task.joi.validator";

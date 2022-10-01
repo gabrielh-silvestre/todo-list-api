@@ -1,4 +1,4 @@
-import { IRepository } from "src/domain/shared/repository/repository.interface";
+import { IRepository } from "@domain/shared/repository/repository.interface";
 import { Task } from "../entity/Task";
 
 export interface ITaskRepository

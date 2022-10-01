@@ -13,6 +13,7 @@
     "experimentalDecorators": true,
     "skipLibCheck": true,
     "paths": {
+      "@domain/*": ["./src/domain/*"],
       "@shared/*": ["src/shared/*"],
       "@modules/*": ["src/modules/*"],
       "@config/*": ["src/config/*"],
