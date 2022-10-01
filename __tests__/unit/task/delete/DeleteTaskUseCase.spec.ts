@@ -1,66 +1,46 @@
-import { expect } from 'chai';
-import Sinon from 'sinon';
+import { expect } from "chai";
 
-import { TasksRepository } from '../../../../src/modules/tasks/repository/TasksRepository';
-import { deleteTaskUseCase } from '../../../../src/modules/tasks/useCases/deleteTask';
+import { TasksRepositoryInMemory } from "../../../../src/infra/task/repository/memory/Task.repository";
+import { DeleteTaskUseCase } from "../../../../src/useCases/task/delete/DeleteTaskUseCase";
 
-import { newTask, tasks } from '../../../mocks/tasks';
+import { newTask } from "../../../mocks/tasks";
 
-const [foundTask] = tasks;
 const { id, userId } = newTask;
 
-describe('Test DeleteTaskUseCase', () => {
-  let findByIdStub: Sinon.SinonStub;
-  let deleteStub: Sinon.SinonStub;
+const taskRepositoryInMemory = new TasksRepositoryInMemory();
+const deleteTaskUseCase = new DeleteTaskUseCase(taskRepositoryInMemory);
 
-  describe('Success case', () => {
-    before(() => {
-      findByIdStub = Sinon.stub(TasksRepository.prototype, 'findById');
-      findByIdStub.resolves(foundTask);
+describe("Test DeleteTaskUseCase", () => {
+  before(() => {
+    taskRepositoryInMemory.create(newTask);
+  });
 
-      deleteStub = Sinon.stub(TasksRepository.prototype, 'delete');
-      deleteStub.resolves();
-    });
-
-    after(() => {
-      findByIdStub.restore();
-      deleteStub.restore();
-    });
-
-    it('should return a object with an status code and data', async () => {
+  describe("Success case", () => {
+    it("should return a object with an status code and data", async () => {
       const response = await deleteTaskUseCase.execute({ userId, id });
 
-      expect(response).to.be.an('object');
-      expect(response).to.have.property('statusCode');
-      expect(response).to.have.property('data');
+      expect(response).to.be.an("object");
+      expect(response).to.have.property("statusCode");
+      expect(response).to.have.property("data");
 
       expect(response.statusCode).to.be.equal(204);
       expect(response.data).to.be.null;
     });
   });
 
-  describe('Error case', () => {
+  describe("Error case", () => {
     describe('Invalid "task id" case', () => {
-      before(() => {
-        findByIdStub = Sinon.stub(TasksRepository.prototype, 'findById');
-        findByIdStub.resolves(null);
-      });
-
-      after(() => {
-        findByIdStub.restore();
-      });
-
-      it('should throw an error with status code and message', async () => {
+      it("should throw an error with status code and message", async () => {
         try {
           await deleteTaskUseCase.execute({ userId, id });
-          expect.fail('Should throw a not found error');
+          expect.fail("Should throw a not found error");
         } catch (error) {
-          expect(error).to.be.an('object');
-          expect(error).to.have.property('statusCode');
-          expect(error).to.have.property('message');
+          expect(error).to.be.an("object");
+          expect(error).to.have.property("statusCode");
+          expect(error).to.have.property("message");
 
           expect(error.statusCode).to.be.equal(404);
-          expect(error.message).to.be.equal('Task not found');
+          expect(error.message).to.be.equal("Task not found");
         }
       });
     });

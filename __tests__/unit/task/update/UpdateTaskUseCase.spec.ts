@@ -1,83 +1,64 @@
-import { expect } from 'chai';
-import Sinon from 'sinon';
+import { expect } from "chai";
 
-import { TasksRepository } from '../../../../src/modules/tasks/repository/TasksRepository';
-import { updateTaskUseCase } from '../../../../src/modules/tasks/useCases/updateTask';
+import { TasksRepositoryInMemory } from "../../../../src/infra/task/repository/memory/Task.repository";
+import { UpdateTaskUseCase } from "../../../../src/useCases/task/update/UpdateTaskUseCase";
 
-import { newTask, tasks } from '../../../mocks/tasks';
+import { newTask, tasks } from "../../../mocks/tasks";
 
 const [foundTask] = tasks;
-const { id, title, description, status, userId } = newTask;
+const { title, description, status, userId } = newTask;
 
-describe('Test UpdateTaskUseCase', () => {
-  let findByIdStub: Sinon.SinonStub;
-  let updateStub: Sinon.SinonStub;
+const taskRepositoryInMemory = new TasksRepositoryInMemory();
+const updateTaskUseCase = new UpdateTaskUseCase(taskRepositoryInMemory);
 
-  describe('Success case', () => {
-    before(() => {
-      findByIdStub = Sinon.stub(TasksRepository.prototype, 'findById');
-      findByIdStub.resolves(foundTask);
+describe("Test UpdateTaskUseCase", () => {
+  before(() => {
+    tasks.forEach((task) => taskRepositoryInMemory.create(task));
+  });
 
-      updateStub = Sinon.stub(TasksRepository.prototype, 'update');
-      updateStub.resolves(newTask);
-    });
-
-    after(() => {
-      findByIdStub.restore();
-      updateStub.restore();
-    });
-
-    describe('should return a object with status code and data', async () => {
+  describe("Success case", () => {
+    describe("should return a object with status code and data", async () => {
       const response = await updateTaskUseCase.execute({
-        userId,
-        id,
+        userId: foundTask.userId,
+        id: foundTask.id,
         title,
         description,
         status,
       });
 
-      expect(response).to.be.an('object');
-      expect(response).to.have.property('statusCode');
-      expect(response).to.have.property('data');
+      expect(response).to.be.an("object");
+      expect(response).to.have.property("statusCode");
+      expect(response).to.have.property("data");
 
       expect(response.statusCode).to.be.equal(200);
-      expect(response.data).to.be.an('object');
+      expect(response.data).to.be.an("object");
 
-      expect(response.data).to.have.property('id');
-      expect(response.data).to.have.property('title');
-      expect(response.data).to.have.property('description');
-      expect(response.data).to.have.property('status');
-      expect(response.data).to.have.property('updatedAt');
+      expect(response.data).to.have.property("id");
+      expect(response.data).to.have.property("title");
+      expect(response.data).to.have.property("description");
+      expect(response.data).to.have.property("status");
+      expect(response.data).to.have.property("updatedAt");
     });
   });
 
-  describe('Error case', () => {
+  describe("Error case", () => {
     describe('Invalid "task id" case', () => {
-      before(() => {
-        findByIdStub = Sinon.stub(TasksRepository.prototype, 'findById');
-        findByIdStub.resolves(null);
-      });
-
-      after(() => {
-        findByIdStub.restore();
-      });
-
-      it('should throw an error with status code and message', async () => {
+      it("should throw an error with status code and message", async () => {
         try {
           await updateTaskUseCase.execute({
             userId,
-            id,
+            id: "invalid id",
             title,
             description,
             status,
           });
-          expect.fail('Should throw a error');
+          expect.fail("Should throw a error");
         } catch (error) {
-          expect(error).to.have.property('statusCode');
-          expect(error).to.have.property('message');
+          expect(error).to.have.property("statusCode");
+          expect(error).to.have.property("message");
 
           expect(error.statusCode).to.be.equal(404);
-          expect(error.message).to.be.equal('Task not found');
+          expect(error.message).to.be.equal("Task not found");
         }
       });
     });

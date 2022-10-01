@@ -13,8 +13,10 @@
     "experimentalDecorators": true,
     "skipLibCheck": true,
     "paths": {
+      "@domain/*": ["./src/domain/*"],
+      "@infra/*": ["./src/infra/*"],
       "@shared/*": ["src/shared/*"],
-      "@modules/*": ["src/modules/*"],
+      "@useCases/*": ["src/useCases/*"],
       "@config/*": ["src/config/*"],
       "@projectTypes/*": ["src/typings/*"],
     }
