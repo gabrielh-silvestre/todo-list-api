@@ -1,11 +1,6 @@
 import type { ITaskRepository } from "@domain/task/repository/Task.repository.interface";
-import type {
-  SuccessCase,
-  TaskCreateAttributes,
-  TaskReturn,
-} from "@projectTypes/types";
+import type { InputCreateTaskDto, OutputCreateTaskDto } from "./CreateTask.dto";
 
-import { StatusCodes } from "http-status-codes";
 import { ConflictError } from "restify-errors";
 
 import { TaskFactory } from "@domain/task/factory/Task.factory";
@@ -28,7 +23,7 @@ class CreateTaskUseCase {
     title,
     description,
     userId,
-  }: TaskCreateAttributes): Promise<SuccessCase<TaskReturn> | never> {
+  }: InputCreateTaskDto): Promise<OutputCreateTaskDto | never> {
     await this.isTaskUnique(userId, title);
 
     const newTask = description
@@ -38,14 +33,11 @@ class CreateTaskUseCase {
     await this.taskRepository.create(newTask);
 
     return {
-      statusCode: StatusCodes.CREATED,
-      data: {
-        id: newTask.id,
-        title: newTask.title,
-        description: newTask.description,
-        status: newTask.status,
-        updatedAt: newTask.updatedAt,
-      },
+      id: newTask.id,
+      title: newTask.title,
+      description: newTask.description,
+      status: newTask.status,
+      updatedAt: newTask.updatedAt,
     };
   }
 }

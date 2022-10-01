@@ -1,4 +1,5 @@
 import type { Handler, NextFunction, Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
 
 import type { DeleteTaskUseCase } from "./DeleteTaskUseCase";
 
@@ -10,12 +11,12 @@ class DeleteTaskController {
     const { userId } = req.body;
 
     try {
-      const { statusCode } = await this.deleteTaskUseCase.execute({
+      await this.deleteTaskUseCase.execute({
         userId,
         id,
       });
 
-      res.status(statusCode).end();
+      res.status(StatusCodes.NO_CONTENT).end();
     } catch (err) {
       next(err);
     }

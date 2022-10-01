@@ -1,4 +1,5 @@
 import type { Handler, NextFunction, Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
 
 import type { GetAllTasksUseCase } from "./GetAllTasksUseCase";
 
@@ -9,11 +10,11 @@ class GetAllTasksController {
     const { userId } = req.body;
 
     try {
-      const { statusCode, data } = await this.getAllTasksUseCase.execute({
+      const data = await this.getAllTasksUseCase.execute({
         userId,
       });
 
-      res.status(statusCode).json(data);
+      res.status(StatusCodes.OK).json(data);
     } catch (err) {
       next(err);
     }

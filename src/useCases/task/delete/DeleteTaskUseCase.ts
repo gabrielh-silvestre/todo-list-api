@@ -1,9 +1,7 @@
-import type { TaskIdentifierById, SuccessCase } from "@projectTypes/types";
-
-import { StatusCodes } from "http-status-codes";
 import { NotFoundError } from "restify-errors";
 
 import type { ITaskRepository } from "@domain/task/repository/Task.repository.interface";
+import { InputDeleteTaskDto } from "./DeleteTask.dto";
 
 class DeleteTaskUseCase {
   constructor(private tasksRepository: ITaskRepository) {}
@@ -16,17 +14,9 @@ class DeleteTaskUseCase {
     }
   }
 
-  async execute({
-    userId,
-    id,
-  }: TaskIdentifierById): Promise<SuccessCase<null> | never> {
+  async execute({ userId, id }: InputDeleteTaskDto): Promise<void | never> {
     await this.taskExists(userId, id);
     await this.tasksRepository.delete(userId, id);
-
-    return {
-      statusCode: StatusCodes.NO_CONTENT,
-      data: null,
-    };
   }
 }
 

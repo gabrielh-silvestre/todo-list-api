@@ -1,11 +1,6 @@
 import type { ITaskRepository } from "@domain/task/repository/Task.repository.interface";
-import type {
-  TaskUpdateAttributes,
-  TaskReturn,
-  SuccessCase,
-} from "@projectTypes/types";
+import type { InputUpdateTaskDto, OutputUpdateTaskDto } from "./UpdateTask.dto";
 
-import { StatusCodes } from "http-status-codes";
 import { ConflictError, NotFoundError } from "restify-errors";
 
 class UpdateTaskUseCase {
@@ -38,8 +33,8 @@ class UpdateTaskUseCase {
   }
 
   async execute(
-    taskData: TaskUpdateAttributes
-  ): Promise<SuccessCase<TaskReturn> | never> {
+    taskData: InputUpdateTaskDto
+  ): Promise<OutputUpdateTaskDto | never> {
     await this.taskExists(taskData.userId, taskData.id);
     await this.isTaskUnique(taskData.userId, taskData.id, taskData.title);
 
@@ -52,14 +47,11 @@ class UpdateTaskUseCase {
     await this.tasksRepository.update(task!);
 
     return {
-      statusCode: StatusCodes.OK,
-      data: {
-        id: task!.id,
-        title: task!.title,
-        description: task!.description,
-        status: task!.status,
-        updatedAt: task!.updatedAt,
-      },
+      id: task!.id,
+      title: task!.title,
+      description: task!.description,
+      status: task!.status,
+      updatedAt: task!.updatedAt,
     };
   }
 }
