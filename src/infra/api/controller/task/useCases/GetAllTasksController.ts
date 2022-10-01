@@ -1,7 +1,7 @@
 import type { Handler, NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
-import type { GetAllTasksUseCase } from "./GetAllTasksUseCase";
+import type { GetAllTasksUseCase } from "@useCases/task/findAll/GetAllTasksUseCase";
 
 class GetAllTasksController {
   constructor(private getAllTasksUseCase: GetAllTasksUseCase) {}

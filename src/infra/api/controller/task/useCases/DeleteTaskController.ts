@@ -1,7 +1,7 @@
 import type { Handler, NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
-import type { DeleteTaskUseCase } from "./DeleteTaskUseCase";
+import type { DeleteTaskUseCase } from "@useCases/task/delete/DeleteTaskUseCase";
 
 class DeleteTaskController {
   constructor(private deleteTaskUseCase: DeleteTaskUseCase) {}

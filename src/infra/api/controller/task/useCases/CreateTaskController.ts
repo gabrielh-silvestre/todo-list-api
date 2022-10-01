@@ -1,7 +1,8 @@
 import type { Handler, NextFunction, Request, Response } from "express";
+
 import { StatusCodes } from "http-status-codes";
 
-import type { CreateTaskUseCase } from "./CreateTaskUseCase";
+import type { CreateTaskUseCase } from "@useCases/task/create/CreateTaskUseCase";
 
 class CreateTaskController {
   constructor(private createTaskUseCase: CreateTaskUseCase) {}

@@ -1,7 +1,7 @@
 import type { Handler, NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
-import type { UpdateTaskUseCase } from "./UpdateTaskUseCase";
+import type { UpdateTaskUseCase } from "@useCases/task/update/UpdateTaskUseCase";
 
 class UpdateTaskController {
   constructor(private updateTaskUseCase: UpdateTaskUseCase) {}

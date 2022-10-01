@@ -1,9 +1,6 @@
 import express from "express";
 
-import { createTaskController } from "@useCases/task/create";
-import { deleteTaskController } from "@useCases/task/delete";
-import { getAllTasksController } from "@useCases/task/findAll";
-import { updateTaskController } from "@useCases/task/update";
+import { TaskControllerFactory } from "@infra/api/controller/task/factory/TaskController.factory";
 import { authMiddleware } from "../middleware/auth";
 import { TaskValidator } from "../middleware/Validators/TaskValidator";
 
@@ -11,20 +8,20 @@ const taskRouter = express.Router();
 
 taskRouter.use(authMiddleware.handle);
 
-taskRouter.get("/", getAllTasksController.handle);
+taskRouter.get("/", TaskControllerFactory.getAll());
 
 taskRouter.post(
   "/",
   TaskValidator.createValidation,
-  createTaskController.handle
+  TaskControllerFactory.create()
 );
 
-taskRouter.delete("/:id", deleteTaskController.handle);
+taskRouter.delete("/:id", TaskControllerFactory.delete());
 
 taskRouter.put(
   "/:id",
   TaskValidator.updateValidation,
-  updateTaskController.handle
+  TaskControllerFactory.update()
 );
 
 export { taskRouter };
