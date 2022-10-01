@@ -1,32 +1,21 @@
 import { expect } from 'chai';
-import Sinon from 'sinon';
 
-import { TasksRepository } from '../../../../src/modules/tasks/repository/TasksRepository';
-import { deleteTaskUseCase } from '../../../../src/modules/tasks/useCases/deleteTask';
+import { TasksRepositoryInMemory } from '../../../../src/infra/task/repository/memory/Task.repository';
+import { DeleteTaskUseCase } from '../../../../src/modules/tasks/useCases/deleteTask/DeleteTaskUseCase';
 
-import { newTask, tasks } from '../../../mocks/tasks';
+import { newTask } from '../../../mocks/tasks';
 
-const [foundTask] = tasks;
 const { id, userId } = newTask;
 
+const taskRepositoryInMemory = new TasksRepositoryInMemory();
+const deleteTaskUseCase = new DeleteTaskUseCase(taskRepositoryInMemory);
+
 describe('Test DeleteTaskUseCase', () => {
-  let findByIdStub: Sinon.SinonStub;
-  let deleteStub: Sinon.SinonStub;
+  before(() => {
+    taskRepositoryInMemory.create(newTask);
+  });
 
   describe('Success case', () => {
-    before(() => {
-      findByIdStub = Sinon.stub(TasksRepository.prototype, 'findById');
-      findByIdStub.resolves(foundTask);
-
-      deleteStub = Sinon.stub(TasksRepository.prototype, 'delete');
-      deleteStub.resolves();
-    });
-
-    after(() => {
-      findByIdStub.restore();
-      deleteStub.restore();
-    });
-
     it('should return a object with an status code and data', async () => {
       const response = await deleteTaskUseCase.execute({ userId, id });
 
@@ -41,15 +30,6 @@ describe('Test DeleteTaskUseCase', () => {
 
   describe('Error case', () => {
     describe('Invalid "task id" case', () => {
-      before(() => {
-        findByIdStub = Sinon.stub(TasksRepository.prototype, 'findById');
-        findByIdStub.resolves(null);
-      });
-
-      after(() => {
-        findByIdStub.restore();
-      });
-
       it('should throw an error with status code and message', async () => {
         try {
           await deleteTaskUseCase.execute({ userId, id });
