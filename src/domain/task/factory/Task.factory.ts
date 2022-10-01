@@ -4,7 +4,7 @@ import { Task } from "../entity/Task";
 
 export class TaskFactory {
   public static create(title: string, userId: string) {
-    return new Task(uuid(), title, null, "TODO", userId);
+    return new Task(uuid(), title, null, "TODO", userId, new Date());
   }
 
   public static createWithDescription(
@@ -12,6 +12,6 @@ export class TaskFactory {
     description: string,
     userId: string
   ) {
-    return new Task(uuid(), title, description, "TODO", userId);
+    return new Task(uuid(), title, description, "TODO", userId, new Date());
   }
 }

@@ -5,7 +5,14 @@ const FAKE_UUID = "24d5ad6d-b864-4dee-a217-2608b6706cb6";
 
 describe("Test Task domain entity", () => {
   it("Should create a Task", () => {
-    const task = new Task(FAKE_UUID, "title", "description", "TODO", FAKE_UUID);
+    const task = new Task(
+      FAKE_UUID,
+      "title",
+      "description",
+      "TODO",
+      FAKE_UUID,
+      new Date()
+    );
 
     expect(task.id).to.be.equal(FAKE_UUID);
     expect(task.title).to.be.equal("title");
@@ -15,7 +22,14 @@ describe("Test Task domain entity", () => {
   });
 
   it("Should change title", () => {
-    const task = new Task(FAKE_UUID, "title", "description", "TODO", FAKE_UUID);
+    const task = new Task(
+      FAKE_UUID,
+      "title",
+      "description",
+      "TODO",
+      FAKE_UUID,
+      new Date()
+    );
 
     task.changeTitle("new title");
 
@@ -23,7 +37,14 @@ describe("Test Task domain entity", () => {
   });
 
   it("Should change description", () => {
-    const task = new Task(FAKE_UUID, "title", "description", "TODO", FAKE_UUID);
+    const task = new Task(
+      FAKE_UUID,
+      "title",
+      "description",
+      "TODO",
+      FAKE_UUID,
+      new Date()
+    );
 
     task.changeDescription("new description");
 
@@ -31,7 +52,14 @@ describe("Test Task domain entity", () => {
   });
 
   it("Should change status", () => {
-    const task = new Task(FAKE_UUID, "title", "description", "TODO", FAKE_UUID);
+    const task = new Task(
+      FAKE_UUID,
+      "title",
+      "description",
+      "TODO",
+      FAKE_UUID,
+      new Date()
+    );
 
     task.changeStatus("IN_PROGRESS");
 
@@ -40,13 +68,20 @@ describe("Test Task domain entity", () => {
 
   it("Should throw error when title is too small", () => {
     expect(() => {
-      new Task(FAKE_UUID, "t", "description", "TODO", FAKE_UUID);
+      new Task(FAKE_UUID, "t", "description", "TODO", FAKE_UUID, new Date());
     }).to.throw('"title" length must be at least 5 characters long');
   });
 
   it("Should throw error when title is too big", () => {
     expect(() => {
-      new Task(FAKE_UUID, "title".repeat(20), "description", "TODO", FAKE_UUID);
+      new Task(
+        FAKE_UUID,
+        "title".repeat(20),
+        "description",
+        "TODO",
+        FAKE_UUID,
+        new Date()
+      );
     }).to.throw(
       '"title" length must be less than or equal to 20 characters long'
     );
@@ -59,7 +94,8 @@ describe("Test Task domain entity", () => {
         "title",
         "description".repeat(120),
         "TODO",
-        FAKE_UUID
+        FAKE_UUID,
+        new Date()
       );
     }).to.throw(
       '"description" length must be less than or equal to 120 characters long'
@@ -68,13 +104,27 @@ describe("Test Task domain entity", () => {
 
   it("Should throw error when status is invalid", () => {
     expect(() => {
-      new Task(FAKE_UUID, "title", "description", "INVALID" as any, FAKE_UUID);
+      new Task(
+        FAKE_UUID,
+        "title",
+        "description",
+        "INVALID" as any,
+        FAKE_UUID,
+        new Date()
+      );
     }).to.throw('"status" must be one of [TODO, IN_PROGRESS, DONE]');
   });
 
   it("Should throw error when userId is invalid", () => {
     expect(() => {
-      new Task(FAKE_UUID, "title", "description", "TODO", "invalid");
+      new Task(
+        FAKE_UUID,
+        "title",
+        "description",
+        "TODO",
+        "invalid",
+        new Date()
+      );
     }).to.throw('"userId" must be a valid GUID');
   });
 });

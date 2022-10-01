@@ -14,14 +14,15 @@ export class Task implements ITask {
     title: string,
     description: string | null,
     status: "TODO" | "IN_PROGRESS" | "DONE",
-    userId: string
+    userId: string,
+    updatedAt: Date
   ) {
     this._id = id;
     this._title = title;
     this._description = description;
     this._status = status;
     this._userId = userId;
-    this._updatedAt = new Date();
+    this._updatedAt = updatedAt;
 
     this.validate();
   }
