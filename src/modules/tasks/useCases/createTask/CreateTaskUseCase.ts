@@ -1,22 +1,25 @@
-import type { ITasksRepository } from "@projectTypes/interfaces";
+import type { ITaskRepository } from "@domain/task/repository/Task.repository.interface";
 import type {
   SuccessCase,
   TaskCreateAttributes,
   TaskReturn,
 } from "@projectTypes/types";
+
 import { StatusCodes } from "http-status-codes";
 import { ConflictError } from "restify-errors";
 
+import { TaskFactory } from "@domain/task/factory/Task.factory";
+
 class CreateTaskUseCase {
-  constructor(private taskRepository: ITasksRepository) {}
+  constructor(private taskRepository: ITaskRepository) {}
 
   private async isTaskUnique(
     userId: string,
     title: string
   ): Promise<void | never> {
-    const task = await this.taskRepository.findByExactTitle({ title, userId });
+    const task = await this.taskRepository.findByTitle(userId, title);
 
-    if (task.length > 0) {
+    if (task) {
       throw new ConflictError("Task with this title already exists");
     }
   }
@@ -28,15 +31,21 @@ class CreateTaskUseCase {
   }: TaskCreateAttributes): Promise<SuccessCase<TaskReturn> | never> {
     await this.isTaskUnique(userId, title);
 
-    const newTask = await this.taskRepository.create({
-      title,
-      description,
-      userId,
-    });
+    const newTask = description
+      ? TaskFactory.createWithDescription(title, description, userId)
+      : TaskFactory.create(title, userId);
+
+    await this.taskRepository.create(newTask);
 
     return {
       statusCode: StatusCodes.CREATED,
-      data: newTask,
+      data: {
+        id: newTask.id,
+        title: newTask.title,
+        description: newTask.description,
+        status: newTask.status,
+        updatedAt: newTask.updatedAt,
+      },
     };
   }
 }
