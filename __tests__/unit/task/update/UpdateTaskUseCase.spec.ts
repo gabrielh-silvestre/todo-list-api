@@ -27,17 +27,12 @@ describe("Test UpdateTaskUseCase", () => {
       });
 
       expect(response).to.be.an("object");
-      expect(response).to.have.property("statusCode");
-      expect(response).to.have.property("data");
 
-      expect(response.statusCode).to.be.equal(200);
-      expect(response.data).to.be.an("object");
-
-      expect(response.data).to.have.property("id");
-      expect(response.data).to.have.property("title");
-      expect(response.data).to.have.property("description");
-      expect(response.data).to.have.property("status");
-      expect(response.data).to.have.property("updatedAt");
+      expect(response).to.have.property("id");
+      expect(response).to.have.property("title");
+      expect(response).to.have.property("description");
+      expect(response).to.have.property("status");
+      expect(response).to.have.property("updatedAt");
     });
   });
 

@@ -9,14 +9,10 @@ import {
 } from "../../../../src/useCases/task/delete";
 
 import { newTask } from "../../../mocks/tasks";
-import { SuccessCase } from "../../../../src/typings/types";
 
 const { id, userId } = newTask;
 
-const SUCCESS_RESPONSE: SuccessCase<null> = {
-  statusCode: 204,
-  data: null,
-};
+const SUCCESS_RESPONSE = undefined;
 
 const ERROR_RESPONSE = new Error("Test error");
 

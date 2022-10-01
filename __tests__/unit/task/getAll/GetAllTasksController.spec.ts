@@ -3,9 +3,6 @@ import { NextFunction, request, response } from "express";
 import { expect } from "chai";
 import Sinon from "sinon";
 
-import { SuccessCase } from "../../../../src/typings/types";
-import { TaskReturn } from "../../../../src/typings/types";
-
 import {
   getAllTasksUseCase,
   getAllTasksController,
@@ -15,10 +12,7 @@ import { tasks } from "../../../mocks/tasks";
 
 const [{ userId }] = tasks;
 
-const SUCCESS_RESPONSE: SuccessCase<TaskReturn[]> = {
-  statusCode: 200,
-  data: tasks,
-};
+const SUCCESS_RESPONSE = tasks;
 
 const ERROR_RESPONSE = new Error("Test error");
 

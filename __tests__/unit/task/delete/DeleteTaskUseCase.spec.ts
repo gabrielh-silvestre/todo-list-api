@@ -19,12 +19,7 @@ describe("Test DeleteTaskUseCase", () => {
     it("should return a object with an status code and data", async () => {
       const response = await deleteTaskUseCase.execute({ userId, id });
 
-      expect(response).to.be.an("object");
-      expect(response).to.have.property("statusCode");
-      expect(response).to.have.property("data");
-
-      expect(response.statusCode).to.be.equal(204);
-      expect(response.data).to.be.null;
+      expect(response).to.be.undefined;
     });
   });
 
