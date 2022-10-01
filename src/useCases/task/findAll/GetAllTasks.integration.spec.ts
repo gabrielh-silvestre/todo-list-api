@@ -1,9 +1,9 @@
 import { expect } from "chai";
 
-import { TasksRepositoryInMemory } from "../../../../src/infra/task/repository/memory/Task.repository";
-import { GetAllTasksUseCase } from "../../../../src/useCases/task/findAll/GetAllTasksUseCase";
+import { TasksRepositoryInMemory } from "@infra/task/repository/memory/Task.repository";
+import { GetAllTasksUseCase } from "./GetAllTasksUseCase";
 
-import { tasks } from "../../../mocks/tasks";
+import { tasks } from "../../../../__tests__/mocks/tasks";
 
 const [{ userId }] = tasks;
 
@@ -12,7 +12,7 @@ const getAllTasksUseCase = new GetAllTasksUseCase(taskRepositoryInMemory);
 
 describe("Test GetAllTasksUseCase", () => {
   before(() => {
-    tasks.forEach((task) => taskRepositoryInMemory.create(task));
+    tasks.forEach((task: any) => taskRepositoryInMemory.create(task));
   });
 
   describe("Success case", () => {

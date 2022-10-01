@@ -1,9 +1,9 @@
 import { expect } from "chai";
 
-import { TasksRepositoryInMemory } from "../../../../src/infra/task/repository/memory/Task.repository";
-import { CreateTaskUseCase } from "../../../../src/useCases/task/create/CreateTaskUseCase";
+import { TasksRepositoryInMemory } from "@infra/task/repository/memory/Task.repository";
+import { CreateTaskUseCase } from "./CreateTaskUseCase";
 
-import { newTask } from "../../../mocks/tasks";
+import { newTask } from "../../../../__tests__/mocks/tasks";
 
 const createTaskUseCase = new CreateTaskUseCase(new TasksRepositoryInMemory());
 
@@ -49,13 +49,13 @@ describe("Test CreateTaskUseCase", () => {
           await createTaskUseCase.execute(newTask);
           expect.fail("Should throw a conflict error");
         } catch (error) {
-          expect(error).to.have.property("statusCode");
-          expect(error).to.have.property("message");
+          const e = error as any;
 
-          expect(error.statusCode).to.be.equal(409);
-          expect(error.message).to.be.equal(
-            "Task with this title already exists"
-          );
+          expect(e).to.have.property("statusCode");
+          expect(e).to.have.property("message");
+
+          expect(e.statusCode).to.be.equal(409);
+          expect(e.message).to.be.equal("Task with this title already exists");
         }
       });
     });

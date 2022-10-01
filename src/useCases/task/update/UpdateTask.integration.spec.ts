@@ -1,9 +1,9 @@
 import { expect } from "chai";
 
-import { TasksRepositoryInMemory } from "../../../../src/infra/task/repository/memory/Task.repository";
-import { UpdateTaskUseCase } from "../../../../src/useCases/task/update/UpdateTaskUseCase";
+import { TasksRepositoryInMemory } from "@infra/task/repository/memory/Task.repository";
+import { UpdateTaskUseCase } from "./UpdateTaskUseCase";
 
-import { newTask, tasks } from "../../../mocks/tasks";
+import { newTask, tasks } from "../../../../__tests__/mocks/tasks";
 
 const [foundTask] = tasks;
 const { title, description, status, userId } = newTask;
@@ -13,7 +13,7 @@ const updateTaskUseCase = new UpdateTaskUseCase(taskRepositoryInMemory);
 
 describe("Test UpdateTaskUseCase", () => {
   before(() => {
-    tasks.forEach((task) => taskRepositoryInMemory.create(task));
+    tasks.forEach((task: any) => taskRepositoryInMemory.create(task));
   });
 
   describe("Success case", () => {
@@ -49,11 +49,13 @@ describe("Test UpdateTaskUseCase", () => {
           });
           expect.fail("Should throw a error");
         } catch (error) {
-          expect(error).to.have.property("statusCode");
-          expect(error).to.have.property("message");
+          const e = error as any;
 
-          expect(error.statusCode).to.be.equal(404);
-          expect(error.message).to.be.equal("Task not found");
+          expect(e).to.have.property("statusCode");
+          expect(e).to.have.property("message");
+
+          expect(e.statusCode).to.be.equal(404);
+          expect(e.message).to.be.equal("Task not found");
         }
       });
     });
