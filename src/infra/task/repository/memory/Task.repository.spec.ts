@@ -6,6 +6,10 @@ import { TasksRepositoryInMemory } from "./Task.repository";
 const FAKE_UUID = "24d5ad6d-b864-4dee-a217-2608b6706cb6";
 
 describe("Test TasksRepository in memory", () => {
+  beforeEach(() => {
+    TasksRepositoryInMemory.dump();
+  });
+
   it("should be able to list all tasks", async () => {
     const taskRepository = new TasksRepositoryInMemory();
     const newTask1 = TaskFactory.create("title1", FAKE_UUID);
