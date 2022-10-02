@@ -1,5 +1,9 @@
 {
   "extends": "@istanbuljs/nyc-config-typescript",
-  "include": ["src/modules/**/*.ts", "src/middleware/**/*.ts"],
-  "exclude": ["src/modules/**/repository/*.ts"]
+  "include": [
+    "src/domain/**/*.ts",
+    "src/useCases/**/*.ts",
+    "src/infra/**/*.ts"
+  ],
+  "exclude": ["src/infra/api/*.ts", "src/**/*.spec.ts"]
 }
