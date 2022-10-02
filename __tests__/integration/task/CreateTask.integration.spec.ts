@@ -1,5 +1,4 @@
 import { HttpError } from "restify-errors";
-import shell from "shelljs";
 
 import Sinon from "sinon";
 import chai, { expect } from "chai";
@@ -17,7 +16,6 @@ const [{ id, email, username }] = users;
 const { title, description, status, userId, updatedAt } = newTask;
 
 const LIST_TASKS_ENDPOINT = "/v1/api/tasks";
-const PRISMA_SEED_RESET = "npx prisma db seed";
 
 const FAIL_SIGN_IN = new HttpError(
   { statusCode: 401 },
@@ -25,22 +23,16 @@ const FAIL_SIGN_IN = new HttpError(
 );
 
 describe('Test POST endpoint "/tasks"', function () {
-  this.timeout(5000);
-
   let token = "fakeToken";
-  let getUserStub: Sinon.SinonStub;
-
-  before(() => {
-    shell.exec(PRISMA_SEED_RESET, { silent: true });
-  });
+  let getUserAuthStub: Sinon.SinonStub;
 
   beforeEach(() => {
-    getUserStub = Sinon.stub(AuthService.prototype, "getUser");
-    getUserStub.resolves({ id, username, email });
+    getUserAuthStub = Sinon.stub(AuthService.prototype, "getUser");
+    getUserAuthStub.resolves({ id, username, email });
   });
 
   afterEach(() => {
-    getUserStub.restore();
+    getUserAuthStub.restore();
   });
 
   describe("Success case", () => {
@@ -76,7 +68,7 @@ describe('Test POST endpoint "/tasks"', function () {
       });
 
       it("should not create a task with invalid authorization", async () => {
-        getUserStub.rejects(FAIL_SIGN_IN);
+        getUserAuthStub.rejects(FAIL_SIGN_IN);
 
         const response = await chai
           .request(app)

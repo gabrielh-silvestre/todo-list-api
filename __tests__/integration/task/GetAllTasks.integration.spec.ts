@@ -1,21 +1,21 @@
 import { HttpError } from "restify-errors";
-import shell from "shelljs";
 
 import Sinon from "sinon";
 import chai, { expect } from "chai";
 import chaiHTTP from "chai-http";
 
 import { AuthService } from "../../../src/shared/services/Auth";
+import { TasksRepositoryInMemory } from "../../../src/infra/task/repository/memory/Task.repository";
 
 import { users } from "../../mocks/users";
 import { app } from "../../../src/infra/api/app";
+import { tasks } from "../../mocks/tasks";
 
 chai.use(chaiHTTP);
 
 const [{ id, email, username }] = users;
 
 const LIST_TASKS_ENDPOINT = "/v1/api/tasks";
-const PRISMA_SEED_RESET = "npx prisma db seed";
 
 const FAIL_SIGN_IN = new HttpError(
   { statusCode: 401 },
@@ -23,22 +23,20 @@ const FAIL_SIGN_IN = new HttpError(
 );
 
 describe('Test GET endpoint "/tasks"', function () {
-  this.timeout(5000);
-
   let token = "fakeToken";
-  let getUserStub: Sinon.SinonStub;
-
-  before(async () => {
-    shell.exec(PRISMA_SEED_RESET, { silent: true });
-  });
+  let getUserAuthStub: Sinon.SinonStub;
 
   beforeEach(() => {
-    getUserStub = Sinon.stub(AuthService.prototype, "getUser");
-    getUserStub.resolves({ id, username, email });
+    getUserAuthStub = Sinon.stub(AuthService.prototype, "getUser");
+    getUserAuthStub.resolves({ id, username, email });
+
+    TasksRepositoryInMemory.populate(tasks);
   });
 
   afterEach(() => {
-    getUserStub.restore();
+    getUserAuthStub.restore();
+
+    TasksRepositoryInMemory.dump();
   });
 
   describe("Success case", () => {
@@ -72,7 +70,7 @@ describe('Test GET endpoint "/tasks"', function () {
       });
 
       it("should not update a task with invalid authorization", async () => {
-        getUserStub.rejects(FAIL_SIGN_IN);
+        getUserAuthStub.rejects(FAIL_SIGN_IN);
 
         const response = await chai
           .request(app)
