@@ -17,10 +17,9 @@
       "@infra/*": ["./src/infra/*"],
       "@shared/*": ["src/shared/*"],
       "@useCases/*": ["src/useCases/*"],
-      "@config/*": ["src/config/*"],
       "@projectTypes/*": ["src/typings/*"],
     }
   },
   "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "dist", "__tests__"],
+  "exclude": ["node_modules", "dist", "__tests__", "src/**/*.spec.ts"],
 }
