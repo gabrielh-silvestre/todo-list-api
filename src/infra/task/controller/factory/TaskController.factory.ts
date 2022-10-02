@@ -7,10 +7,10 @@ import { UpdateTaskUseCase } from "@useCases/task/update/UpdateTaskUseCase";
 import { GetAllTasksUseCase } from "@useCases/task/findAll/GetAllTasksUseCase";
 import { DeleteTaskUseCase } from "@useCases/task/delete/DeleteTaskUseCase";
 
-import { CreateTaskController } from "../useCases/CreateTaskController";
-import { UpdateTaskController } from "../useCases/UpdateTaskController";
-import { GetAllTasksController } from "../useCases/GetAllTasksController";
-import { DeleteTaskController } from "../useCases/DeleteTaskController";
+import { CreateTaskController } from "../cases/create/CreateTaskController";
+import { UpdateTaskController } from "../cases/update/UpdateTaskController";
+import { GetAllTasksController } from "../cases/findAll/GetAllTasksController";
+import { DeleteTaskController } from "../cases/delete/DeleteTaskController";
 
 export class TaskControllerFactory {
   constructor(private readonly repository: ITaskRepository) {}

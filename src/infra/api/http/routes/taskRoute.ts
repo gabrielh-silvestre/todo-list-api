@@ -1,6 +1,6 @@
 import express from "express";
 
-import { TaskControllerFactory } from "@infra/api/controller/task/factory/TaskController.factory";
+import { TaskControllerFactory } from "@infra/task/controller/factory/TaskController.factory";
 import { TasksRepository } from "@infra/task/repository/prisma/Task.repository";
 
 import { authMiddleware } from "../middleware/auth";

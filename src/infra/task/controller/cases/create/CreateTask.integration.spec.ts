@@ -4,11 +4,11 @@ import Sinon from "sinon";
 import chai, { expect } from "chai";
 import chaiHTTP from "chai-http";
 
-import { AuthService } from "../../../src/shared/services/Auth";
+import { AuthService } from "src/shared/services/Auth";
 
-import { newTask } from "../../mocks/tasks";
-import { users } from "../../mocks/users";
-import { app } from "../../../src/infra/api/app";
+import { newTask } from "../../../../../../__tests__/mocks/tasks";
+import { users } from "../../../../../../__tests__/mocks/users";
+import { app } from "@infra/api/app";
 
 chai.use(chaiHTTP);
 

@@ -4,12 +4,12 @@ import Sinon from "sinon";
 import chai, { expect } from "chai";
 import chaiHTTP from "chai-http";
 
-import { AuthService } from "../../../src/shared/services/Auth";
-import { TasksRepositoryInMemory } from "../../../src/infra/task/repository/memory/Task.repository";
+import { AuthService } from "src/shared/services/Auth";
+import { TasksRepositoryInMemory } from "@infra/task/repository/memory/Task.repository";
 
-import { users } from "../../mocks/users";
-import { app } from "../../../src/infra/api/app";
-import { tasks } from "../../mocks/tasks";
+import { users } from "../../../../../../__tests__/mocks/users";
+import { tasks } from "../../../../../../__tests__/mocks/tasks";
+import { app } from "@infra/api/app";
 
 chai.use(chaiHTTP);
 
@@ -30,7 +30,7 @@ describe('Test GET endpoint "/tasks"', function () {
     getUserAuthStub = Sinon.stub(AuthService.prototype, "getUser");
     getUserAuthStub.resolves({ id, username, email });
 
-    TasksRepositoryInMemory.populate(tasks);
+    TasksRepositoryInMemory.populate(tasks as any);
   });
 
   afterEach(() => {
