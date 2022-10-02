@@ -1,9 +1,9 @@
 import { expect } from "chai";
 
-import { TasksRepositoryInMemory } from "../../../../src/infra/task/repository/memory/Task.repository";
-import { DeleteTaskUseCase } from "../../../../src/useCases/task/delete/DeleteTaskUseCase";
+import { TasksRepositoryInMemory } from "@infra/task/repository/memory/Task.repository";
+import { DeleteTaskUseCase } from "./DeleteTaskUseCase";
 
-import { newTask } from "../../../mocks/tasks";
+import { newTask } from "../../../../__tests__/mocks/tasks";
 
 const { id, userId } = newTask;
 
@@ -12,19 +12,14 @@ const deleteTaskUseCase = new DeleteTaskUseCase(taskRepositoryInMemory);
 
 describe("Test DeleteTaskUseCase", () => {
   before(() => {
-    taskRepositoryInMemory.create(newTask);
+    taskRepositoryInMemory.create(newTask as any);
   });
 
   describe("Success case", () => {
     it("should return a object with an status code and data", async () => {
       const response = await deleteTaskUseCase.execute({ userId, id });
 
-      expect(response).to.be.an("object");
-      expect(response).to.have.property("statusCode");
-      expect(response).to.have.property("data");
-
-      expect(response.statusCode).to.be.equal(204);
-      expect(response.data).to.be.null;
+      expect(response).to.be.undefined;
     });
   });
 
@@ -35,12 +30,14 @@ describe("Test DeleteTaskUseCase", () => {
           await deleteTaskUseCase.execute({ userId, id });
           expect.fail("Should throw a not found error");
         } catch (error) {
-          expect(error).to.be.an("object");
-          expect(error).to.have.property("statusCode");
-          expect(error).to.have.property("message");
+          const e = error as any;
 
-          expect(error.statusCode).to.be.equal(404);
-          expect(error.message).to.be.equal("Task not found");
+          expect(e).to.be.an("object");
+          expect(e).to.have.property("statusCode");
+          expect(e).to.have.property("message");
+
+          expect(e.statusCode).to.be.equal(404);
+          expect(e.message).to.be.equal("Task not found");
         }
       });
     });

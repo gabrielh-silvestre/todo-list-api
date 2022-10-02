@@ -6,10 +6,10 @@ import { TaskFactory } from "@domain/task/factory/Task.factory";
 import { TasksRepository } from "./Task.repository";
 
 const FAKE_UUID = "24d5ad6d-b864-4dee-a217-2608b6706cb6";
-const PRISMA_SEED_RESET = "npx prisma db seed";
+const PRISMA_SEED_RESET = "prisma migrate dev && npx prisma db seed";
 
 describe("Test TasksRepository with Prisma", function () {
-  this.timeout(5000);
+  this.timeout(50000);
 
   before(() => {
     shell.exec(PRISMA_SEED_RESET, { silent: true });

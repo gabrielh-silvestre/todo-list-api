@@ -1,24 +1,21 @@
 import { HttpError } from "restify-errors";
-import shell from "shelljs";
 
 import Sinon from "sinon";
 import chai, { expect } from "chai";
 import chaiHTTP from "chai-http";
 
-import { AuthService } from "../../../src/shared/services/Auth";
+import { AuthService } from "../../../../../shared/services/Auth";
+import { TasksRepositoryInMemory } from "@infra/task/repository/memory/Task.repository";
 
-import { users } from "../../mocks/users";
-import { tasks, newTask } from "../../mocks/tasks";
-import { app } from "../../../src/infra/api/app";
+import { users } from "../../../../../../__tests__/mocks/users";
+import { newTask, tasks } from "../../../../../../__tests__/mocks/tasks";
+import { app } from "@infra/api/app";
 
 chai.use(chaiHTTP);
 
-const [{ id, email, username }] = users;
 const [{ id: taskId }] = tasks;
+const [{ id, email, username }] = users;
 const { title, description, status, userId } = newTask;
-
-const UPDATE_TASKS_ENDPOINT = `/v1/api/tasks/${taskId}`;
-const PRISMA_SEED_RESET = "npx prisma db seed";
 
 const FAIL_SIGN_IN = new HttpError(
   { statusCode: 401 },
@@ -26,29 +23,27 @@ const FAIL_SIGN_IN = new HttpError(
 );
 
 describe('Test PUT endpoint "/tasks/:id', function () {
-  this.timeout(5000);
-
   let token = "fakeToken";
-  let getUserStub: Sinon.SinonStub;
-
-  before(async () => {
-    shell.exec(PRISMA_SEED_RESET, { silent: true });
-  });
+  let getUserAuthStub: Sinon.SinonStub;
 
   beforeEach(() => {
-    getUserStub = Sinon.stub(AuthService.prototype, "getUser");
-    getUserStub.resolves({ id, username, email });
+    getUserAuthStub = Sinon.stub(AuthService.prototype, "getUser");
+    getUserAuthStub.resolves({ id, username, email });
+
+    TasksRepositoryInMemory.populate(tasks as any);
   });
 
   afterEach(() => {
-    getUserStub.restore();
+    getUserAuthStub.restore();
+
+    TasksRepositoryInMemory.dump();
   });
 
   describe("Success case", () => {
     it("should return a success status with the updated task", async () => {
       const response = await chai
         .request(app)
-        .put(UPDATE_TASKS_ENDPOINT)
+        .put(`/v1/api/tasks/${taskId}`)
         .set("Authorization", token)
         .send({ title, description, status: "DONE" });
 
@@ -68,7 +63,7 @@ describe('Test PUT endpoint "/tasks/:id', function () {
       it("should not update a task without authorization", async () => {
         const response = await chai
           .request(app)
-          .put(UPDATE_TASKS_ENDPOINT)
+          .put(`/v1/api/tasks/${taskId}`)
           .send({ title, description, status });
 
         expect(response.status).to.be.equal(401);
@@ -77,11 +72,11 @@ describe('Test PUT endpoint "/tasks/:id', function () {
       });
 
       it("should not update a task with invalid authorization", async () => {
-        getUserStub.rejects(FAIL_SIGN_IN);
+        getUserAuthStub.rejects(FAIL_SIGN_IN);
 
         const response = await chai
           .request(app)
-          .put(UPDATE_TASKS_ENDPOINT)
+          .put(`/v1/api/tasks/${taskId}`)
           .set("Authorization", "invalid-token")
           .send({ title, description, status });
 
@@ -95,7 +90,7 @@ describe('Test PUT endpoint "/tasks/:id', function () {
       it("should not update a task without title", async () => {
         const response = await chai
           .request(app)
-          .put(UPDATE_TASKS_ENDPOINT)
+          .put(`/v1/api/tasks/${taskId}`)
           .set("Authorization", token)
           .send({ description, status });
 
@@ -107,7 +102,7 @@ describe('Test PUT endpoint "/tasks/:id', function () {
       it("should not update a task when title has less than 5 characters", async () => {
         const response = await chai
           .request(app)
-          .put(UPDATE_TASKS_ENDPOINT)
+          .put(`/v1/api/tasks/${taskId}`)
           .set("Authorization", token)
           .send({ title: "test", description, status });
 
@@ -121,7 +116,7 @@ describe('Test PUT endpoint "/tasks/:id', function () {
       it("should not update a task when title has more than 20 characters", async () => {
         const response = await chai
           .request(app)
-          .put(UPDATE_TASKS_ENDPOINT)
+          .put(`/v1/api/tasks/${taskId}`)
           .set("Authorization", token)
           .send({ title: "test".repeat(21), description, status });
 
@@ -137,7 +132,7 @@ describe('Test PUT endpoint "/tasks/:id', function () {
       it("should not update a task without description", async () => {
         const response = await chai
           .request(app)
-          .put(UPDATE_TASKS_ENDPOINT)
+          .put(`/v1/api/tasks/${taskId}`)
           .set("Authorization", token)
           .send({ title, status });
 
@@ -149,7 +144,7 @@ describe('Test PUT endpoint "/tasks/:id', function () {
       it("should not update a task when description has more than 120 characters", async () => {
         const response = await chai
           .request(app)
-          .put(UPDATE_TASKS_ENDPOINT)
+          .put(`/v1/api/tasks/${taskId}`)
           .set("Authorization", token)
           .send({ title, description: "test".repeat(121), status });
 
@@ -165,7 +160,7 @@ describe('Test PUT endpoint "/tasks/:id', function () {
       it("should not update a task without status", async () => {
         const response = await chai
           .request(app)
-          .put(UPDATE_TASKS_ENDPOINT)
+          .put(`/v1/api/tasks/${taskId}`)
           .set("Authorization", token)
           .send({ title, description });
 
@@ -177,7 +172,7 @@ describe('Test PUT endpoint "/tasks/:id', function () {
       it("should not update a task with invalid status", async () => {
         const response = await chai
           .request(app)
-          .put(UPDATE_TASKS_ENDPOINT)
+          .put(`/v1/api/tasks/${taskId}`)
           .set("Authorization", token)
           .send({ title, description, status: "INVALID" });
 
@@ -193,7 +188,7 @@ describe('Test PUT endpoint "/tasks/:id', function () {
       it('should not update a task when gives other fields than "title" and "description"', async () => {
         const response = await chai
           .request(app)
-          .put(UPDATE_TASKS_ENDPOINT)
+          .put(`/v1/api/tasks/${taskId}`)
           .set("Authorization", token)
           .send({ title, description, status, userId, updatedAt: "invalid" });
 

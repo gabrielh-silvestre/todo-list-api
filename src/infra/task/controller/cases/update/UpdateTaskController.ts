@@ -1,6 +1,7 @@
 import type { Handler, NextFunction, Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
 
-import type { UpdateTaskUseCase } from "./UpdateTaskUseCase";
+import type { UpdateTaskUseCase } from "@useCases/task/update/UpdateTaskUseCase";
 
 class UpdateTaskController {
   constructor(private updateTaskUseCase: UpdateTaskUseCase) {}
@@ -10,11 +11,9 @@ class UpdateTaskController {
     const taskData = { ...req.body, id };
 
     try {
-      const { statusCode, data } = await this.updateTaskUseCase.execute(
-        taskData
-      );
+      const data = await this.updateTaskUseCase.execute(taskData);
 
-      res.status(statusCode).json(data);
+      res.status(StatusCodes.OK).json(data);
     } catch (err) {
       next(err);
     }

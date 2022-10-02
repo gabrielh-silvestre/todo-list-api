@@ -1,6 +1,8 @@
 import type { Handler, NextFunction, Request, Response } from "express";
 
-import type { CreateTaskUseCase } from "./CreateTaskUseCase";
+import { StatusCodes } from "http-status-codes";
+
+import type { CreateTaskUseCase } from "@useCases/task/create/CreateTaskUseCase";
 
 class CreateTaskController {
   constructor(private createTaskUseCase: CreateTaskUseCase) {}
@@ -10,11 +12,9 @@ class CreateTaskController {
     const newTask = { title, description: description || null, userId };
 
     try {
-      const { statusCode, data } = await this.createTaskUseCase.execute(
-        newTask
-      );
+      const data = await this.createTaskUseCase.execute(newTask);
 
-      res.status(statusCode).json(data);
+      res.status(StatusCodes.CREATED).json(data);
     } catch (err) {
       next(err);
     }

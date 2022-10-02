@@ -1,9 +1,9 @@
 import { expect } from "chai";
 
-import { TasksRepositoryInMemory } from "../../../../src/infra/task/repository/memory/Task.repository";
-import { UpdateTaskUseCase } from "../../../../src/useCases/task/update/UpdateTaskUseCase";
+import { TasksRepositoryInMemory } from "@infra/task/repository/memory/Task.repository";
+import { UpdateTaskUseCase } from "./UpdateTaskUseCase";
 
-import { newTask, tasks } from "../../../mocks/tasks";
+import { newTask, tasks } from "../../../../__tests__/mocks/tasks";
 
 const [foundTask] = tasks;
 const { title, description, status, userId } = newTask;
@@ -13,7 +13,7 @@ const updateTaskUseCase = new UpdateTaskUseCase(taskRepositoryInMemory);
 
 describe("Test UpdateTaskUseCase", () => {
   before(() => {
-    tasks.forEach((task) => taskRepositoryInMemory.create(task));
+    tasks.forEach((task: any) => taskRepositoryInMemory.create(task));
   });
 
   describe("Success case", () => {
@@ -27,17 +27,12 @@ describe("Test UpdateTaskUseCase", () => {
       });
 
       expect(response).to.be.an("object");
-      expect(response).to.have.property("statusCode");
-      expect(response).to.have.property("data");
 
-      expect(response.statusCode).to.be.equal(200);
-      expect(response.data).to.be.an("object");
-
-      expect(response.data).to.have.property("id");
-      expect(response.data).to.have.property("title");
-      expect(response.data).to.have.property("description");
-      expect(response.data).to.have.property("status");
-      expect(response.data).to.have.property("updatedAt");
+      expect(response).to.have.property("id");
+      expect(response).to.have.property("title");
+      expect(response).to.have.property("description");
+      expect(response).to.have.property("status");
+      expect(response).to.have.property("updatedAt");
     });
   });
 
@@ -54,11 +49,13 @@ describe("Test UpdateTaskUseCase", () => {
           });
           expect.fail("Should throw a error");
         } catch (error) {
-          expect(error).to.have.property("statusCode");
-          expect(error).to.have.property("message");
+          const e = error as any;
 
-          expect(error.statusCode).to.be.equal(404);
-          expect(error.message).to.be.equal("Task not found");
+          expect(e).to.have.property("statusCode");
+          expect(e).to.have.property("message");
+
+          expect(e.statusCode).to.be.equal(404);
+          expect(e.message).to.be.equal("Task not found");
         }
       });
     });

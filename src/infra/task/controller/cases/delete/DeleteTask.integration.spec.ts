@@ -1,23 +1,20 @@
 import { HttpError } from "restify-errors";
-import shell from "shelljs";
 
 import Sinon from "sinon";
 import chai, { expect } from "chai";
 import chaiHTTP from "chai-http";
 
-import { AuthService } from "../../../src/shared/services/Auth";
+import { AuthService } from "src/shared/services/Auth";
+import { TasksRepositoryInMemory } from "@infra/task/repository/memory/Task.repository";
 
-import { users } from "../../mocks/users";
-import { tasks } from "../../mocks/tasks";
-import { app } from "../../../src/infra/api/app";
+import { users } from "../../../../../../__tests__/mocks/users";
+import { tasks } from "../../../../../../__tests__/mocks/tasks";
+import { app } from "@infra/api/app";
 
 chai.use(chaiHTTP);
 
-const [{ id, email, username }] = users;
 const [{ id: taskId }] = tasks;
-
-const DELETE_TASKS_ENDPOINT = `/v1/api/tasks/${taskId}`;
-const PRISMA_SEED_RESET = "npx prisma db seed";
+const [{ id, email, username }] = users;
 
 const FAIL_SIGN_IN = new HttpError(
   { statusCode: 401 },
@@ -25,29 +22,27 @@ const FAIL_SIGN_IN = new HttpError(
 );
 
 describe('Test DELETE endpoint "/tasks/:id"', function () {
-  this.timeout(5000);
-
   let token = "fakeToken";
-  let getUserStub: Sinon.SinonStub;
-
-  before(async () => {
-    shell.exec(PRISMA_SEED_RESET, { silent: true });
-  });
+  let getUserAuthStub: Sinon.SinonStub;
 
   beforeEach(() => {
-    getUserStub = Sinon.stub(AuthService.prototype, "getUser");
-    getUserStub.resolves({ id, username, email });
+    getUserAuthStub = Sinon.stub(AuthService.prototype, "getUser");
+    getUserAuthStub.resolves({ id, username, email });
+
+    TasksRepositoryInMemory.populate(tasks as any);
   });
 
   afterEach(() => {
-    getUserStub.restore();
+    getUserAuthStub.restore();
+
+    TasksRepositoryInMemory.dump();
   });
 
   describe("Success case", () => {
     it("should return a success response with status and empty body", async () => {
       const response = await chai
         .request(app)
-        .delete(DELETE_TASKS_ENDPOINT)
+        .delete(`/v1/api/tasks/${taskId}`)
         .set("Authorization", token);
 
       expect(response.status).to.equal(204);
@@ -58,7 +53,9 @@ describe('Test DELETE endpoint "/tasks/:id"', function () {
   describe("Error cases", () => {
     describe('Invalid "authorization" cases', () => {
       it("should not delete a task without authorization", async () => {
-        const response = await chai.request(app).delete(DELETE_TASKS_ENDPOINT);
+        const response = await chai
+          .request(app)
+          .delete(`/v1/api/tasks/${taskId}`);
 
         expect(response.status).to.be.equal(401);
         expect(response.body).to.have.property("message");
@@ -66,11 +63,11 @@ describe('Test DELETE endpoint "/tasks/:id"', function () {
       });
 
       it("should not delete a task with invalid authorization", async () => {
-        getUserStub.rejects(FAIL_SIGN_IN);
+        getUserAuthStub.rejects(FAIL_SIGN_IN);
 
         const response = await chai
           .request(app)
-          .delete(DELETE_TASKS_ENDPOINT)
+          .delete(`/v1/api/tasks/${taskId}`)
           .set("Authorization", "invalid-token");
 
         expect(response.status).to.be.equal(401);

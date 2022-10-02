@@ -1,30 +1,35 @@
 import express from "express";
 
-import { createTaskController } from "@useCases/task/create";
-import { deleteTaskController } from "@useCases/task/delete";
-import { getAllTasksController } from "@useCases/task/findAll";
-import { updateTaskController } from "@useCases/task/update";
+import { TaskControllerFactory } from "@infra/task/controller/factory/TaskController.factory";
+import { TasksRepository } from "@infra/task/repository/prisma/Task.repository";
+
 import { authMiddleware } from "../middleware/auth";
 import { TaskValidator } from "../middleware/Validators/TaskValidator";
+import { TasksRepositoryInMemory } from "@infra/task/repository/memory/Task.repository";
+
+const isTest = process.env.NODE_ENV === "test";
 
 const taskRouter = express.Router();
+const taskControllerFactory = new TaskControllerFactory(
+  isTest ? new TasksRepositoryInMemory() : new TasksRepository()
+);
 
 taskRouter.use(authMiddleware.handle);
 
-taskRouter.get("/", getAllTasksController.handle);
+taskRouter.get("/", taskControllerFactory.getAll());
 
 taskRouter.post(
   "/",
   TaskValidator.createValidation,
-  createTaskController.handle
+  taskControllerFactory.create()
 );
 
-taskRouter.delete("/:id", deleteTaskController.handle);
+taskRouter.delete("/:id", taskControllerFactory.delete());
 
 taskRouter.put(
   "/:id",
   TaskValidator.updateValidation,
-  updateTaskController.handle
+  taskControllerFactory.update()
 );
 
 export { taskRouter };
