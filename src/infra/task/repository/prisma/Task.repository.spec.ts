@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import shell from "shelljs";
 
-import { TaskFactory } from "@domain/task/factory/Task.factory";
+import { TaskFactory } from "../../../../domain/task/factory/Task.factory";
 
 import { TasksRepository } from "./Task.repository";
 
