@@ -1,0 +1,11 @@
+Dockerfile*
+docker-compose*
+.env*
+.gitignore
+
+node_modules/
+dist/
+.github
+assets/
+.vscode/
+
