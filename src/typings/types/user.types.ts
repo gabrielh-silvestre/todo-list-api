@@ -1,5 +1,3 @@
-import { User } from "@supabase/supabase-js";
-
 export type UserAttributes = {
   id: string;
   username: string;
@@ -18,4 +16,4 @@ export type CreateUserUseCaseDTO = Omit<UserAttributes, "id"> & {
 
 export type LoginUserUseCaseDTO = Omit<CreateUserUseCaseDTO, "username">;
 
-export type AuthUser = User;
+export type AuthUser = any;
