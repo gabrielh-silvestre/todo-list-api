@@ -1,15 +1,20 @@
 import type { Task } from "@prisma/client";
 
-import { users } from "./users";
-
-const [user1, user2] = users;
+export const users = [
+  {
+    id: "24d5ad6d-b864-4dee-a217-2608b6706cb6",
+  },
+  {
+    id: "25d5ad6d-b864-4dee-a217-2608b6706ca6",
+  },
+];
 
 const newTask: Task = {
   id: "18cabf6c-9f20-4914-98f7-c7d184e1d9b4",
   title: "Task 6",
   description: "Task 6 description",
   status: "TODO",
-  userId: user1.id,
+  userId: users[0].id,
   updatedAt: Date() as unknown as Date,
 };
 
@@ -19,7 +24,7 @@ const tasks: Task[] = [
     title: "First task",
     description: "First task description",
     status: "TODO",
-    userId: user1.id,
+    userId: users[0].id,
     updatedAt: Date() as unknown as Date,
   },
   {
@@ -27,7 +32,7 @@ const tasks: Task[] = [
     title: "Second task",
     description: "Second task description",
     status: "TODO",
-    userId: user1.id,
+    userId: users[0].id,
     updatedAt: Date() as unknown as Date,
   },
   {
@@ -35,7 +40,7 @@ const tasks: Task[] = [
     title: "Third task",
     description: "Third task description",
     status: "TODO",
-    userId: user2.id,
+    userId: users[1].id,
     updatedAt: Date() as unknown as Date,
   },
 ];

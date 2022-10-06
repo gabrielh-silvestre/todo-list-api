@@ -1,0 +1,9 @@
+{
+  "ignore": ["node_modules/**", "dist/**", "src/**/*.spec.ts"],
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "restartable": "rs",
+  "ext": "ts",
+  "exec": "ts-node -r tsconfig-paths/register ./src/infra/api/server.ts"
+}

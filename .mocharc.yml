@@ -1,0 +1,7 @@
+timeout: 5000
+exit: true
+watch: false
+recursive: true
+require:
+  - ts-node/register/transpile-only
+  - tsconfig-paths/register
